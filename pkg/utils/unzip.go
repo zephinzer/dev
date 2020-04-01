@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -22,18 +21,38 @@ const (
 	UnzipStateFailed     UnzipState = "unzip_failed"
 )
 
+// UnzipEvent is an object that is passed to the events stream
+// for the consumer to know what's going on inside
 type UnzipEvent struct {
-	State   UnzipState
-	Path    string
+	// State is a string code that indicates the underlying operation
+	State UnzipState
+	// Path is a string indicating path to a file if it's non-empty
+	Path string
+	// Message is an arbitrary string
 	Message string
-	Status  *UnzipStatus
+	// Status should provide metadata on the underlying operation
+	Status *UnzipStatus
 }
 
+// UnzipStatus stores the status of the unzipping process and is
+// returned through the UnzipEvent object
 type UnzipStatus struct {
-	BytesTotal          int64
-	BytesProcessed      int64
-	FilesTotalCount     int
+	// BytesTotal is the total number of bytes to extract
+	BytesTotal int64
+	// BytesProcessed is the number of bytes processed so far
+	BytesProcessed int64
+	// FilesTotalCount is the total number of files to extract
+	FilesTotalCount int
+	// FilesProcessedCount is the number of files processed so far
 	FilesProcessedCount int
+}
+
+func (us UnzipStatus) GetPercentDoneByBytes() float64 {
+	return float64(us.BytesProcessed) / float64(us.BytesTotal) * 100
+}
+
+func (us UnzipStatus) GetPercentDoneByFiles() float64 {
+	return float64(us.FilesProcessedCount) / float64(us.FilesTotalCount) * 100
 }
 
 type UnzipOptions struct {
@@ -58,18 +77,13 @@ func Unzip(options UnzipOptions) []error {
 	var err error
 	status := UnzipStatus{}
 
-	stopProcessingEvents := make(chan struct{}, 1)
 	if options.Events == nil {
 		options.Events = make(chan UnzipEvent, 16)
 		go func() {
 			for {
-				e, ok := <-options.Events
-				if !ok {
-					stopProcessingEvents <- struct{}{}
+				if _, ok := <-options.Events; !ok {
 					return
 				}
-				percentDone := int(float64(e.Status.BytesProcessed) / float64(e.Status.BytesTotal) * 100)
-				log.Printf("%v%% done [%v/%v files processed]", percentDone, e.Status.FilesProcessedCount, e.Status.FilesTotalCount)
 			}
 		}()
 	}
@@ -77,28 +91,26 @@ func Unzip(options UnzipOptions) []error {
 
 	pathToZip := options.InputPath
 	if !path.IsAbs(options.InputPath) {
-		var err error
 		if pathToZip, err = convertPathToAbsolute(options.InputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateError, "", err.Error(), &status}
+			options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.InputPath, err), &status}
+			return []error{err}
+		}
+	}
+
+	pathToExtractTo := options.OutputPath
+	if !path.IsAbs(options.OutputPath) {
+		if pathToExtractTo, err = convertPathToAbsolute(options.OutputPath); err != nil {
+			options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.OutputPath, err), &status}
 			return []error{err}
 		}
 	}
 
 	var zipReader *zip.ReadCloser
 	if zipReader, err = zip.OpenReader(pathToZip); err != nil {
-		options.Events <- UnzipEvent{UnzipStateError, "", err.Error(), &status}
+		options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to open zip file at '%s': %s", pathToZip, err), &status}
 		return []error{err}
 	}
 	defer zipReader.Close()
-
-	pathToExtractTo := options.OutputPath
-	if !path.IsAbs(options.OutputPath) {
-		var err error
-		if pathToExtractTo, err = convertPathToAbsolute(options.OutputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateError, "", err.Error(), &status}
-			return []error{err}
-		}
-	}
 
 	errors := []error{}
 	for _, file := range zipReader.File {
@@ -119,20 +131,18 @@ func Unzip(options UnzipOptions) []error {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{err}
-			} else {
-				errors = append(errors, err)
-				continue
 			}
+			errors = append(errors, err)
+			continue
 		}
 		outputFile, err := os.OpenFile(absoluteOutputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 		if err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{err}
-			} else {
-				errors = append(errors, err)
-				continue
 			}
+			errors = append(errors, err)
+			continue
 		}
 		options.Events <- UnzipEvent{UnzipStateProcessing, absoluteOutputPath, "created/opened file", &status}
 		inputFile, err := file.Open()
@@ -140,10 +150,9 @@ func Unzip(options UnzipOptions) []error {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{err}
-			} else {
-				errors = append(errors, err)
-				continue
 			}
+			errors = append(errors, err)
+			continue
 		}
 
 		size, copyErr := io.Copy(outputFile, inputFile)
@@ -151,29 +160,26 @@ func Unzip(options UnzipOptions) []error {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, outputErr.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{outputErr}
-			} else {
-				errors = append(errors, outputErr)
-				continue
 			}
+			errors = append(errors, outputErr)
+			continue
 		}
 		if inputErr := inputFile.Close(); err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, inputErr.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{inputErr}
-			} else {
-				errors = append(errors, inputErr)
-				continue
 			}
+			errors = append(errors, inputErr)
+			continue
 		}
 
 		if copyErr != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, copyErr.Error(), &status}
 			if options.ReturnOnFileError {
 				return []error{copyErr}
-			} else {
-				errors = append(errors, copyErr)
-				continue
 			}
+			errors = append(errors, copyErr)
+			continue
 		}
 		status.BytesProcessed += size
 		options.Events <- UnzipEvent{UnzipStateOK, absoluteOutputPath, fmt.Sprintf("extracted %v bytes", size), &status}
