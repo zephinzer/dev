@@ -89,22 +89,23 @@ func Unzip(options UnzipOptions) []error {
 	}
 	defer close(options.Events)
 
+	// configure paths using absolute paths
 	pathToZip := options.InputPath
 	if !path.IsAbs(options.InputPath) {
 		if pathToZip, err = convertPathToAbsolute(options.InputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.InputPath, err), &status}
+			options.Events <- UnzipEvent{UnzipStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.InputPath, err), &status}
 			return []error{err}
 		}
 	}
-
 	pathToExtractTo := options.OutputPath
 	if !path.IsAbs(options.OutputPath) {
 		if pathToExtractTo, err = convertPathToAbsolute(options.OutputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.OutputPath, err), &status}
+			options.Events <- UnzipEvent{UnzipStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.OutputPath, err), &status}
 			return []error{err}
 		}
 	}
 
+	// configure the reader for zip files
 	var zipReader *zip.ReadCloser
 	if zipReader, err = zip.OpenReader(pathToZip); err != nil {
 		options.Events <- UnzipEvent{UnzipStateError, "", fmt.Sprintf("failed to open zip file at '%s': %s", pathToZip, err), &status}
@@ -112,12 +113,15 @@ func Unzip(options UnzipOptions) []error {
 	}
 	defer zipReader.Close()
 
+	// prepare for iteration
 	errors := []error{}
 	for _, file := range zipReader.File {
 		status.BytesTotal += file.FileInfo().Size()
 	}
 	status.FilesTotalCount = len(zipReader.File)
 	options.Events <- UnzipEvent{UnzipStateStarting, "", "", &status}
+
+	// go through all files in the zip file
 	for _, file := range zipReader.File {
 		status.FilesProcessedCount++
 		absoluteOutputPath := path.Join(pathToExtractTo, file.Name)
@@ -127,6 +131,8 @@ func Unzip(options UnzipOptions) []error {
 			options.Events <- UnzipEvent{UnzipStateProcessing, absoluteOutputPath, "created dir", &status}
 			continue
 		}
+
+		// ensure the directory to the file has been created
 		if os.MkdirAll(filepath.Dir(absoluteOutputPath), os.ModePerm); err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
@@ -135,10 +141,13 @@ func Unzip(options UnzipOptions) []error {
 			errors = append(errors, err)
 			continue
 		}
+
+		// open the file for writing (create if doesn't exist)
 		outputFile, err := os.OpenFile(absoluteOutputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 		if err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
+				options.Events <- UnzipEvent{UnzipStateFailed, absoluteOutputPath, err.Error(), &status}
 				return []error{err}
 			}
 			errors = append(errors, err)
@@ -149,6 +158,7 @@ func Unzip(options UnzipOptions) []error {
 		if err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, err.Error(), &status}
 			if options.ReturnOnFileError {
+				options.Events <- UnzipEvent{UnzipStateFailed, absoluteOutputPath, err.Error(), &status}
 				return []error{err}
 			}
 			errors = append(errors, err)
@@ -159,6 +169,7 @@ func Unzip(options UnzipOptions) []error {
 		if outputErr := outputFile.Close(); err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, outputErr.Error(), &status}
 			if options.ReturnOnFileError {
+				options.Events <- UnzipEvent{UnzipStateFailed, absoluteOutputPath, outputErr.Error(), &status}
 				return []error{outputErr}
 			}
 			errors = append(errors, outputErr)
@@ -167,6 +178,7 @@ func Unzip(options UnzipOptions) []error {
 		if inputErr := inputFile.Close(); err != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, inputErr.Error(), &status}
 			if options.ReturnOnFileError {
+				options.Events <- UnzipEvent{UnzipStateFailed, absoluteOutputPath, inputErr.Error(), &status}
 				return []error{inputErr}
 			}
 			errors = append(errors, inputErr)
@@ -176,6 +188,7 @@ func Unzip(options UnzipOptions) []error {
 		if copyErr != nil {
 			options.Events <- UnzipEvent{UnzipStateError, absoluteOutputPath, copyErr.Error(), &status}
 			if options.ReturnOnFileError {
+				options.Events <- UnzipEvent{UnzipStateFailed, absoluteOutputPath, copyErr.Error(), &status}
 				return []error{copyErr}
 			}
 			errors = append(errors, copyErr)
