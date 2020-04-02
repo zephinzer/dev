@@ -10,16 +10,36 @@ import (
 	"time"
 )
 
+type DownloadState string
+
+const (
+	DefaultEventsUpdateInterval               = 500 * time.Millisecond
+	DownloadStateStarting       DownloadState = "download_starting"
+	DownloadStateReport         DownloadState = "download_report"
+	DownloadStateError          DownloadState = "download_error"
+	DownloadStateFailed         DownloadState = "download_failed"
+	DownloadStateSuccess        DownloadState = "download_success"
+)
+
 type DownloadEvent struct {
-	URL          string
-	FilePath     string
-	TempFilePath string
-	Status       *DownloadStatus
+	State        DownloadState   `json:"download_state"`
+	URL          string          `json:"url"`
+	FilePath     string          `json:"file_path"`
+	TempFilePath string          `json:"temp_file_path"`
+	Status       *DownloadStatus `json:"status"`
+}
+
+func (de DownloadEvent) String() string {
+	return fmt.Sprintf("[%s] downloading from '%s' into '%s' via '%s' [%v%% done]", de.State, de.URL, de.FilePath, de.TempFilePath, de.Status.GetPercentage())
 }
 
 type DownloadStatus struct {
-	TotalBytes     uint64
-	ProcessedBytes uint64
+	TotalBytes     uint64 `json:"total_bytes"`
+	ProcessedBytes uint64 `json:"processed_bytes"`
+}
+
+func (ds DownloadStatus) GetPercentage() float64 {
+	return float64(ds.ProcessedBytes) / float64(ds.TotalBytes) * 100
 }
 
 // Write implements io.Writer
@@ -54,6 +74,21 @@ func Download(options DownloadOptions) error {
 			}
 		}()
 	}
+	var eventsUpdateDuration time.Duration
+	if options.EventsUpdateInterval == eventsUpdateDuration {
+		eventsUpdateDuration = DefaultEventsUpdateInterval
+	}
+	ticker := time.NewTicker(eventsUpdateDuration)
+	defer ticker.Stop()
+	go func(tick <-chan time.Time) {
+		defer func() {
+			recover() // when channel is closed, a panic will happen
+		}()
+		for {
+			<-tick
+			options.Events <- DownloadEvent{DownloadStateReport, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
+		}
+	}(ticker.C)
 	defer close(options.Events)
 
 	if err := os.MkdirAll(filepath.Dir(options.FilePath), os.ModePerm); err != nil {
@@ -67,31 +102,40 @@ func Download(options DownloadOptions) error {
 	} else if err != nil && !os.IsNotExist(err) {
 		return err
 	}
+
+	// open output file for writing (create if it doesn't exist)
 	outputFile, err := os.OpenFile(tmpFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	defer outputFile.Close()
 
+	options.Events <- DownloadEvent{DownloadStateStarting, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 	response, err := http.Get(options.URL)
 	if err != nil {
+		options.Events <- DownloadEvent{DownloadStateFailed, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 		return err
 	}
 	defer response.Body.Close()
 	contentLength, err := strconv.Atoi(response.Header.Get("Content-Length"))
 	if err != nil {
+		options.Events <- DownloadEvent{DownloadStateFailed, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 		return err
 	}
 	downloadStatus.TotalBytes = uint64(contentLength)
 	if _, err := io.Copy(outputFile, io.TeeReader(response.Body, &downloadStatus)); err != nil {
+		options.Events <- DownloadEvent{DownloadStateFailed, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 		return err
 	}
 
 	if err := outputFile.Close(); err != nil {
+		options.Events <- DownloadEvent{DownloadStateFailed, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 		return err
 	}
 	if err := os.Rename(tmpFilePath, options.FilePath); err != nil {
+		options.Events <- DownloadEvent{DownloadStateFailed, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 		return err
 	}
+	options.Events <- DownloadEvent{DownloadStateSuccess, options.URL, options.FilePath, tmpFilePath, &downloadStatus}
 	return nil
 }
