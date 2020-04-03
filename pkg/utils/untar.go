@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -111,6 +112,7 @@ func Untar(options UntarOptions) []error {
 	if err != nil {
 		return []error{err}
 	}
+	defer tarFile.Close()
 
 	gzipReader, err := gzip.NewReader(tarFile)
 	if err != nil {
@@ -124,34 +126,48 @@ func Untar(options UntarOptions) []error {
 	tarReader := tar.NewReader(gzipReader)
 	for {
 		tarFile, err := tarReader.Next()
+		shouldBreak := false
 		switch {
 		case err == io.EOF:
-			break
+			shouldBreak = true
 		case err != nil:
 			return []error{err}
 		case tarFile == nil:
 			continue
 		}
+		if shouldBreak {
+			break
+		}
+		log.Println("??? 1", tarFile.Name)
 		switch tarFile.Typeflag {
 		case tar.TypeReg:
 			status.BytesTotal += tarFile.Size
 			status.FilesTotalCount += 1
 		}
 	}
-	options.Events <- UntarEvent{UntarStateStarting, "", "", &status}
+	options.Events <- UntarEvent{UntarStateStarting, "", "processed status", &status}
 
+	// reset the reader
+	tarFile.Seek(0, 0)
+	gzipReader.Reset(tarFile)
 	tarReader = tar.NewReader(gzipReader)
+
 	// go through all files in the tar file
 	for {
 		tarFile, err := tarReader.Next()
+		shouldBreak := false
 		switch {
 		case err == io.EOF:
-			break
+			shouldBreak = true
 		case err != nil:
 			return []error{err}
 		case tarFile == nil:
 			continue
 		}
+		if shouldBreak {
+			break
+		}
+		log.Println("??? 2", tarFile.Name)
 		absoluteOutputPath := path.Join(pathToExtractTo, tarFile.Name)
 		options.Events <- UntarEvent{UntarStateProcessing, absoluteOutputPath, "", &status}
 		switch tarFile.Typeflag {

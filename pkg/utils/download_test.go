@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"log"
 	"sync"
 	"testing"
 	"time"
@@ -49,6 +48,4 @@ func (s *DownloadTests) TestDownload() {
 	s.Contains(receivedEventTypes, DownloadStateStarting, "%v should have contained %s", receivedEventTypes, DownloadStateStarting)
 	s.Contains(receivedEventTypes, DownloadStateReport, "%v should have contained %s", receivedEventTypes, DownloadStateReport)
 	s.Contains(receivedEventTypes, DownloadStateSuccess, "%v should have contained %s", receivedEventTypes, DownloadStateSuccess)
-	log.Println(receivedEventTypes)
-	log.Println(receivedStatuses)
 }
