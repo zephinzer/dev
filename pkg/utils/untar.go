@@ -5,7 +5,6 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -93,19 +92,7 @@ func Untar(options UntarOptions) []error {
 
 	// configure paths using absolute paths
 	pathToTar := options.InputPath
-	if !path.IsAbs(options.InputPath) {
-		if pathToTar, err = convertPathToAbsolute(options.InputPath); err != nil {
-			options.Events <- UntarEvent{UntarStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.InputPath, err), &status}
-			return []error{err}
-		}
-	}
 	pathToExtractTo := options.OutputPath
-	if !path.IsAbs(options.OutputPath) {
-		if pathToExtractTo, err = convertPathToAbsolute(options.OutputPath); err != nil {
-			options.Events <- UntarEvent{UntarStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.OutputPath, err), &status}
-			return []error{err}
-		}
-	}
 
 	// configure the reader for zip files
 	tarFile, err := os.OpenFile(pathToTar, os.O_RDONLY, os.ModePerm)
@@ -138,7 +125,6 @@ func Untar(options UntarOptions) []error {
 		if shouldBreak {
 			break
 		}
-		log.Println("??? 1", tarFile.Name)
 		switch tarFile.Typeflag {
 		case tar.TypeReg:
 			status.BytesTotal += tarFile.Size
@@ -167,7 +153,6 @@ func Untar(options UntarOptions) []error {
 		if shouldBreak {
 			break
 		}
-		log.Println("??? 2", tarFile.Name)
 		absoluteOutputPath := path.Join(pathToExtractTo, tarFile.Name)
 		options.Events <- UntarEvent{UntarStateProcessing, absoluteOutputPath, "", &status}
 		switch tarFile.Typeflag {

@@ -1,12 +1,12 @@
-CMD_ROOT=accounts
+CMD_ROOT=dev
 DOCKER_NAMESPACE=usvc
-DOCKER_IMAGE_NAME=accounts
-PROJECT_NAME=accounts
+DOCKER_IMAGE_NAME=dev
+PROJECT_NAME=dev
 GIT_COMMIT=$$(git rev-parse --verify HEAD)
 GIT_TAG=$$(git describe --tag $$(git rev-list --tags --max-count=1))
 TIMESTAMP=$(shell date +'%Y%m%d%H%M%S')
 
--include ./makefile.properties
+-include ./Makefile.properties
 
 BIN_PATH=$(CMD_ROOT)_$$(go env GOOS)_$$(go env GOARCH)${BIN_EXT}
 
@@ -70,7 +70,7 @@ dockerhub:
 	docker push $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
 
 see_ci:
-	xdg-open https://gitlab.com/usvc/services/accounts/pipelines
+	xdg-open https://gitlab.com/usvc/utils/dev/pipelines
 
 .ssh:
 	mkdir -p ./.ssh

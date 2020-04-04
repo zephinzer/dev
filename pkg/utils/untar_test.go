@@ -24,7 +24,7 @@ func (s *UntarTests) SetupTest() {
 	var err error
 	s.workingDirectory, err = os.Getwd()
 	s.Nil(err)
-	s.observedPath = "./tests/zipfiles/observed"
+	s.observedPath = "tests/zipfiles/observed"
 	s.Nil(os.RemoveAll(s.observedPath))
 	observedPath, err := os.Stat(s.observedPath)
 	if os.IsNotExist(err) {
@@ -50,7 +50,7 @@ func (s *UntarTests) TestUntar() {
 				return
 			}
 			if len(e.Path) > 0 {
-				files[strings.ReplaceAll(e.Path, path.Join(s.workingDirectory, s.observedPath), ".")] = nil
+				files[strings.ReplaceAll(e.Path, s.observedPath, ".")] = nil
 			}
 		}
 	}()

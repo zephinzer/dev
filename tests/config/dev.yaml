@@ -1,0 +1,8 @@
+repositories:
+  path: ~/
+  remotes:
+    - git@github.com:usvc/go-config.git
+    - git@github.com:usvc/go-db.git
+    - git@github.com:usvc/go-logger.git
+    - git@github.com:usvc/go-password.git
+    - git@github.com:usvc/go-semver.git

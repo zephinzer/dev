@@ -91,19 +91,7 @@ func Unzip(options UnzipOptions) []error {
 
 	// configure paths using absolute paths
 	pathToZip := options.InputPath
-	if !path.IsAbs(options.InputPath) {
-		if pathToZip, err = convertPathToAbsolute(options.InputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.InputPath, err), &status}
-			return []error{err}
-		}
-	}
 	pathToExtractTo := options.OutputPath
-	if !path.IsAbs(options.OutputPath) {
-		if pathToExtractTo, err = convertPathToAbsolute(options.OutputPath); err != nil {
-			options.Events <- UnzipEvent{UnzipStateFailed, "", fmt.Sprintf("failed to retrieve absolute path from '%s': %s", options.OutputPath, err), &status}
-			return []error{err}
-		}
-	}
 
 	// configure the reader for zip files
 	var zipReader *zip.ReadCloser
