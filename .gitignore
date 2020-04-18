@@ -3,3 +3,5 @@ bin
 coverage
 c.out
 vendor
+# custom configuration file
+.dev
