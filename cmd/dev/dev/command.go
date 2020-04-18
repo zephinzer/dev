@@ -3,6 +3,7 @@ package dev
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/config"
+	"github.com/usvc/dev/cmd/dev/get"
 )
 
 func GetCommand() *cobra.Command {
@@ -14,5 +15,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(config.GetCommand())
+	cmd.AddCommand(get.GetCommand())
 	return &cmd
 }

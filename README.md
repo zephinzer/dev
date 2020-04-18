@@ -36,3 +36,11 @@ platforms:
       hostname: gitlab.yourdomain.com
       accessToken: XXXXXXX-XXXXXXXXXXXX
 ```
+
+# References
+
+- [Golang w/SQLite3 + Docker Scratch Image](https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image)
+  
+# Licensing
+
+MIT
