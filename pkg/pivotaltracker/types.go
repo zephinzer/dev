@@ -1,6 +1,12 @@
 package pivotaltracker
 
-import "time"
+import (
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/dustin/go-humanize"
+)
 
 // Config defines the structure of the configuration that can be consumed for tracking
 // notifications and events from the Pivotal Tracker platform
@@ -28,6 +34,8 @@ type Project struct {
 	AccessToken string `yaml:"accessToken"`
 }
 
+// APIv5MeResponse defines the response structure for a request made to
+// the endpoint at https://www.pivotaltracker.com/services/v5/me
 type APIv5MeResponse struct {
 	Accounts                   []APIAccount `json:"accounts"`
 	APIToken                   string       `json:"api_token"`
@@ -45,8 +53,73 @@ type APIv5MeResponse struct {
 	Username                   string       `json:"username"`
 }
 
+// APIv5NotificationsResponse defines the response structure for a request made to
+// the endpoint at https://www.pivotaltracker.com/services/v5/my/notifications
 type APIv5NotificationsResponse []APINotification
 
+// String converts the notifications object into a CLI-friendly block of text
+func (n APIv5NotificationsResponse) String() string {
+	var output strings.Builder
+	for i := 0; i < len(n); i++ {
+		output.WriteString(n[i].String())
+		output.Write([]byte{'\n', '\n'})
+	}
+	return output.String()
+}
+
+type APIv5StoriesResponse []APIStory
+
+// String converts the notifications object into a CLI-friendly block of text
+func (s APIv5StoriesResponse) String() string {
+	var output strings.Builder
+	for i := 0; i < len(s); i++ {
+		output.WriteString(s[i].String())
+		output.Write([]byte{'\n', '\n'})
+	}
+	return output.String()
+}
+
+type APIStory struct {
+	Kind          string     `json:"kind"`
+	ID            int        `json:"id"`
+	CreatedAt     string     `json:"created_at"`
+	UpdatedAt     string     `json:"updated_at"`
+	StoryType     string     `json:"story_type"`
+	Name          string     `json:"name"`
+	Description   string     `json:"description,omitempty"`
+	CurrentState  string     `json:"current_state"`
+	RequestedByID int        `json:"requested_by_id"`
+	URL           string     `json:"url"`
+	ProjectID     int        `json:"project_id"`
+	OwnerIds      []int      `json:"owner_ids"`
+	Labels        []APILabel `json:"labels"`
+	OwnedByID     int        `json:"owned_by_id,omitempty"`
+	Estimate      int        `json:"estimate,omitempty"`
+}
+
+func (s APIStory) String() string {
+	tag := s.StoryType
+	message := s.Name
+	link := s.URL
+	state := s.CurrentState
+	datetime := s.UpdatedAt
+	timestamp, err := time.Parse("2006-01-02T15:04:05Z", datetime)
+	if err == nil {
+		datetime = humanize.Time(timestamp)
+	}
+	return fmt.Sprintf("[%s] %s : %s\n- link: %s\n- when: %s", tag, state, message, link, datetime)
+}
+
+type APILabel struct {
+	ID        int    `json:"id"`
+	ProjectID int    `json:"project_id"`
+	Kind      string `json:"kind"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+}
+
+// APIAccount defines the structure for an Account object in responses to API queries
 type APIAccount struct {
 	Kind   string `json:"kind"`
 	ID     int    `json:"id"`
@@ -55,6 +128,7 @@ type APIAccount struct {
 	Plan   string `json:"plan"`
 }
 
+// APINotification defines the structure for a Notification object in responses to API queries
 type APINotification struct {
 	Kind               string                    `json:"kind"`
 	ID                 int                       `json:"id"`
@@ -72,12 +146,30 @@ type APINotification struct {
 	ReadAt             string                    `json:"read_at,omitempty"`
 }
 
+// String converts the notification object into a CLI-friendly text
+func (n APINotification) String() string {
+	tag := n.Project.Name
+	message := n.Message
+	referenceType := n.Story.Kind
+	referenceLabel := n.Story.Name
+	referenceID := n.Story.ID
+	datetime := n.UpdatedAt
+	timestamp, err := time.Parse("2006-01-02T15:04:05Z", datetime)
+	if err == nil {
+		datetime = humanize.Time(timestamp)
+	}
+	return fmt.Sprintf("[%s] %s\n- %s: %s\n- link: https://www.pivotaltracker.com/story/show/%v\n- when: about %s", tag, message, referenceType, referenceLabel, referenceID, datetime)
+
+}
+
+// APINotificationReference defines the structure for an object reference in responses to API queries
 type APINotificationReference struct {
 	Kind string `json:"kind"`
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
+// APIProject defines the structure for a project object in a response to API queries
 type APIProject struct {
 	Kind         string    `json:"kind"`
 	ID           int       `json:"id"`

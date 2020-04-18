@@ -2,6 +2,7 @@ package pivotaltracker
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"time"
@@ -10,18 +11,29 @@ import (
 	"github.com/usvc/dev/pkg/utils"
 )
 
-// GetNotifs returns a user's current notifications
-func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsResponse, error) {
-	targetURL, urlParseError := url.Parse("https://www.pivotaltracker.com/services/v5/my/notifications")
+// GetStories returns a user's stories
+func GetStories(accessToken string, inProjectID string, since ...time.Time) (*APIv5StoriesResponse, error) {
+	accountInfo, accountInfoError := GetAccount(accessToken)
+	if accountInfoError != nil {
+		return nil, accountInfoError
+	}
+	targetURL, urlParseError := url.Parse(fmt.Sprintf(
+		"https://www.pivotaltracker.com/services/v5/projects/%s/stories",
+		inProjectID,
+	))
 	if urlParseError != nil {
 		return nil, urlParseError
 	}
-	query := targetURL.Query()
-	query.Add("notification_types", ":all")
+	sinceThisTime := time.Now().Add(time.Duration(-1 * 31 * 24 * time.Hour))
 	if len(since) > 0 {
-		query.Add("created_after", since[0].Format("2006-01-02T15:04:05Z"))
-		query.Add("updated_after", since[0].Format("2006-01-02T15:04:05Z"))
+		sinceThisTime = since[0]
 	}
+	query := targetURL.Query()
+	query.Add("filter", fmt.Sprintf(
+		"(mywork:%s OR is:following) AND -state:accepted AND -state:planned AND updated_after:\"%s\"",
+		accountInfo.Username,
+		sinceThisTime.Format("2006-01-02T15:04:05Z"),
+	))
 	targetURL.RawQuery = query.Encode()
 	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
 		"Content-Type":   "application/json",
@@ -35,7 +47,7 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	if bodyReadError != nil {
 		return nil, bodyReadError
 	}
-	var response APIv5NotificationsResponse
+	var response APIv5StoriesResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
 		litter.Dump(string(responseBody))

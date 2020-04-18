@@ -13,6 +13,9 @@ func GetAccount(accessToken string) (*APIv5MeResponse, error) {
 	if urlParseError != nil {
 		return nil, urlParseError
 	}
+	query := targetURL.Query()
+	query.Add("fields", ":default")
+	targetURL.RawQuery = query.Encode()
 	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
 		"Content-Type":   "application/json",
 		"X-TrackerToken": accessToken,

@@ -3,7 +3,9 @@ package get
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/get/account"
+	"github.com/usvc/dev/cmd/dev/get/config"
 	"github.com/usvc/dev/cmd/dev/get/notifs"
+	"github.com/usvc/dev/cmd/dev/get/work"
 )
 
 func GetCommand() *cobra.Command {
@@ -16,5 +18,7 @@ func GetCommand() *cobra.Command {
 	}
 	cmd.AddCommand(notifs.GetCommand())
 	cmd.AddCommand(account.GetCommand())
+	cmd.AddCommand(work.GetCommand())
+	cmd.AddCommand(config.GetCommand())
 	return &cmd
 }

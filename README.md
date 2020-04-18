@@ -1,4 +1,16 @@
 
+# Usage
+
+```sh
+# retrieve consumed configuration
+dev get config;
+
+# retrieve notifications from pivotal tracker
+dev get notifs pivotaltracker;
+
+# retrieve your work from pivotal tracker
+dev get work pivotaltracker;
+```
 
 # Configuration
 
