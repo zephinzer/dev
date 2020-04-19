@@ -21,6 +21,9 @@ build:
 	go build \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_ROOT)
+	rm -rf ./bin/$(CMD_ROOT)
+	cd ./bin \
+		&& ln -s ./$(BIN_PATH) ./$(CMD_ROOT)
 build_production:
 	CGO_ENABLED=0 \
 	go build -a -v \
