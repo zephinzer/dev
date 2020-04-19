@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/pkg/config"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 )
 

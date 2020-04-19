@@ -2,11 +2,14 @@
 # Usage
 
 ```sh
+# initialise persistent database
+dev initialise database;
+
 # retrieve consumed configuration
 dev get config;
 
 # retrieve notifications from pivotal tracker
-dev get notifs pivotaltracker;
+dev get notifications pivotaltracker;
 
 # retrieve your work from pivotal tracker
 dev get work pivotaltracker;
@@ -49,9 +52,9 @@ platforms:
       accessToken: XXXXXXX-XXXXXXXXXXXX
 ```
 
-# References
+# Development References
 
-- [Golang w/SQLite3 + Docker Scratch Image](https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image)
+- On building a static binary file with libraries requiring CGO: [Golang w/SQLite3 + Docker Scratch Image](https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image)
   
 # Licensing
 

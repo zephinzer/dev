@@ -3,7 +3,7 @@ package pivotaltracker
 import (
 	"github.com/sanity-io/litter"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/pkg/config"
+	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 )
 

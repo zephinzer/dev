@@ -67,6 +67,8 @@ func (n APIv5NotificationsResponse) String() string {
 	return output.String()
 }
 
+// APIv5StoriesResponse defines the reponse structure for a request made to the
+// endpoint at https://www.pivotaltracker.com/services/v5/projects/{project_id}/stories
 type APIv5StoriesResponse []APIStory
 
 // String converts the notifications object into a CLI-friendly block of text
@@ -79,6 +81,7 @@ func (s APIv5StoriesResponse) String() string {
 	return output.String()
 }
 
+// APIStory stores data about a pivotal tracker story as returned by its API
 type APIStory struct {
 	Kind          string     `json:"kind"`
 	ID            int        `json:"id"`
@@ -97,6 +100,7 @@ type APIStory struct {
 	Estimate      int        `json:"estimate,omitempty"`
 }
 
+// String converts the story object into a CLI-friendly block of text
 func (s APIStory) String() string {
 	tag := s.StoryType
 	message := s.Name
