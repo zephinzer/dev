@@ -14,8 +14,7 @@ type Config struct {
 	// Projects is the list of projects to monitor
 	Projects Projects `yaml:"projects"`
 	// AccessToken to be used for all listed projects if their own access token is not defined.
-	// This value can be retrieved from the section named API Token at the URL:
-	//   https://www.pivotaltracker.com/profile
+	// This value can be retrieved from the section named API Token at https://www.pivotaltracker.com/profile
 	AccessToken string `yaml:"accessToken"`
 }
 
