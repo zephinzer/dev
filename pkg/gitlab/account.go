@@ -1,32 +1,28 @@
-package pivotaltracker
+package gitlab
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/url"
-	"time"
 
 	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/pkg/utils"
 )
 
-// GetNotifs returns a user's current notifications
-func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsResponse, error) {
-	targetURL, urlParseError := url.Parse("https://www.pivotaltracker.com/services/v5/my/notifications")
+func GetAccount(hostname, accessToken string) (*APIv4UserResponse, error) {
+	gitlabHostname := hostname
+	if len(hostname) == 0 {
+		gitlabHostname = constants.DefaultGitlabHostname
+	}
+	targetURL, urlParseError := url.Parse(fmt.Sprintf("https://%s/api/v4/user", gitlabHostname))
 	if urlParseError != nil {
 		return nil, urlParseError
 	}
-	query := targetURL.Query()
-	query.Add("notification_types", ":all")
-	if len(since) > 0 {
-		query.Add("created_after", since[0].Format(constants.PivotalTrackerAPITimeFormat))
-		query.Add("updated_after", since[0].Format(constants.PivotalTrackerAPITimeFormat))
-	}
-	targetURL.RawQuery = query.Encode()
 	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":   "application/json",
-		"X-TrackerToken": accessToken,
+		"Content-Type":  "application/json",
+		"PRIVATE-TOKEN": accessToken,
 	})
 	if requestError != nil {
 		return nil, requestError
@@ -36,7 +32,7 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	if bodyReadError != nil {
 		return nil, bodyReadError
 	}
-	var response APIv5NotificationsResponse
+	var response APIv4UserResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
 		litter.Dump(string(responseBody))

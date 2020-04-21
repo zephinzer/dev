@@ -7,9 +7,14 @@ The ultimate developer experience CLI tool.
   - [Initialisation](#initialisation)
     - [Database](#database)
   - [Retrieval](#retrieval)
+    - [Account Information](#account-information)
+      - [Gitlab Account Information](#gitlab-account-information)
+      - [Pivotal Tracker Account Information](#pivotal-tracker-account-information)
     - [Notifications](#notifications)
       - [Gitlab Notifications](#gitlab-notifications)
       - [Pivotal Tracker Notifications](#pivotal-tracker-notifications)
+    - [Work](#work)
+      - [Pivotal Tracker Work](#pivotal-tracker-work)
 - [Setting Up](#setting-up)
   - [Configuration](#configuration)
     - [Sample configuration file](#sample-configuration-file)
@@ -45,6 +50,12 @@ dev get notifications gitlab;
 
 # retrieve your work from pivotal tracker
 dev get work pivotaltracker;
+
+# retrieve your accounts from gitlab
+dev get account gitlab;
+
+# retrieve your accounts from pivotal tracker
+dev get account pivotaltracker;
 ```
 
 ## Initialisation
@@ -65,6 +76,24 @@ Example: `dev init db`
 
 Example: `dev get -h`
 
+### Account Information
+
+> Noun: `account`, `acc`, `a`
+
+Example: `dev get account -h`
+
+#### Gitlab Account Information
+
+> Noun: `gitlab`, `gl`
+
+Example: `dev get account gitlab`
+
+#### Pivotal Tracker Account Information
+
+> Noun: `pivotaltracker`, `pivotal`, `pt`
+
+Example: `dev get account pivotaltracker`
+
 ### Notifications
 
 > Noun: `notifications`, `notifs`, `n`
@@ -81,7 +110,20 @@ Example: `dev get notifs gitlab`
 
 > Noun: `pivotaltracker`, `pivotal`, `pt`
 
-Example: `dev get notifs pivotal`
+Example: `dev get notifs pivotaltracker`
+
+### Work
+
+> Noun: `work`, `w`
+
+Example: `dev get work -h`
+
+#### Pivotal Tracker Work
+
+> Noun: `pivotaltracker`, `pivotal`, `pt`
+
+Example: `dev get work pivotaltracker`
+
 
 - - -
 

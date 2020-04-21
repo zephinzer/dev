@@ -2,6 +2,7 @@ package account
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/usvc/dev/cmd/dev/get/account/gitlab"
 	"github.com/usvc/dev/cmd/dev/get/account/pivotaltracker"
 )
 
@@ -15,5 +16,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(pivotaltracker.GetCommand())
+	cmd.AddCommand(gitlab.GetCommand())
 	return &cmd
 }

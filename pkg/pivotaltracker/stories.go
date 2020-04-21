@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/sanity-io/litter"
+	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/pkg/utils"
 )
 
@@ -32,7 +33,7 @@ func GetStories(accessToken string, inProjectID string, since ...time.Time) (*AP
 	query.Add("filter", fmt.Sprintf(
 		"(mywork:%s OR is:following) AND -state:accepted AND -state:planned AND updated_after:\"%s\"",
 		accountInfo.Username,
-		sinceThisTime.Format("2006-01-02T15:04:05Z"),
+		sinceThisTime.Format(constants.PivotalTrackerAPITimeFormat),
 	))
 	targetURL.RawQuery = query.Encode()
 	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{

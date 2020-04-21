@@ -1,7 +1,8 @@
 package pivotaltracker
 
 import (
-	"github.com/sanity-io/litter"
+	"log"
+
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/pkg/pivotaltracker"
@@ -17,15 +18,37 @@ func GetCommand() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			if len(c.Platforms.PivotalTracker.AccessToken) == 0 {
-				panic("nuuuuuuuuuu")
+			totalAccountsCount := 0
+			accountsEncountered := map[string]interface{}{}
+			defaultAccessToken := c.Platforms.PivotalTracker.AccessToken
+			if len(c.Platforms.PivotalTracker.Projects) == 0 && len(defaultAccessToken) > 0 {
+				accountsEncountered[defaultAccessToken] = true
+				printAccountInfo(defaultAccessToken)
+				totalAccountsCount++
 			}
-			user, err := pivotaltracker.GetAccount(c.Platforms.PivotalTracker.AccessToken)
-			if err != nil {
-				panic(err)
+			for _, project := range c.Platforms.PivotalTracker.Projects {
+				projectAccessToken := project.AccessToken
+				if len(projectAccessToken) == 0 && len(defaultAccessToken) > 0 {
+					projectAccessToken = defaultAccessToken
+				}
+				if accountsEncountered[projectAccessToken] == nil {
+					accountsEncountered[projectAccessToken] = true
+					log.Printf("account information for project '%s' (id: %s)\n", project.Name, project.ProjectID)
+					printAccountInfo(projectAccessToken)
+					totalAccountsCount++
+				}
 			}
-			litter.Dump(user)
+			log.Printf("total listed projects: %v", len(c.Platforms.PivotalTracker.Projects))
+			log.Printf("total accounts: %v", totalAccountsCount)
 		},
 	}
 	return &cmd
+}
+
+func printAccountInfo(accessToken string) {
+	accountInfo, err := pivotaltracker.GetAccount(accessToken)
+	if err != nil {
+		panic(err)
+	}
+	log.Println(accountInfo.String())
 }

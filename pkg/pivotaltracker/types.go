@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
+	"github.com/usvc/dev/internal/constants"
 )
 
 // Config defines the structure of the configuration that can be consumed for tracking
@@ -38,7 +39,7 @@ type Project struct {
 type APIv5MeResponse struct {
 	Accounts                   []APIAccount `json:"accounts"`
 	APIToken                   string       `json:"api_token"`
-	CreatedAt                  time.Time    `json:"created_at"`
+	CreatedAt                  string       `json:"created_at"`
 	Email                      string       `json:"email"`
 	HasGoogleIdentity          bool         `json:"has_google_identity"`
 	ID                         int          `json:"id"`
@@ -48,8 +49,21 @@ type APIv5MeResponse struct {
 	Projects                   []APIProject `json:"projects"`
 	ReceivesInAppNotifications bool         `json:"receives_in_app_notifications"`
 	TimeZone                   APITimezone  `json:"time_zone"`
-	UpdatedAt                  time.Time    `json:"updated_at"`
+	UpdatedAt                  string       `json:"updated_at"`
 	Username                   string       `json:"username"`
+}
+
+func (m APIv5MeResponse) String() string {
+	var me strings.Builder
+	me.WriteString("pivotal tracker account information\n")
+	me.WriteString(fmt.Sprintf("account id : %v\n", m.ID))
+	me.WriteString(fmt.Sprintf("username   : %s (%s)\n", m.Username, m.Initials))
+	me.WriteString(fmt.Sprintf("real name  : %s\n", m.Name))
+	me.WriteString(fmt.Sprintf("projects   : %v\n", len(m.Projects)))
+	for _, project := range m.Projects {
+		me.WriteString(fmt.Sprintf("  - %s in [%s (id: %v)](https://www.pivotaltracker.com/n/projects/%v)\n", project.Role, project.ProjectName, project.ProjectID, project.ProjectID))
+	}
+	return me.String()
 }
 
 // APIv5NotificationsResponse defines the response structure for a request made to
@@ -106,7 +120,7 @@ func (s APIStory) String() string {
 	link := s.URL
 	state := s.CurrentState
 	datetime := s.UpdatedAt
-	timestamp, err := time.Parse("2006-01-02T15:04:05Z", datetime)
+	timestamp, err := time.Parse(constants.PivotalTrackerAPITimeFormat, datetime)
 	if err == nil {
 		datetime = humanize.Time(timestamp)
 	}
@@ -157,7 +171,7 @@ func (n APINotification) String() string {
 	referenceLabel := n.Story.Name
 	referenceID := n.Story.ID
 	datetime := n.UpdatedAt
-	timestamp, err := time.Parse("2006-01-02T15:04:05Z", datetime)
+	timestamp, err := time.Parse(constants.PivotalTrackerAPITimeFormat, datetime)
 	if err == nil {
 		datetime = humanize.Time(timestamp)
 	}
@@ -174,14 +188,14 @@ type APINotificationReference struct {
 
 // APIProject defines the structure for a project object in a response to API queries
 type APIProject struct {
-	Kind         string    `json:"kind"`
-	ID           int       `json:"id"`
-	ProjectID    int       `json:"project_id"`
-	ProjectName  string    `json:"project_name"`
-	ProjectColor string    `json:"project_color"`
-	Favorite     bool      `json:"favorite"`
-	Role         string    `json:"role"`
-	LastViewedAt time.Time `json:"last_viewed_at"`
+	Kind         string `json:"kind"`
+	ID           int    `json:"id"`
+	ProjectID    int    `json:"project_id"`
+	ProjectName  string `json:"project_name"`
+	ProjectColor string `json:"project_color"`
+	Favorite     bool   `json:"favorite"`
+	Role         string `json:"role"`
+	LastViewedAt string `json:"last_viewed_at"`
 }
 
 type APITimezone struct {
