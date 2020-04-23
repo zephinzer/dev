@@ -4,10 +4,12 @@ The ultimate developer experience CLI tool.
 
 - [Dev](#dev)
 - [Usage](#usage)
+  - [Table of Canonical Tokens](#table-of-canonical-tokens)
   - [Initialisation](#initialisation)
     - [Database](#database)
   - [Retrieval](#retrieval)
     - [Account Information](#account-information)
+      - [Github Account Information](#github-account-information)
       - [Gitlab Account Information](#gitlab-account-information)
       - [Pivotal Tracker Account Information](#pivotal-tracker-account-information)
     - [Notifications](#notifications)
@@ -42,85 +44,84 @@ dev initialise database;
 # retrieve consumed configuration
 dev get config;
 
-# retrieve notifications from pivotal tracker
-dev get notifications pivotaltracker;
-
 # retrieve notifications (todos) from gitlab
 dev get notifications gitlab;
+
+# retrieve notifications from pivotal tracker
+dev get notifications pivotaltracker;
 
 # retrieve your work from pivotal tracker
 dev get work pivotaltracker;
 
-# retrieve your accounts from gitlab
+# retrieve information about your accounts from github
+dev get account github;
+
+# retrieve information about your accounts from gitlab
 dev get account gitlab;
 
 # retrieve your accounts from pivotal tracker
 dev get account pivotaltracker;
 ```
 
-## Initialisation
+## Table of Canonical Tokens
 
-> Verb: `initialise`, `init`, `i`
+| Concept | Type | Canon | Aliases |
+| --- | --- | --- |
+| Account | Noun | `account` | `accounts`, `acc`, `accs`, `a` |
+| Configuration | Noun | `configuration` | `config`, `conf`, `cf`, `c` |
+| Gitlab | Noun | `gitlab` | `gl` |
+| Github | Noun | `github` | `gh` |
+| Notifications | Noun | `notifications` | `notification`, `notif`, `notifs`, `n` |
+| PivotalTracker | Noun | `pivotaltracker` | `pivotal`, `pt` |
+| Work | Noun | `work` | `stories`, `tasks`, `tickets`, `w` |
+| Get | Verb | `get` | `retrieve`, `g` |
+| Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
+
+## Initialisation
 
 Example: `dev init -h`
 
 ### Database
 
-> Noun: `database`, `db`
-
 Example: `dev init db`
 
 ## Retrieval
-
-> Verb: `get`, `g`
 
 Example: `dev get -h`
 
 ### Account Information
 
-> Noun: `account`, `acc`, `a`
-
 Example: `dev get account -h`
 
-#### Gitlab Account Information
+#### Github Account Information
 
-> Noun: `gitlab`, `gl`
+Example: `dev get account github`
+
+#### Gitlab Account Information
 
 Example: `dev get account gitlab`
 
 #### Pivotal Tracker Account Information
 
-> Noun: `pivotaltracker`, `pivotal`, `pt`
-
 Example: `dev get account pivotaltracker`
 
 ### Notifications
-
-> Noun: `notifications`, `notifs`, `n`
 
 Example: `dev get notifs -h`
 
 #### Gitlab Notifications
 
-> Noun: `gitlab`, `gl`
-
 Example: `dev get notifs gitlab`
 
 #### Pivotal Tracker Notifications
-
-> Noun: `pivotaltracker`, `pivotal`, `pt`
 
 Example: `dev get notifs pivotaltracker`
 
 ### Work
 
-> Noun: `work`, `w`
-
 Example: `dev get work -h`
 
 #### Pivotal Tracker Work
-
-> Noun: `pivotaltracker`, `pivotal`, `pt`
 
 Example: `dev get work pivotaltracker`
 
@@ -136,7 +137,14 @@ Configuration is done via YAML.
 ### Sample configuration file
 
 ```yaml
-# this defines software that should be on the developer's machine
+# this defines networks that should be reachable from your machine
+networks:
+  - name: internal vpn
+    check:
+      schema: http
+      hostname: gitlab.internal.domain.com
+      path: /
+# this defines software that should be on your machine
 software:
   - name: golang
     check:
@@ -150,22 +158,22 @@ platforms:
   pivotaltracker:
     accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     projects:
-    - name: work
-      projectID: "XXXXXXX"
-    - name: personal
-      projectID: "XXXXXXX"
-      accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      - name: work
+        projectID: "XXXXXXX"
+      - name: personal
+        projectID: "XXXXXXX"
+        accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   github:
     accounts:
-    - name: personal
-      accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      - name: personal
+        accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   gitlab:
     accounts:
-    - name: personal
-      accessToken: XXXXXXXXXXXXXXXXXXXX
-    - name: work-on-prem
-      hostname: gitlab.yourdomain.com
-      accessToken: XXXXXXXXXXXXXXXXXXXX
+      - name: personal
+        accessToken: XXXXXXXXXXXXXXXXXXXX
+      - name: work-on-prem
+        hostname: gitlab.yourdomain.com
+        accessToken: XXXXXXXXXXXXXXXXXXXX
 ```
 
 ## Platforms

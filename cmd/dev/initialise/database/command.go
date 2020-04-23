@@ -8,8 +8,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "database",
-		Aliases: []string{"db"},
+		Use:     constants.DatabaseCanonicalNoun,
+		Aliases: constants.DatabaseAliases,
 		Short:   "Initialises a persistent on-disk sqlite3 database",
 		Run: func(command *cobra.Command, args []string) {
 			dbInitError := db.Init(constants.DefaultPathToSQLite3DB)

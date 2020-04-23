@@ -9,8 +9,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "configuration",
-		Aliases: []string{"config", "conf", "cf", "c"},
+		Use:     constants.ConfigurationCanonicalNoun,
+		Aliases: constants.ConfigurationAliases,
 		Short:   "Displays the current configuration",
 		Run: func(command *cobra.Command, args []string) {
 			fileConfig, readConfigError := config.NewFromFile(constants.DefaultPathToConfiguration)

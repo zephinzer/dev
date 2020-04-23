@@ -11,8 +11,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "pivotaltracker",
-		Aliases: []string{"pivotal", "pt"},
+		Use:     constants.PivotalTrackerCanonicalNoun,
+		Aliases: constants.PivotalTrackerAliases,
 		Short:   "Retrieves notifications from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
 			c, err := config.NewFromFile(constants.DefaultPathToConfiguration)

@@ -11,8 +11,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "gitlab",
-		Aliases: []string{"gl"},
+		Use:     constants.GitlabCanonicalNoun,
+		Aliases: constants.GitlabAliases,
 		Short:   "Retrieves notifications from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
 			c, err := config.NewFromFile(constants.DefaultPathToConfiguration)

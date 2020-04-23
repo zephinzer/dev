@@ -88,7 +88,13 @@ func (u APIv4UserResponse) String() string {
 	output.WriteString("gitlab account information\n")
 	output.WriteString(fmt.Sprintf("username      : %s\n", u.Username))
 	output.WriteString(fmt.Sprintf("real name     : %s\n", u.Name))
+	if len(u.Email) == 0 {
+		u.Email = "(hidden)"
+	}
 	output.WriteString(fmt.Sprintf("account email : %s\n", u.Email))
+	if len(u.PublicEmail) == 0 {
+		u.PublicEmail = "(hidden)"
+	}
 	output.WriteString(fmt.Sprintf("public email  : %s\n", u.PublicEmail))
 	output.WriteString(fmt.Sprintf("2fa-enabled   : %v\n", u.TwoFactorEnabled))
 	output.WriteString(fmt.Sprintf("link          : %s\n", u.WebURL))
@@ -102,11 +108,11 @@ func (u APIv4UserResponse) String() string {
 	} else {
 		output.WriteString(fmt.Sprintf("last active   : %s (about %s)\n", u.LastActivityOn, humanize.Time(lastActive)))
 	}
+	output.WriteString(fmt.Sprintf("is admin      : %v\n", u.IsAdmin))
 	output.WriteString(fmt.Sprintf("o/identities  : %v\n", len(u.Identities)))
 	for _, identity := range u.Identities {
 		output.WriteString(fmt.Sprintf("  - %s (%s)\n", identity.Provider, identity.ExternUID))
 	}
-	output.WriteString(fmt.Sprintf("is admin      : %v\n", u.IsAdmin))
 	return output.String()
 }
 

@@ -3,12 +3,13 @@ package initialise
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/initialise/database"
+	"github.com/usvc/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "initialise",
-		Aliases: []string{"initialize", "init", "i"},
+		Use:     constants.InitialiseCanonicalNoun,
+		Aliases: constants.InitialiseAliases,
 		Short:   "Initialises the dev CLI tool for persistent use",
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
