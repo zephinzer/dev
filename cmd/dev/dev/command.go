@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/get"
 	"github.com/usvc/dev/cmd/dev/initialise"
+	"github.com/usvc/dev/cmd/dev/start"
 )
 
 func GetCommand() *cobra.Command {
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 	}
 	cmd.AddCommand(get.GetCommand())
 	cmd.AddCommand(initialise.GetCommand())
+	cmd.AddCommand(start.GetCommand())
 	return &cmd
 }

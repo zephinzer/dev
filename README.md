@@ -226,7 +226,8 @@ Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https:
 ## References
 
 - On building a static binary file with libraries requiring CGO: [Golang w/SQLite3 + Docker Scratch Image](https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image)
-  
+- On executing CLI commands from Go [Advanced command execution in Go with os/exec](https://blog.kowalczyk.info/article/wOYk/advanced-command-execution-in-go-with-osexec.html)
+
 # Licensing
 
 MIT

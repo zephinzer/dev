@@ -1,7 +1,12 @@
 package database
 
 import (
+	"log"
+	"os/user"
+	"strings"
+
 	"github.com/spf13/cobra"
+	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/db"
 )
@@ -12,10 +17,28 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.DatabaseAliases,
 		Short:   "Initialises a persistent on-disk sqlite3 database",
 		Run: func(command *cobra.Command, args []string) {
-			dbInitError := db.Init(constants.DefaultPathToSQLite3DB)
+			c, err := config.NewFromFile("./dev.yaml")
+			if err != nil {
+				panic(err)
+			}
+			pathToDatabaseFile := constants.DefaultPathToSQLite3DB
+			if len(c.Dev.Client.Database.Path) > 0 {
+				pathToDatabaseFile = c.Dev.Client.Database.Path
+			}
+			if strings.Index(pathToDatabaseFile, "~") == 0 {
+				currentUser, err := user.Current()
+				if err != nil {
+					panic(err)
+				} else if len(currentUser.HomeDir) > 0 {
+					pathToDatabaseFile = strings.Replace(pathToDatabaseFile, "~", currentUser.HomeDir, 1)
+				}
+			}
+			log.Printf("initialising database at %s...", pathToDatabaseFile)
+			dbInitError := db.Init(pathToDatabaseFile)
 			if dbInitError != nil {
 				panic(dbInitError)
 			}
+			log.Printf("intiialised database at %s", pathToDatabaseFile)
 		},
 	}
 	return &cmd
