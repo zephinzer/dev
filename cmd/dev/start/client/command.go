@@ -35,7 +35,7 @@ func GetCommand() *cobra.Command {
 						select {
 						case <-about.ClickedCh:
 							ourURL := "https://gitlab.com/usvc/utils/dev"
-							log.Printf("opening %s for the %s platform", ourURL, runtime.GOOS)
+							log.Printf("opening '%s' for the '%s' platform", ourURL, runtime.GOOS)
 							switch runtime.GOOS {
 							case "linux":
 								exec.Command("xdg-open", ourURL).Start()

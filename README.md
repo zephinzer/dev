@@ -29,9 +29,12 @@ The ultimate developer experience CLI tool.
 - [Development Runbook](#development-runbook)
   - [Getting Started](#getting-started)
   - [Building](#building)
+    - [General build notes](#general-build-notes)
     - [Build notes for Linux](#build-notes-for-linux)
     - [Build notes for MacOS](#build-notes-for-macos)
     - [Build notes for Windows](#build-notes-for-windows)
+  - [Releasing](#releasing)
+  - [Distribution](#distribution)
   - [References](#references)
 - [Licensing](#licensing)
 
@@ -229,23 +232,35 @@ Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https:
 
 ## Building
 
+As this is a desktop app meant for cross-platform distribution, this gets a little complicated. The instructions assume an Ubuntu build environment.
+
+### General build notes
+
+1. Run `setup_build` to install the required:
+   1. `2goarray` for converting a PNG icon into Go code
+   2. `rsrc` for compiling Windows application manifests
+2. Run `setup_build_linux` if you're building from a linux environment
+
 ### Build notes for Linux
 
-The Linux assets can be found at `./assets/linux` relative to the project root.
-
-- `TODO`
+1. The Linux assets can be found at `./assets/linux` relative to the project root.
 
 ### Build notes for MacOS
 
-The MacOS assets can be found at `./assets/macos` relative to the project root.
-
-- `TODO`
+1. The MacOS assets can be found at `./assets/macos` relative to the project root.
 
 ### Build notes for Windows
 
-The Windows assets can be found at `./assets/windows` relative to the project root.
+1. The Windows assets can be found at `./assets/windows` relative to the project root.
+2. Confirm that the `rsrc` binary is available in your path to compile the manifest. You can get this using `make setup_build`
 
-1. Confirm that the `rsrc` binary is available in your path. You can get this using `make setup_build`
+## Releasing
+
+This should be done automatically via the CI pipeline.
+
+## Distribution
+
+> TODO
 
 ## References
 
