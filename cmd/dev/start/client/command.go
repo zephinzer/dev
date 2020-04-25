@@ -1,22 +1,16 @@
 package client
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"sync"
-	"time"
+	"path/filepath"
+	"runtime"
 
+	"github.com/getlantern/systray"
 	"github.com/spf13/cobra"
-	"github.com/usvc/go-config"
+	"github.com/usvc/dev/internal/constants"
 )
-
-var conf = config.Map{
-	"daemon": &config.Bool{
-		Shorthand: "d",
-	},
-}
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
@@ -24,27 +18,48 @@ func GetCommand() *cobra.Command {
 		Aliases: []string{"c"},
 		Short:   "starts the dev client as a background process to provide notifications",
 		Run: func(command *cobra.Command, _ []string) {
-			log.Println("starting dev client...")
-			if conf.GetBool("daemon") {
-				var waiter sync.WaitGroup
-				waiter.Add(1)
-				go func(tick <-chan time.Time) {
-					log.Printf("starting long-running placeholder")
+			log.Println("adding system tray icon...")
+			var (
+				about *systray.MenuItem
+				exit  *systray.MenuItem
+			)
+			systray.Run(func() {
+				log.Println("initialising system tray...")
+				systray.SetIcon(constants.SystrayIcon)
+				systray.SetTooltip("Dev CLI tool")
+				about = systray.AddMenuItem("About", "Display information about the Dev tool")
+				systray.AddSeparator()
+				exit = systray.AddMenuItem("Exit", "Shutdown the Dev tool")
+				go func() {
 					for {
-						<-tick
-						fmt.Print(".")
+						select {
+						case <-about.ClickedCh:
+							ourURL := "https://gitlab.com/usvc/utils/dev"
+							log.Printf("opening %s for the %s platform", ourURL, runtime.GOOS)
+							switch runtime.GOOS {
+							case "linux":
+								exec.Command("xdg-open", ourURL).Start()
+							case "macos":
+								exec.Command("open", ourURL).Start()
+							case "windows":
+								exec.Command(
+									filepath.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"),
+									"url.dll,FileProtocolHandler",
+									ourURL,
+								).Start()
+							}
+						case <-exit.ClickedCh:
+							log.Println("exit was clicked")
+							systray.Quit()
+						}
 					}
-				}(time.Tick(3 * time.Second))
-				waiter.Wait()
-				command.Help()
-			} else {
-				invocation := os.Args[0]
-				log.Printf("converting to background mode with <%s &>", invocation)
-				background := exec.Command(invocation, "--daemon")
-				background.Start()
-			}
+				}()
+			}, func() {
+				close(about.ClickedCh)
+				close(exit.ClickedCh)
+				log.Println("exiting system tray...")
+			})
 		},
 	}
-	conf.ApplyToFlagSet(cmd.Flags())
 	return &cmd
 }

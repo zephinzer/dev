@@ -13,10 +13,25 @@ BIN_PATH=$(CMD_ROOT)_$$(go env GOOS)_$$(go env GOARCH)${BIN_EXT}
 deps:
 	go mod vendor -v
 	go mod tidy -v
+setup_build:
+	# this is required to create icons for use in the system tray
+	go get github.com/cratonica/2goarray
+	# this is required to compile manifest resources for windows
+	go get github.com/akavel/rsrc
+setup_build_linux:
+	if ! apt-get --version >/dev/null; then \
+		sudo apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev; \
+	fi
 run:
 	go run ./cmd/$(CMD_ROOT)
 test:
 	go test -v ./... -cover -coverprofile c.out
+prepare_icon:
+	@if ! 2goarray -h >/dev/null; then \
+		printf -- "\033[1m\033[31m⚠️ you need 2goarray in your path for this to work, ensure you've run 'make setup_build'\033[0m\n"; \
+		exit 1; \
+	fi
+	2goarray SystrayIcon constants < ./assets/icon/1024.png > ./internal/constants/icon.go
 build:
 	go build \
 		-o ./bin/$(BIN_PATH) \
@@ -32,6 +47,7 @@ build_production:
 			-X main.Timestamp=$(TIMESTAMP) \
 			-extldflags 'static' \
 			-s -w" \
+		-H=windowsgui \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_ROOT)
 	sha256sum -b ./bin/$(BIN_PATH) \

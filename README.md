@@ -28,6 +28,10 @@ The ultimate developer experience CLI tool.
       - [Setting Up](#setting-up-2)
 - [Development Runbook](#development-runbook)
   - [Getting Started](#getting-started)
+  - [Building](#building)
+    - [Build notes for Linux](#build-notes-for-linux)
+    - [Build notes for MacOS](#build-notes-for-macos)
+    - [Build notes for Windows](#build-notes-for-windows)
   - [References](#references)
 - [Licensing](#licensing)
 
@@ -222,6 +226,26 @@ Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https:
 1. Clone this repository using `git clone git@gitlab.com:usvc/utils/dev.git`
 2. Install dependencies using `make deps`
 3. Create a local development configuration file at `./dev.yaml` relative to the project root containing [the sample configuration file](#sample-configuration-file)
+
+## Building
+
+### Build notes for Linux
+
+The Linux assets can be found at `./assets/linux` relative to the project root.
+
+- `TODO`
+
+### Build notes for MacOS
+
+The MacOS assets can be found at `./assets/macos` relative to the project root.
+
+- `TODO`
+
+### Build notes for Windows
+
+The Windows assets can be found at `./assets/windows` relative to the project root.
+
+1. Confirm that the `rsrc` binary is available in your path. You can get this using `make setup_build`
 
 ## References
 
