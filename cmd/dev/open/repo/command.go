@@ -5,27 +5,39 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
+	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/log"
+	"github.com/usvc/dev/pkg/utils"
+	"github.com/usvc/dev/pkg/validator"
+)
+
+const (
+	ExitOK               = 0
+	ExitErrorSystem      = 1
+	ExitErrorUser        = 2
+	ExitErrorApplicaiton = 4
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "repo",
+		Use:     constants.RepositoryCanonicalNoun,
 		Short:   "opens the browser to this repository's url",
-		Aliases: []string{"rp", "r"},
+		Aliases: constants.RepositoryAliases,
 		Run: func(command *cobra.Command, args []string) {
 			cwd, getCwdErr := os.Getwd()
 			if getCwdErr != nil {
 				log.Errorf("unable to retrieve current working directory: %s", getCwdErr)
-				os.Exit(1)
+				os.Exit(ExitErrorSystem)
 			}
 			repo, getRepoErr := git.PlainOpen(cwd)
 			if getRepoErr != nil {
 				log.Errorf("current directory may not be a git repository: %s", getRepoErr)
+				os.Exit(ExitErrorUser)
 			}
 			remotes, getRemotesErr := repo.Remotes()
 			if getRemotesErr != nil {
 				log.Errorf("unable to retrieve remotes from %s: %s", cwd, getRemotesErr)
+				os.Exit(ExitErrorUser)
 			}
 			var remoteURL string
 			for _, remote := range remotes {
@@ -34,7 +46,16 @@ func GetCommand() *cobra.Command {
 					break
 				}
 			}
-			log.Error(remoteURL)
+
+			url, parseURLErr := validator.ParseURL(remoteURL)
+			if parseURLErr != nil {
+				log.Errorf("unable to parse the url '%s': %s", remoteURL, parseURLErr)
+				os.Exit(ExitErrorApplicaiton | ExitErrorUser)
+			}
+
+			log.Tracef("opening url '%s' in the default browser application...", url.String())
+			utils.OpenURIWithDefaultApplication(url.String())
+			os.Exit(ExitOK)
 		},
 	}
 	return &cmd

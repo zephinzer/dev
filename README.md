@@ -3,20 +3,9 @@
 The ultimate developer experience CLI tool.
 
 - [Dev](#dev)
+- [Installation](#installation)
 - [Usage](#usage)
   - [Table of Canonical Tokens](#table-of-canonical-tokens)
-  - [Initialisation](#initialisation)
-    - [Database](#database)
-  - [Retrieval](#retrieval)
-    - [Account Information](#account-information)
-      - [Github Account Information](#github-account-information)
-      - [Gitlab Account Information](#gitlab-account-information)
-      - [Pivotal Tracker Account Information](#pivotal-tracker-account-information)
-    - [Notifications](#notifications)
-      - [Gitlab Notifications](#gitlab-notifications)
-      - [Pivotal Tracker Notifications](#pivotal-tracker-notifications)
-    - [Work](#work)
-      - [Pivotal Tracker Work](#pivotal-tracker-work)
 - [Setting Up](#setting-up)
   - [Configuration](#configuration)
     - [Sample configuration file](#sample-configuration-file)
@@ -40,6 +29,12 @@ The ultimate developer experience CLI tool.
 
 - - -
 
+# Installation
+
+Run `go install gitlab.com/usvc/utils/dev`
+
+- - -
+
 # Usage
 
 The following is an overview of what can be done:
@@ -48,26 +43,27 @@ The following is an overview of what can be done:
 # initialise persistent database
 dev initialise database;
 
+# retrieving account information 
+dev get account github; # from github
+dev get account gitlab; # from gitlab
+dev get account pivotaltracker; # from pivotal tracker
+
 # retrieve consumed configuration
 dev get config;
 
-# retrieve notifications (todos) from gitlab
-dev get notifications gitlab;
+# retrieve notifications (todos)
+dev get notifications github; # from github
+dev get notifications gitlab; # from gitlab
+dev get notifications pivotaltracker; # pivotal tracker
 
-# retrieve notifications from pivotal tracker
-dev get notifications pivotaltracker;
+# retrieve your work 
+dev get work pivotaltracker; # from pivotal tracker
 
-# retrieve your work from pivotal tracker
-dev get work pivotaltracker;
+# open stuff
+dev open repository; # the repository you're currently in
 
-# retrieve information about your accounts from github
-dev get account github;
-
-# retrieve information about your accounts from gitlab
-dev get account gitlab;
-
-# retrieve your accounts from pivotal tracker
-dev get account pivotaltracker;
+# start stuff
+dev start client; # starts the desktop client helper application
 ```
 
 ## Table of Canonical Tokens
@@ -83,57 +79,11 @@ dev get account pivotaltracker;
 | Work | Noun | `work` | `stories`, `tasks`, `tickets`, `w` |
 | Get | Verb | `get` | `retrieve`, `g` |
 | Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
-
-## Initialisation
-
-Example: `dev init -h`
-
-### Database
-
-Example: `dev init db`
-
-## Retrieval
-
-Example: `dev get -h`
-
-### Account Information
-
-Example: `dev get account -h`
-
-#### Github Account Information
-
-Example: `dev get account github`
-
-#### Gitlab Account Information
-
-Example: `dev get account gitlab`
-
-#### Pivotal Tracker Account Information
-
-Example: `dev get account pivotaltracker`
-
-### Notifications
-
-Example: `dev get notifs -h`
-
-#### Gitlab Notifications
-
-Example: `dev get notifs gitlab`
-
-#### Pivotal Tracker Notifications
-
-Example: `dev get notifs pivotaltracker`
-
-### Work
-
-Example: `dev get work -h`
-
-#### Pivotal Tracker Work
-
-Example: `dev get work pivotaltracker`
+| Open | Verb | `open` | `o` |
 
 
 - - -
+
 
 # Setting Up
 
@@ -220,7 +170,9 @@ Retrieve your `accessToken` by generating a new personal access token from [http
 
 Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https://www.pivotaltracker.com/profile).
 
+
 - - -
+
 
 # Development Runbook
 
@@ -269,4 +221,4 @@ This should be done automatically via the CI pipeline.
 
 # Licensing
 
-MIT
+Code is licensed under the MIT license. [Click here to view the full text](./LICENSE).

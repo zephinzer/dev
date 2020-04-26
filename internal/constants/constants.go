@@ -14,6 +14,8 @@ const (
 var (
 	AccountCanonicalNoun        = "account"
 	AccountAliases              = []string{"accounts", "acc", "accs", "a"}
+	ClientCanonicalNoun         = "client"
+	ClientAliases               = []string{"cl", "c"}
 	ConfigurationCanonicalNoun  = "configuration"
 	ConfigurationAliases        = []string{"config", "conf", "cf", "c"}
 	DatabaseCanonicalNoun       = "database"
@@ -26,10 +28,16 @@ var (
 	GithubAliases               = []string{"gh"}
 	InitialiseCanonicalNoun     = "initialise"
 	InitialiseAliases           = []string{"initialize", "init", "i"}
+	OpenCanonicalVerb           = "open"
+	OpenAliases                 = []string{"op", "o"}
 	NotificationsCanonicalNoun  = "notifications"
 	NotificationsAliases        = []string{"notification", "notif", "notifs", "n"}
 	PivotalTrackerCanonicalNoun = "pivotaltracker"
 	PivotalTrackerAliases       = []string{"pivotal", "pt"}
+	RepositoryCanonicalNoun     = "repository"
+	RepositoryAliases           = []string{"repo", "rp", "r"}
+	StartCanonicalVerb          = "start"
+	StartAliases                = []string{"st", "s"}
 	WorkCanonicalNoun           = "work"
 	WorkAliases                 = []string{"stories", "tasks", "tickets", "w"}
 )

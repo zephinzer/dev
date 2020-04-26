@@ -26,7 +26,7 @@ func main() {
 	log.Debug("loading configurations from ./dev.yaml")
 	config.Global, loadConfigurationError = config.NewFromFile("./dev.yaml")
 	if loadConfigurationError != nil {
-		panic(loadConfigurationError)
+		log.Warn("configurations from ./dev.yaml could not be loaded")
 	}
 	cmd := dev.GetCommand()
 	cmd.Version = fmt.Sprintf("%s-%s %s", Version, Commit, Timestamp)

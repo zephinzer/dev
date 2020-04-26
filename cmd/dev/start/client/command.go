@@ -2,20 +2,18 @@ package client
 
 import (
 	"log"
-	"os"
-	"os/exec"
-	"path/filepath"
 	"runtime"
 
 	"github.com/getlantern/systray"
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/constants"
+	"github.com/usvc/dev/pkg/utils"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "client",
-		Aliases: []string{"c"},
+		Use:     constants.ClientCanonicalNoun,
+		Aliases: constants.ClientAliases,
 		Short:   "starts the dev client as a background process to provide notifications",
 		Run: func(command *cobra.Command, _ []string) {
 			log.Println("adding system tray icon...")
@@ -36,18 +34,7 @@ func GetCommand() *cobra.Command {
 						case <-about.ClickedCh:
 							ourURL := "https://gitlab.com/usvc/utils/dev"
 							log.Printf("opening '%s' for the '%s' platform", ourURL, runtime.GOOS)
-							switch runtime.GOOS {
-							case "linux":
-								exec.Command("xdg-open", ourURL).Start()
-							case "macos":
-								exec.Command("open", ourURL).Start()
-							case "windows":
-								exec.Command(
-									filepath.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"),
-									"url.dll,FileProtocolHandler",
-									ourURL,
-								).Start()
-							}
+							utils.OpenURIWithDefaultApplication(ourURL)
 						case <-exit.ClickedCh:
 							log.Println("exit was clicked")
 							systray.Quit()

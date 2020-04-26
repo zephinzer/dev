@@ -3,12 +3,13 @@ package open
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/open/repo"
+	"github.com/usvc/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "open",
-		Aliases: []string{"op", "o"},
+		Use:     constants.OpenCanonicalVerb,
+		Aliases: constants.OpenAliases,
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
 		},
