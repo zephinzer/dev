@@ -31,7 +31,7 @@ The ultimate developer experience CLI tool.
 
 # Installation
 
-Run `go install gitlab.com/usvc/utils/dev`
+Clone this repository and run `go install ./cmd/dev`.
 
 - - -
 
