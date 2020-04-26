@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/usvc/dev/cmd/dev/dev"
 	"github.com/usvc/dev/internal/config"
@@ -22,12 +24,31 @@ func init() {
 }
 
 func main() {
-	var loadConfigurationError error
-	log.Debug("loading configurations from ./dev.yaml")
-	config.Global, loadConfigurationError = config.NewFromFile("./dev.yaml")
-	if loadConfigurationError != nil {
-		log.Warn("configurations from ./dev.yaml could not be loaded")
+	log.Info("loading configuration...")
+	log.Debug("loading configuration from ~/dev.yaml...")
+	homeDir, getHomeDirError := os.UserHomeDir()
+	if getHomeDirError != nil {
+		log.Errorf("unable to retrieve user's home directory: %s", getHomeDirError)
+		os.Exit(1)
 	}
+	globalConfigurationFilePath := path.Join(homeDir, "./dev.yaml")
+	globalConfiguration, loadConfigurationError := config.NewFromFile(globalConfigurationFilePath)
+	if loadConfigurationError != nil {
+		log.Warnf("configuration from %s could not be loaded: %s", globalConfigurationFilePath, loadConfigurationError)
+	} else {
+		config.Global = globalConfiguration
+	}
+
+	log.Debug("loading configuration from ./dev.yaml...")
+	localConfiguration, loadConfigurationError := config.NewFromFile("./dev.yaml")
+	if loadConfigurationError != nil {
+		log.Warnf("configurations from ./dev.yaml could not be loaded: %s", loadConfigurationError)
+	} else if config.Global == nil {
+		config.Global = localConfiguration
+	} else {
+		config.Global.MergeWith(localConfiguration)
+	}
+
 	cmd := dev.GetCommand()
 	cmd.Version = fmt.Sprintf("%s-%s %s", Version, Commit, Timestamp)
 	cmd.Execute()

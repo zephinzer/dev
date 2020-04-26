@@ -13,10 +13,10 @@ import (
 // notifications and events from the Pivotal Tracker platform
 type Config struct {
 	// Projects is the list of projects to monitor
-	Projects Projects `yaml:"projects"`
+	Projects Projects `json:"projects" yaml:"projects"`
 	// AccessToken to be used for all listed projects if their own access token is not defined.
 	// This value can be retrieved from the section named API Token at https://www.pivotaltracker.com/profile
-	AccessToken string `yaml:"accessToken"`
+	AccessToken string `json:"accessToken" yaml:"accessToken"`
 }
 
 // Projects defines a structure to store a list of Pivotal Tracker projects
@@ -25,13 +25,13 @@ type Projects []Project
 // Project defines a Pivotal Tracker project
 type Project struct {
 	// Name is the custom label given to this project as the user would like to define it
-	Name string `yaml:"name"`
+	Name string `json:"name" yaml:"name"`
 	// ProjectID of the project in PivotalTracker that's obtainable by going to a board and getting it from the URL
-	ProjectID string `yaml:"projectID"`
+	ProjectID string `json:"projectID" yaml:"projectID"`
 	// AccessToken for this project, if not specified, defaults to use parent access token.
 	// This value can be retrieved from the section named API Token at the URL:L
 	//   https://www.pivotaltracker.com/profile
-	AccessToken string `yaml:"accessToken"`
+	AccessToken string `json:"accessToken" yaml:"accessToken"`
 }
 
 // APIv5MeResponse defines the response structure for a request made to

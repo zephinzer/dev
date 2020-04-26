@@ -10,14 +10,14 @@ import (
 )
 
 type Config struct {
-	Accounts Accounts `yaml:"accounts"`
+	Accounts Accounts `json:"accounts" yaml:"accounts"`
 }
 
 type Accounts []Account
 
 type Account struct {
 	// Name is the user-defined label for this github account
-	Name string `yaml:"name"`
+	Name string `json:"name" yaml:"name"`
 	// AccessToken is the token that can be generated for use as a Personal Access Token,
 	// this can be created at https://github.com/settings/tokens
 	//
@@ -35,7 +35,7 @@ type Account struct {
 	// - read:discussion
 	// - read:enterprise
 	// - read:gpg_key
-	AccessToken string `yaml:"accessToken"`
+	AccessToken string `json:"accessToken" yaml:"accessToken"`
 }
 
 // APIv3EmailsResponse defines the response structure from the
