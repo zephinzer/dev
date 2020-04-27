@@ -40,8 +40,8 @@ Clone this repository and run `go install ./cmd/dev`.
 The following is an overview of what can be done:
 
 ```sh
-# initialise persistent database
-dev initialise database;
+# check stuff
+dev check software; # checks if required software is installed
 
 # retrieving account information 
 dev get account github; # from github
@@ -58,6 +58,9 @@ dev get notifications pivotaltracker; # pivotal tracker
 
 # retrieve your work 
 dev get work pivotaltracker; # from pivotal tracker
+
+# initialise persistent database
+dev initialise database;
 
 # open stuff
 dev open repository; # the repository you're currently in
@@ -77,6 +80,7 @@ dev start client; # starts the desktop client helper application
 | Notifications | Noun | `notifications` | `notification`, `notif`, `notifs`, `n` |
 | PivotalTracker | Noun | `pivotaltracker` | `pivotal`, `pt` |
 | Work | Noun | `work` | `stories`, `tasks`, `tickets`, `w` |
+| Check | Verb | `check` | `c`, `verify` |
 | Get | Verb | `get` | `retrieve`, `g` |
 | Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
 | Open | Verb | `open` | `o` |
@@ -96,41 +100,57 @@ Configuration is done via YAML.
 ```yaml
 # this defines networks that should be reachable from your machine
 networks:
-  - name: internal vpn
-    check:
-      schema: http
-      hostname: gitlab.internal.domain.com
-      path: /
+- name: internal vpn
+  check:
+    schema: http
+    hostname: gitlab.internal.domain.com
+    path: /
 # this defines software that should be on your machine
 software:
-  - name: golang
-    check:
-      command:
-        - go
-        - version
-      exitCode: 0
-      stdout: go version go[/d\.]
+- name: golang
+  check:
+    command: ["go", "version"]
+    exitCode: 0
+    stdout: ^go version go\d\.\d+ [a-zA-Z0-9]+\/[a-zA-Z0-9]+$
+- name: node
+  check:
+    command: ["node", "-v"]
+    exitCode: 0
+    stdout: ^v\d+\.\d+\.\d+$
+- name: terraform
+  check:
+    command: ["terraform", "version"]
+    exitCode: 0
+    stdout: ^Terraform v\d+\.\d+\.\d+$
+- name: terragrunt
+  check:
+    command: ["terragrunt", "-v"]
+    exitCode: 0
+    stdout: ^terragrunt version v\d+\.\d+\.\d+$
 # this defines platforms that the developer should have access to
 platforms:
   pivotaltracker:
     accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     projects:
-      - name: work
-        projectID: "XXXXXXX"
-      - name: personal
-        projectID: "XXXXXXX"
-        accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    - name: work
+      projectID: "XXXXXXX"
+    - name: personal
+      projectID: "XXXXXXX"
+      accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # ... add as you wish ...
   github:
     accounts:
-      - name: personal
-        accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    - name: personal
+      accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # ... add as you wish ...
   gitlab:
     accounts:
-      - name: personal
-        accessToken: XXXXXXXXXXXXXXXXXXXX
-      - name: work-on-prem
-        hostname: gitlab.yourdomain.com
-        accessToken: XXXXXXXXXXXXXXXXXXXX
+    - name: personal
+      accessToken: XXXXXXXXXXXXXXXXXXXX
+    - name: work-on-prem
+      hostname: gitlab.yourdomain.com
+      accessToken: XXXXXXXXXXXXXXXXXXXX
+    # ... add as you wish ...
 ```
 
 ## Platforms

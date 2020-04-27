@@ -2,6 +2,7 @@ package dev
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/usvc/dev/cmd/dev/check"
 	"github.com/usvc/dev/cmd/dev/get"
 	"github.com/usvc/dev/cmd/dev/initialise"
 	"github.com/usvc/dev/cmd/dev/open"
@@ -16,6 +17,7 @@ func GetCommand() *cobra.Command {
 			command.Help()
 		},
 	}
+	cmd.AddCommand(check.GetCommand())
 	cmd.AddCommand(get.GetCommand())
 	cmd.AddCommand(initialise.GetCommand())
 	cmd.AddCommand(start.GetCommand())

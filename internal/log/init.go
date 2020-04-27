@@ -1,6 +1,11 @@
 package log
 
-import "github.com/usvc/go-logger"
+import (
+	"fmt"
+	"os"
+
+	"github.com/usvc/go-logger"
+)
 
 var (
 	instance logger.Logger
@@ -14,10 +19,15 @@ var (
 	Warnf    func(string, ...interface{})
 	Error    func(...interface{})
 	Errorf   func(string, ...interface{})
+	Print    func(...interface{}) (int, error)
+	Printf   func(string, ...interface{}) (int, error)
 )
 
 func Init() {
-	instance = logger.New()
+	instance = logger.New(logger.Options{
+		Output:       logger.OutputStderr,
+		OutputStream: os.Stderr,
+	})
 	Trace = instance.Trace
 	Tracef = instance.Tracef
 	Debug = instance.Debug
@@ -28,4 +38,6 @@ func Init() {
 	Warnf = instance.Warnf
 	Error = instance.Error
 	Errorf = instance.Errorf
+	Print = fmt.Print
+	Printf = fmt.Printf
 }
