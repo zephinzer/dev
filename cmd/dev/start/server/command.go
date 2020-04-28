@@ -34,6 +34,7 @@ func GetCommand() *cobra.Command {
 			})
 			router.HandleFunc("/softwares", func(res http.ResponseWriter, req *http.Request) {
 				var softwares []byte
+				// TODO: write error handling if config.Global.Softwares ain't available
 				switch req.Header.Get("Accept") {
 				case "application/yaml":
 					softwares, _ = yaml.Marshal(config.Global.Softwares)
@@ -46,6 +47,7 @@ func GetCommand() *cobra.Command {
 			})
 			router.HandleFunc("/networks", func(res http.ResponseWriter, req *http.Request) {
 				var networks []byte
+				// TODO: write error handling if config.Global.Networks ain't available
 				switch req.Header.Get("Accept") {
 				case "application/yaml":
 					networks, _ = yaml.Marshal(config.Global.Networks)
