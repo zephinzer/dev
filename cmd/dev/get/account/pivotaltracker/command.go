@@ -15,19 +15,15 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.PivotalTrackerAliases,
 		Short:   "Retrieves account information from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile("./dev.yaml")
-			if err != nil {
-				panic(err)
-			}
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
-			defaultAccessToken := c.Platforms.PivotalTracker.AccessToken
-			if len(c.Platforms.PivotalTracker.Projects) == 0 && len(defaultAccessToken) > 0 {
+			defaultAccessToken := config.Global.Platforms.PivotalTracker.AccessToken
+			if len(config.Global.Platforms.PivotalTracker.Projects) == 0 && len(defaultAccessToken) > 0 {
 				accountsEncountered[defaultAccessToken] = true
 				printAccountInfo(defaultAccessToken)
 				totalAccountsCount++
 			}
-			for _, project := range c.Platforms.PivotalTracker.Projects {
+			for _, project := range config.Global.Platforms.PivotalTracker.Projects {
 				projectAccessToken := project.AccessToken
 				if len(projectAccessToken) == 0 && len(defaultAccessToken) > 0 {
 					projectAccessToken = defaultAccessToken
@@ -39,7 +35,7 @@ func GetCommand() *cobra.Command {
 					totalAccountsCount++
 				}
 			}
-			log.Printf("total listed projects: %v", len(c.Platforms.PivotalTracker.Projects))
+			log.Printf("total listed projects: %v", len(config.Global.Platforms.PivotalTracker.Projects))
 			log.Printf("total accounts: %v", totalAccountsCount)
 		},
 	}

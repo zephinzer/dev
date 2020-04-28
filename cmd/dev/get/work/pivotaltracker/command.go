@@ -1,11 +1,10 @@
 package pivotaltracker
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
+	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 )
 
@@ -15,23 +14,16 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.PivotalTrackerAliases,
 		Short:   "Retrieves your work from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile(constants.DefaultPathToConfiguration)
-			if err != nil {
-				panic(err)
-			}
-			if len(c.Platforms.PivotalTracker.AccessToken) == 0 {
-				panic("nuuuuuuuuuu")
-			}
 			totalWorkCount := 0
-			for _, project := range c.Platforms.PivotalTracker.Projects {
+			for _, project := range config.Global.Platforms.PivotalTracker.Projects {
 				stories, err := pivotaltracker.GetStories(
-					c.Platforms.PivotalTracker.AccessToken,
+					config.Global.Platforms.PivotalTracker.AccessToken,
 					project.ProjectID,
 				)
 				if err != nil {
 					panic(err)
 				}
-				log.Printf("stories from pivotal tracker project %s\n%s", project.Name, stories.String())
+				log.Printf("stories from pivotal tracker project [%s] (count: %v)\n%s", project.Name, len(*stories), stories.String())
 				totalWorkCount += len(*stories)
 			}
 			log.Printf("you have a total of %v active item(s)", totalWorkCount)

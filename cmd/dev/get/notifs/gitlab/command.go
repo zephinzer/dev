@@ -15,12 +15,8 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.GitlabAliases,
 		Short:   "Retrieves notifications from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile(constants.DefaultPathToConfiguration)
-			if err != nil {
-				panic(err)
-			}
 			totalTodoCount := 0
-			for _, account := range c.Platforms.Gitlab.Accounts {
+			for _, account := range config.Global.Platforms.Gitlab.Accounts {
 				hostname := "gitlab.com"
 				if len(account.Hostname) > 0 {
 					hostname = account.Hostname

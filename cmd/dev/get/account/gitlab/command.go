@@ -15,13 +15,9 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.GitlabAliases,
 		Short:   "Retrieves account information from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile("./dev.yaml")
-			if err != nil {
-				panic(err)
-			}
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
-			for _, account := range c.Platforms.Gitlab.Accounts {
+			for _, account := range config.Global.Platforms.Gitlab.Accounts {
 				accountAccessToken := account.AccessToken
 				accountHostname := account.Hostname
 				if len(account.Hostname) == 0 {
@@ -39,7 +35,7 @@ func GetCommand() *cobra.Command {
 					totalAccountsCount++
 				}
 			}
-			log.Printf("total listed projects    : %v", len(c.Platforms.Gitlab.Accounts))
+			log.Printf("total listed projects    : %v", len(config.Global.Platforms.Gitlab.Accounts))
 			log.Printf("total accessible accounts: %v", totalAccountsCount)
 		},
 	}

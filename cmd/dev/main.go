@@ -34,7 +34,7 @@ func main() {
 	globalConfigurationFilePath := path.Join(homeDir, "./dev.yaml")
 	globalConfiguration, loadConfigurationError := config.NewFromFile(globalConfigurationFilePath)
 	if loadConfigurationError != nil {
-		log.Warnf("configuration from %s could not be loaded: %s", globalConfigurationFilePath, loadConfigurationError)
+		log.Debugf("configuration from %s could not be loaded: %s", globalConfigurationFilePath, loadConfigurationError)
 	} else {
 		config.Global = globalConfiguration
 	}
@@ -42,7 +42,7 @@ func main() {
 	log.Debug("loading configuration from ./dev.yaml...")
 	localConfiguration, loadConfigurationError := config.NewFromFile("./dev.yaml")
 	if loadConfigurationError != nil {
-		log.Warnf("configurations from ./dev.yaml could not be loaded: %s", loadConfigurationError)
+		log.Debugf("configurations from ./dev.yaml could not be loaded: %s", loadConfigurationError)
 	} else if config.Global == nil {
 		config.Global = localConfiguration
 	} else {

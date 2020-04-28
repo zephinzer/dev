@@ -15,14 +15,7 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.PivotalTrackerAliases,
 		Short:   "Retrieves notifications from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile(constants.DefaultPathToConfiguration)
-			if err != nil {
-				panic(err)
-			}
-			if len(c.Platforms.PivotalTracker.AccessToken) == 0 {
-				panic("nuuuuuuuuuu")
-			}
-			notifs, err := pivotaltracker.GetNotifs(c.Platforms.PivotalTracker.AccessToken)
+			notifs, err := pivotaltracker.GetNotifs(config.Global.Platforms.PivotalTracker.AccessToken)
 			if err != nil {
 				panic(err)
 			}

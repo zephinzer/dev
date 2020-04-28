@@ -17,13 +17,9 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.DatabaseAliases,
 		Short:   "Initialises a persistent on-disk sqlite3 database",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile("./dev.yaml")
-			if err != nil {
-				panic(err)
-			}
 			pathToDatabaseFile := constants.DefaultPathToSQLite3DB
-			if len(c.Dev.Client.Database.Path) > 0 {
-				pathToDatabaseFile = c.Dev.Client.Database.Path
+			if len(config.Global.Dev.Client.Database.Path) > 0 {
+				pathToDatabaseFile = config.Global.Dev.Client.Database.Path
 			}
 			if strings.Index(pathToDatabaseFile, "~") == 0 {
 				currentUser, err := user.Current()

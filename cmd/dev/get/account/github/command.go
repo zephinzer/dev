@@ -15,13 +15,9 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.GithubAliases,
 		Short:   "Retrieves account information from Github",
 		Run: func(command *cobra.Command, args []string) {
-			c, err := config.NewFromFile("./dev.yaml")
-			if err != nil {
-				panic(err)
-			}
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
-			for _, account := range c.Platforms.Github.Accounts {
+			for _, account := range config.Global.Platforms.Github.Accounts {
 				accountAccessToken := account.AccessToken
 				if len(accountAccessToken) == 0 {
 					log.Println("skipping '%s': access token was not specified", account.Name)
@@ -34,7 +30,7 @@ func GetCommand() *cobra.Command {
 					totalAccountsCount++
 				}
 			}
-			log.Printf("total listed projects    : %v", len(c.Platforms.Github.Accounts))
+			log.Printf("total listed projects    : %v", len(config.Global.Platforms.Github.Accounts))
 			log.Printf("total accessible accounts: %v", totalAccountsCount)
 		},
 	}
