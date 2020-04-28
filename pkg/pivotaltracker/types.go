@@ -145,15 +145,15 @@ type APIStory struct {
 // String converts the story object into a CLI-friendly block of text
 func (s APIStory) String(format ...string) string {
 	tag := s.StoryType
-	switch s.StoryType {
+	tagIcon := "📌"
+	switch tag {
 	case "feature":
-		tag = "🌟"
+		tagIcon = "🌟"
 	case "chore":
-		tag = "⚙️"
+		tagIcon = "⚙️"
 	case "bug":
-		tag = "🐞"
+		tagIcon = "🐞"
 	}
-	tag = fmt.Sprintf("%s (%s)", tag, s.StoryType)
 	message := s.Name
 	link := s.URL
 	state := s.CurrentState
@@ -169,7 +169,7 @@ func (s APIStory) String(format ...string) string {
 	case "markdown":
 		return fmt.Sprintf("[%s (%s was %s %s)](%s)", message, tag, state, datetime, link)
 	default:
-		return fmt.Sprintf("%s %s\n- link: %s\n- was %s %s", tag, message, link, state, datetime)
+		return fmt.Sprintf("%s %s (link: %s)\n- %s is in %s state and last updated %s", tagIcon, message, link, tag, state, datetime)
 	}
 }
 
