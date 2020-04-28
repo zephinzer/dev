@@ -24,9 +24,10 @@ func GetCommand() *cobra.Command {
 					softwareCheckLog.WriteString(fmt.Sprintf("%s", verifyError))
 				}
 				if softwareCheckLog.Len() == 0 {
-					log.Printf("✅ \033[1m%s\033[0m", software.Name)
+					log.Printf(constants.CheckSuccessFormat, software.Name)
 				} else {
-					log.Printf("❌ \033[1m%s\033[0m: %s", software.Name, softwareCheckLog.String())
+					log.Printf(constants.CheckFailureFormat, software.Name)
+					log.Printf(softwareCheckLog.String())
 				}
 				log.Print("\n")
 				softwareCheckLog.Reset()

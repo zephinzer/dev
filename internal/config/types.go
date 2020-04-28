@@ -3,12 +3,14 @@ package config
 import (
 	"github.com/usvc/dev/pkg/github"
 	"github.com/usvc/dev/pkg/gitlab"
+	"github.com/usvc/dev/pkg/network"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 	"github.com/usvc/dev/pkg/software"
 )
 
 type File struct {
 	Dev       Dev                 `json:"dev" yaml:"dev"`
+	Networks  []network.Network   `json:"network" yaml:"network"`
 	Platforms Platforms           `json:"platforms" yaml:"platforms"`
 	Softwares []software.Software `json:"software" yaml:"software"`
 }
@@ -62,6 +64,17 @@ func (f *File) MergeWith(other *File) {
 		}
 		f.Softwares = append(f.Softwares, software)
 		seenMap["software"+software.Check.Command[0]] = true
+	}
+
+	for _, network := range f.Networks {
+		seenMap["network"+network.Check.URL] = true
+	}
+	for _, network := range other.Networks {
+		if seenMap["network"+network.Check.URL] == true {
+			continue
+		}
+		f.Networks = append(f.Networks, network)
+		seenMap["network"+network.Check.URL] = true
 	}
 }
 

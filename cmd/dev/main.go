@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/usvc/dev/cmd/dev/dev"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/log"
 )
@@ -21,9 +20,6 @@ var (
 
 func init() {
 	log.Init()
-}
-
-func main() {
 	log.Info("loading configuration...")
 	log.Debug("loading configuration from ~/dev.yaml...")
 	homeDir, getHomeDirError := os.UserHomeDir()
@@ -48,8 +44,10 @@ func main() {
 	} else {
 		config.Global.MergeWith(localConfiguration)
 	}
+}
 
-	cmd := dev.GetCommand()
+func main() {
+	cmd := GetCommand()
 	cmd.Version = fmt.Sprintf("%s-%s %s", Version, Commit, Timestamp)
 	cmd.Execute()
 }

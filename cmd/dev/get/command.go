@@ -6,12 +6,13 @@ import (
 	"github.com/usvc/dev/cmd/dev/get/configuration"
 	"github.com/usvc/dev/cmd/dev/get/notifs"
 	"github.com/usvc/dev/cmd/dev/get/work"
+	"github.com/usvc/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "get",
-		Aliases: []string{"g"},
+		Use:     constants.GetCanonicalVerb,
+		Aliases: constants.GetAliases,
 		Short:   "Retrieves objects",
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()

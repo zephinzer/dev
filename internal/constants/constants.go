@@ -9,6 +9,9 @@ const (
 	GithubAPITimeFormat         = "2006-01-02T15:04:05.99Z"
 	GitlabAPITimeFormat         = "2006-01-02T15:04:05.999Z"
 	PivotalTrackerAPITimeFormat = "2006-01-02T15:04:05Z"
+
+	CheckSuccessFormat = "\033[32m✅\033[0m \033[1m%s\033[0m "
+	CheckFailureFormat = "\033[31m❌ \033[1m%s\033[0m "
 )
 
 var (
@@ -22,7 +25,7 @@ var (
 	ConfigurationAliases        = []string{"config", "conf", "cf", "c"}
 	DatabaseCanonicalNoun       = "database"
 	DatabaseAliases             = []string{"db"}
-	GetCanonicalNoun            = "get"
+	GetCanonicalVerb            = "get"
 	GetAliases                  = []string{"retrieve", "g"}
 	GitlabCanonicalNoun         = "gitlab"
 	GitlabAliases               = []string{"gl"}
@@ -30,10 +33,12 @@ var (
 	GithubAliases               = []string{"gh"}
 	InitialiseCanonicalNoun     = "initialise"
 	InitialiseAliases           = []string{"initialize", "init", "i"}
-	OpenCanonicalVerb           = "open"
-	OpenAliases                 = []string{"op", "o"}
+	NetworkCanonicalNoun        = "network"
+	NetworkAliases              = []string{"networks", "net", "nets", "nw"}
 	NotificationsCanonicalNoun  = "notifications"
 	NotificationsAliases        = []string{"notification", "notif", "notifs", "n"}
+	OpenCanonicalVerb           = "open"
+	OpenAliases                 = []string{"op", "o"}
 	PivotalTrackerCanonicalNoun = "pivotaltracker"
 	PivotalTrackerAliases       = []string{"pivotal", "pt"}
 	RepositoryCanonicalNoun     = "repository"

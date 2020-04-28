@@ -1,9 +1,24 @@
 # Dev
 
-The ultimate developer experience CLI tool.
+Pimp your developer experience.
+
+- ✅ Open website of repository you're in - `dev open repo`
+- ✅ Check if you have required software - `dev check software`
+- ✅ Check if you have required network connectivity - `dev check networks`
+- ✅ Get work assigned to you on - `dev get work`
+- ✅ Get notifications from developer platforms - `dev get notifications`
+- ✅ Intuitive aliases that become simpler as you use them (example: from `dev get notifications` to `dev get notifs` to `dev g n`)
+
+This tool exists to improve the day-to-day work experience of software developers. Use this to:
+
+1. Improve onboarding process through defining required software in code
+2. Improve day-to-day work experience through defining required network connections in code
+3. Improve productivity through moving checking/notification activities to the command line
 
 - [Dev](#dev)
 - [Installation](#installation)
+  - [Via Git Repository](#via-git-repository)
+  - [Other Ways](#other-ways)
 - [Usage](#usage)
   - [Table of Canonical Tokens](#table-of-canonical-tokens)
 - [Setting Up](#setting-up)
@@ -27,13 +42,27 @@ The ultimate developer experience CLI tool.
   - [References](#references)
 - [Licensing](#licensing)
 
+
+
 - - -
+
+
 
 # Installation
 
+## Via Git Repository
+
 Clone this repository and run `go install ./cmd/dev`.
 
+## Other Ways
+
+Coming soon!
+
+
+
 - - -
+
+
 
 # Usage
 
@@ -75,36 +104,44 @@ dev start client; # starts the desktop client helper application
 | --- | --- | --- |
 | Account | Noun | `account` | `accounts`, `acc`, `accs`, `a` |
 | Configuration | Noun | `configuration` | `config`, `conf`, `cf`, `c` |
+| Database | Noun | `database` | `db` |
 | Gitlab | Noun | `gitlab` | `gl` |
 | Github | Noun | `github` | `gh` |
+| Network | Noun | `network` | `networks`, `net`, `nets`, `nw` |
 | Notifications | Noun | `notifications` | `notification`, `notif`, `notifs`, `n` |
+| Repository | Noun | `repository` | `repo`, `rp`, `r` |
 | PivotalTracker | Noun | `pivotaltracker` | `pivotal`, `pt` |
+| Software | Noun | `software` | `sw`, `s`, `apps` |
 | Work | Noun | `work` | `stories`, `tasks`, `tickets`, `w` |
 | Check | Verb | `check` | `c`, `verify` |
 | Get | Verb | `get` | `retrieve`, `g` |
 | Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
 | Open | Verb | `open` | `o` |
+| Start | Verb | `start` | `st`, `s` |
+
 
 
 - - -
+
 
 
 # Setting Up
 
 ## Configuration
 
-Configuration is done via YAML.
+Configuration is done via YAML. By default, `dev` looks for a file at `${HOME}/dev.yaml` and uses that as the base. Next, `dev` will look for a file at `$(pwd)/dev.yaml` and if that is found, merges (add-only) it with the base. If a base configuration is not found, the local `$(pwd)/dev.yaml` will be used. If both are not found and is required by the command you are trying to invoke, an error will be raised.
 
 ### Sample configuration file
 
 ```yaml
 # this defines networks that should be reachable from your machine
 networks:
-- name: internal vpn
+- name: internet
   check:
-    schema: http
-    hostname: gitlab.internal.domain.com
-    path: /
+    url: https://google.com
+- name: internal-vpn
+  check:
+    url: https://gitlab.internal.com
 # this defines software that should be on your machine
 software:
 - name: golang
