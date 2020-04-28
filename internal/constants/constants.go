@@ -43,6 +43,8 @@ var (
 	PivotalTrackerAliases       = []string{"pivotal", "pt"}
 	RepositoryCanonicalNoun     = "repository"
 	RepositoryAliases           = []string{"repo", "rp", "r"}
+	ServerCanonicalNoun         = "server"
+	ServerAliases               = []string{"syncer"}
 	SoftwareCanonicalNoun       = "software"
 	SoftwareAliases             = []string{"sw", "apps", "s"}
 	StartCanonicalVerb          = "start"

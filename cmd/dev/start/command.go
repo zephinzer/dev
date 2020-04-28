@@ -3,6 +3,7 @@ package start
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/start/client"
+	"github.com/usvc/dev/cmd/dev/start/server"
 	"github.com/usvc/dev/internal/constants"
 )
 
@@ -15,6 +16,7 @@ func GetCommand() *cobra.Command {
 			command.Help()
 		},
 	}
+	cmd.AddCommand(server.GetCommand())
 	cmd.AddCommand(client.GetCommand())
 	return &cmd
 }
