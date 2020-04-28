@@ -6,7 +6,14 @@ import (
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/pkg/pivotaltracker"
+	cf "github.com/usvc/go-config"
 )
+
+var conf = cf.Map{
+	"format": &cf.String{
+		Shorthand: "f",
+	},
+}
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
@@ -23,11 +30,13 @@ func GetCommand() *cobra.Command {
 				if err != nil {
 					panic(err)
 				}
-				log.Printf("stories from pivotal tracker project [%s] (count: %v)\n%s", project.Name, len(*stories), stories.String())
+				log.Printf("\n# stories from pivotal tracker project [%s] (count: %v)\n\n", project.Name, len(*stories))
+				log.Printf("%s", stories.String(conf.GetString("format")))
 				totalWorkCount += len(*stories)
 			}
-			log.Printf("you have a total of %v active item(s)", totalWorkCount)
+			log.Printf("> you have a total of %v item(s)", totalWorkCount)
 		},
 	}
+	conf.ApplyToFlagSet(cmd.Flags())
 	return &cmd
 }

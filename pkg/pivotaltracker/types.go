@@ -53,17 +53,37 @@ type APIv5MeResponse struct {
 	Username                   string       `json:"username"`
 }
 
-func (m APIv5MeResponse) String() string {
+func (m APIv5MeResponse) String(format ...string) string {
 	var me strings.Builder
-	me.WriteString("pivotal tracker account information\n")
-	me.WriteString(fmt.Sprintf("account id : %v\n", m.ID))
-	me.WriteString(fmt.Sprintf("username   : %s (%s)\n", m.Username, m.Initials))
-	me.WriteString(fmt.Sprintf("real name  : %s\n", m.Name))
-	me.WriteString(fmt.Sprintf("projects   : %v\n", len(m.Projects)))
-	for _, project := range m.Projects {
-		me.WriteString(fmt.Sprintf("  - %s in [%s (id: %v)](https://www.pivotaltracker.com/n/projects/%v)\n", project.Role, project.ProjectName, project.ProjectID, project.ProjectID))
+	// provide a default in case there is none
+	format = append(format, "")
+	switch format[0] {
+	case "md":
+		fallthrough
+	case "markdown":
+		me.WriteString("## pivotal tracker account information\n\n")
+		me.WriteString("| field | value |\n")
+		me.WriteString("| --- | --- |\n")
+		me.WriteString(fmt.Sprintf("| account id | %v |\n", m.ID))
+		me.WriteString(fmt.Sprintf("| username   | %s (%s) |\n", m.Username, m.Initials))
+		me.WriteString(fmt.Sprintf("| real name  | %s |\n", m.Name))
+		me.WriteString(fmt.Sprintf("| projects   | %v |\n\n", len(m.Projects)))
+		me.WriteString("## pivotal tracker projects\n\n")
+		for index, project := range m.Projects {
+			me.WriteString(fmt.Sprintf("%v. %s in [%s (id: %v)](https://www.pivotaltracker.com/n/projects/%v)\n", index+1, project.Role, project.ProjectName, project.ProjectID, project.ProjectID))
+		}
+		return me.String()
+	default:
+		me.WriteString("pivotal tracker account information\n")
+		me.WriteString(fmt.Sprintf("account id : %v\n", m.ID))
+		me.WriteString(fmt.Sprintf("username   : %s (%s)\n", m.Username, m.Initials))
+		me.WriteString(fmt.Sprintf("real name  : %s\n", m.Name))
+		me.WriteString(fmt.Sprintf("projects   : %v\n", len(m.Projects)))
+		for _, project := range m.Projects {
+			me.WriteString(fmt.Sprintf("  - %s in %s (id: %v) - https://www.pivotaltracker.com/n/projects/%v\n", project.Role, project.ProjectName, project.ProjectID, project.ProjectID))
+		}
+		return me.String()
 	}
-	return me.String()
 }
 
 // APIv5NotificationsResponse defines the response structure for a request made to
@@ -85,11 +105,20 @@ func (n APIv5NotificationsResponse) String() string {
 type APIv5StoriesResponse []APIStory
 
 // String converts the notifications object into a CLI-friendly block of text
-func (s APIv5StoriesResponse) String() string {
+func (s APIv5StoriesResponse) String(format ...string) string {
 	var output strings.Builder
 	for i := 0; i < len(s); i++ {
-		output.WriteString(s[i].String())
-		output.Write([]byte{'\n', '\n'})
+		format = append(format, "")
+		switch format[0] {
+		case "md":
+			fallthrough
+		case "markdown":
+			output.WriteString(fmt.Sprintf("%v. %s", i+1, s[i].String(format...)))
+			output.Write([]byte{'\n'})
+		default:
+			output.WriteString(s[i].String(format...))
+			output.Write([]byte{'\n', '\n'})
+		}
 	}
 	return output.String()
 }
@@ -114,8 +143,17 @@ type APIStory struct {
 }
 
 // String converts the story object into a CLI-friendly block of text
-func (s APIStory) String() string {
+func (s APIStory) String(format ...string) string {
 	tag := s.StoryType
+	switch s.StoryType {
+	case "feature":
+		tag = "🌟"
+	case "chore":
+		tag = "⚙️"
+	case "bug":
+		tag = "🐞"
+	}
+	tag = fmt.Sprintf("%s (%s)", tag, s.StoryType)
 	message := s.Name
 	link := s.URL
 	state := s.CurrentState
@@ -124,7 +162,15 @@ func (s APIStory) String() string {
 	if err == nil {
 		datetime = humanize.Time(timestamp)
 	}
-	return fmt.Sprintf("[%s] %s : %s\n- link: %s\n- when: %s", tag, state, message, link, datetime)
+	format = append(format, "")
+	switch format[0] {
+	case "md":
+		fallthrough
+	case "markdown":
+		return fmt.Sprintf("[%s (%s was %s %s)](%s)", message, tag, state, datetime, link)
+	default:
+		return fmt.Sprintf("%s %s\n- link: %s\n- was %s %s", tag, message, link, state, datetime)
+	}
 }
 
 type APILabel struct {

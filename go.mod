@@ -10,6 +10,7 @@ require (
 	github.com/sanity-io/litter v1.2.0
 	github.com/spf13/cobra v0.0.7
 	github.com/stretchr/testify v1.5.1
+	github.com/usvc/go-config v0.2.2
 	github.com/usvc/go-logger v0.6.2
 	gopkg.in/yaml.v2 v2.2.4
 )
