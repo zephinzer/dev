@@ -85,6 +85,14 @@ type Platforms struct {
 	Gitlab         gitlab.Config         `json:"gitlab" yaml:"gitlab"`
 }
 
+func (p Platforms) GetSanitized() Platforms {
+	return Platforms{
+		PivotalTracker: p.PivotalTracker.GetSanitized(),
+		Github:         p.Github.GetSanitized(),
+		Gitlab:         p.Gitlab.GetSanitized(),
+	}
+}
+
 // Dev specifies the configurations available for the CLI tool itself
 type Dev struct {
 	Client   DevClient   `json:"client" yaml:"client"`

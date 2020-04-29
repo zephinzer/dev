@@ -183,10 +183,16 @@ platforms:
   gitlab:
     accounts:
     - name: personal
+      description: gitlab cloud
       accessToken: XXXXXXXXXXXXXXXXXXXX
     - name: work-on-prem
       hostname: gitlab.yourdomain.com
+      description: office gitlab
       accessToken: XXXXXXXXXXXXXXXXXXXX
+      # public exposes this account to the server when it is run,
+      # accessToken is ALWAYS redacted but you can share the hostname,
+      # when not specified, defaults to false
+      public: true
     # ... add as you wish ...
 ```
 

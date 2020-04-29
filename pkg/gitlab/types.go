@@ -13,11 +13,29 @@ type Config struct {
 	Accounts Accounts `json:"accounts" yaml:"accounts"`
 }
 
+func (c Config) GetSanitized() Config {
+	return Config{
+		Accounts: c.Accounts.GetSanitized(),
+	}
+}
+
 type Accounts []Account
+
+func (a Accounts) GetSanitized() []Account {
+	accounts := []Account{}
+	for _, account := range a {
+		if account.Public {
+			accounts = append(accounts, account.GetSanitized())
+		}
+	}
+	return accounts
+}
 
 type Account struct {
 	// Name is the user-defined label for this account
 	Name string `json:"name" yaml:"name"`
+	// Description is a user-defined description of what this account is for
+	Description string `json:"description" yaml:"description"`
 	// Hostname is the hostname of the Gitlab installation. If this is not provided
 	// this should default to "gitlab.com"
 	Hostname string `json:"hostname" yaml:"hostname"`
@@ -30,6 +48,21 @@ type Account struct {
 	// - read_repository
 	// - read_registry
 	AccessToken string `json:"accessToken" yaml:"accessToken"`
+	// Public indicates whether this account should be public, if so, the /platforms
+	// endpoint on the dev server will expose this account; this is done to accomodate
+	// using both personal and work accounts, note that even if this is set to true,
+	// the AccessToken should not be exposed
+	Public bool `json:"public" yaml:"public"`
+}
+
+func (a Account) GetSanitized() Account {
+	return Account{
+		Name:        a.Name,
+		Description: a.Description,
+		AccessToken: "[REDACTED]",
+		Hostname:    a.Hostname,
+		Public:      a.Public,
+	}
 }
 
 // APIv4TodoResponse defines the response structure for a call to the Gitlab

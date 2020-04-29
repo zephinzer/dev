@@ -13,11 +13,29 @@ type Config struct {
 	Accounts Accounts `json:"accounts" yaml:"accounts"`
 }
 
+func (c Config) GetSanitized() Config {
+	return Config{
+		Accounts: c.Accounts.GetSanitized(),
+	}
+}
+
 type Accounts []Account
+
+func (a Accounts) GetSanitized() Accounts {
+	accounts := []Account{}
+	for _, account := range a {
+		if account.Public {
+			accounts = append(accounts, account.GetSanitized())
+		}
+	}
+	return accounts
+}
 
 type Account struct {
 	// Name is the user-defined label for this github account
 	Name string `json:"name" yaml:"name"`
+	// Description is a user-defined description of what this account is for
+	Description string `json:"description" yaml:"description"`
 	// AccessToken is the token that can be generated for use as a Personal Access Token,
 	// this can be created at https://github.com/settings/tokens
 	//
@@ -36,6 +54,19 @@ type Account struct {
 	// - read:enterprise
 	// - read:gpg_key
 	AccessToken string `json:"accessToken" yaml:"accessToken"`
+	// Public indicates whether this account should be public, if so, the /platforms
+	// endpoint on the dev server will expose this account; this is done to accomodate
+	// using both personal and work accounts
+	Public bool `json:"public" yaml:"public"`
+}
+
+func (a Account) GetSanitized() Account {
+	return Account{
+		Name:        a.Name,
+		Description: a.Description,
+		AccessToken: "[REDACTED]",
+		Public:      a.Public,
+	}
 }
 
 // APIv3EmailsResponse defines the response structure from the

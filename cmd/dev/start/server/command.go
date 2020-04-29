@@ -29,9 +29,13 @@ func GetCommand() *cobra.Command {
 		Short:   "starts the dev server",
 		Run: func(command *cobra.Command, _ []string) {
 			router := mux.NewRouter()
+
+			// base path for healthchecks
 			router.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
 				res.Write([]byte("hello world"))
 			})
+
+			// allow for syncing of required softwares
 			router.HandleFunc("/softwares", func(res http.ResponseWriter, req *http.Request) {
 				var softwares []byte
 				// TODO: write error handling if config.Global.Softwares ain't available
@@ -45,6 +49,8 @@ func GetCommand() *cobra.Command {
 				}
 				res.Write(softwares)
 			})
+
+			// allow for syncing of networks
 			router.HandleFunc("/networks", func(res http.ResponseWriter, req *http.Request) {
 				var networks []byte
 				// TODO: write error handling if config.Global.Networks ain't available
@@ -57,6 +63,21 @@ func GetCommand() *cobra.Command {
 					res.Header().Add("Content-Type", "application/json")
 				}
 				res.Write(networks)
+			})
+
+			// allow for syncing of accounts
+			router.HandleFunc("/platforms", func(res http.ResponseWriter, req *http.Request) {
+				var platforms []byte
+				// // TODO: write error handling if config.Global.Networks ain't available
+				switch req.Header.Get("Accept") {
+				case "application/yaml":
+					platforms, _ = yaml.Marshal(config.Global.Platforms.GetSanitized())
+					res.Header().Add("Content-Type", "application/yaml")
+				default:
+					platforms, _ = json.Marshal(config.Global.Platforms.GetSanitized())
+					res.Header().Add("Content-Type", "application/json")
+				}
+				res.Write(platforms)
 			})
 			http.ListenAndServe(fmt.Sprintf("%s:%v", conf.GetString("addr"), conf.GetUint("port")), router)
 		},
