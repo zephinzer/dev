@@ -6,6 +6,7 @@ import (
 	"github.com/usvc/dev/pkg/network"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 	"github.com/usvc/dev/pkg/software"
+	"github.com/usvc/dev/pkg/trello"
 )
 
 type File struct {
@@ -83,6 +84,7 @@ type Platforms struct {
 	PivotalTracker pivotaltracker.Config `json:"pivotaltracker" yaml:"pivotaltracker"`
 	Github         github.Config         `json:"github" yaml:"github"`
 	Gitlab         gitlab.Config         `json:"gitlab" yaml:"gitlab"`
+	Trello         trello.Config         `json:"trello" yaml:"trello"`
 }
 
 func (p Platforms) GetSanitized() Platforms {

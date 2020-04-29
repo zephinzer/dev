@@ -30,6 +30,8 @@ This tool exists to improve the day-to-day work experience of software developer
     - [Gitlab](#gitlab)
     - [PivotalTracker](#pivotaltracker)
       - [Setting Up](#setting-up-2)
+    - [Trello](#trello)
+      - [Other references for setting up Trello](#other-references-for-setting-up-trello)
 - [Development Runbook](#development-runbook)
   - [Getting Started](#getting-started)
   - [Building](#building)
@@ -233,6 +235,14 @@ Retrieve your `accessToken` by generating a new personal access token from [http
 
 Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https://www.pivotaltracker.com/profile).
 
+
+### Trello
+
+Retrieve your `accessToken` from [https://trello.com/app-key](https://trello.com/app-key).
+
+#### Other references for setting up Trello
+
+- [https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)
 
 - - -
 
