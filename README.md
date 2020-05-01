@@ -170,7 +170,7 @@ software:
 platforms:
   pivotaltracker:
     accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    projects:
+    projects: # these will be output in your work
     - name: work
       projectID: "XXXXXXX"
     - name: personal
@@ -196,6 +196,10 @@ platforms:
       # when not specified, defaults to false
       public: true
     # ... add as you wish ...
+  trello:
+    accessKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    accessToken: yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+    boards: # these will be output in your work
 ```
 
 ## Platforms
