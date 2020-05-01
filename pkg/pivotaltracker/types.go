@@ -249,7 +249,7 @@ type APINotification struct {
 
 // String converts the notification object into a CLI-friendly text
 func (n APINotification) String() string {
-	tag := n.Project.Name
+	projectName := n.Project.Name
 	message := n.Message
 	referenceType := n.Story.Kind
 	referenceLabel := n.Story.Name
@@ -259,7 +259,9 @@ func (n APINotification) String() string {
 	if err == nil {
 		datetime = humanize.Time(timestamp)
 	}
-	return fmt.Sprintf("[%s] %s\n- %s: %s\n- link: https://www.pivotaltracker.com/story/show/%v\n- when: about %s", tag, message, referenceType, referenceLabel, referenceID, datetime)
+	return fmt.Sprintf(
+		"[%s/%s/%s]\n  - %s about %s\n  - link: https://www.pivotaltracker.com/story/show/%v",
+		projectName, referenceType, referenceLabel, message, datetime, referenceID)
 
 }
 

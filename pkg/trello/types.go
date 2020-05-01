@@ -20,13 +20,3 @@ type Board struct {
 	AccessKey   string `json:"accessKey" yaml:"accessKey"`
 	AccessToken string `json:"accessToken" yaml:"accessToken"`
 }
-
-type APIv1MeResponse struct {
-	Username        string   `json:"username" yaml:"username"`
-	FullName        string   `json:"fullName" yaml:"fullName"`
-	Initials        string   `json:"initials" yaml:"initials"`
-	URL             string   `json:"url" yaml:"url"`
-	Email           string   `json:"email" yaml:"email"`
-	BoardIDs        []string `json:"idBoards" yaml:"idBoards"`
-	OrganizationIDs []string `json:"idOrganizations" yaml:"idOrganizations"`
-}

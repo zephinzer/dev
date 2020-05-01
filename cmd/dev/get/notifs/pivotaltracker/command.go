@@ -1,11 +1,10 @@
 package pivotaltracker
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
+	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 )
 
@@ -19,7 +18,8 @@ func GetCommand() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			log.Printf("notifications from pivotal tracker\n%s", notifs.String())
+			log.Printf("# notifications from pivotal tracker\n\n%s", notifs.String())
+			log.Printf("> you have a total of %v unread notifications on your linked pivotal account", len(*notifs))
 		},
 	}
 	return &cmd

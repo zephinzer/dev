@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/get/notifs/gitlab"
 	"github.com/usvc/dev/cmd/dev/get/notifs/pivotaltracker"
+	"github.com/usvc/dev/cmd/dev/get/notifs/trello"
 	"github.com/usvc/dev/internal/constants"
 )
 
@@ -16,7 +17,8 @@ func GetCommand() *cobra.Command {
 			command.Help()
 		},
 	}
-	cmd.AddCommand(pivotaltracker.GetCommand())
 	cmd.AddCommand(gitlab.GetCommand())
+	cmd.AddCommand(pivotaltracker.GetCommand())
+	cmd.AddCommand(trello.GetCommand())
 	return &cmd
 }

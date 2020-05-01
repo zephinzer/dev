@@ -179,7 +179,7 @@ func (t APIv4Todo) String() string {
 	state := t.State
 	link := t.TargetURL
 	createdAt := humanize.Time(t.CreatedAt)
-	return fmt.Sprintf("[%s] %s\n%s> state: %s\n> link: %s\n> when: about %v", tag, title, message, state, link, createdAt)
+	return fmt.Sprintf("[%s] %s\n  - %s  - state: %s\n  - link: %s\n  - about %v", tag, title, message, state, link, createdAt)
 }
 
 type APIv4Project struct {
