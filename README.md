@@ -78,6 +78,7 @@ dev check software; # checks if required software is installed
 dev get account github; # from github
 dev get account gitlab; # from gitlab
 dev get account pivotaltracker; # from pivotal tracker
+dev get account trello; # from trello
 
 # retrieve consumed configuration
 dev get config;
@@ -86,6 +87,7 @@ dev get config;
 dev get notifications github; # from github
 dev get notifications gitlab; # from gitlab
 dev get notifications pivotaltracker; # pivotal tracker
+dev get notifications trello; # trello
 
 # retrieve your work 
 dev get work pivotaltracker; # from pivotal tracker
