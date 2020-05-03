@@ -21,6 +21,8 @@ var (
 	CheckAliases                = []string{"c", "verify"}
 	ClientCanonicalNoun         = "client"
 	ClientAliases               = []string{"cl", "c"}
+	DebugCanonicalVerb          = "debug"
+	DebugAliases                = []string{"test"}
 	ConfigurationCanonicalNoun  = "configuration"
 	ConfigurationAliases        = []string{"config", "conf", "cf", "c"}
 	DatabaseCanonicalNoun       = "database"
