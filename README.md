@@ -31,9 +31,13 @@ This tool exists to improve the day-to-day work experience of software developer
     - [PivotalTracker](#pivotaltracker)
       - [Setting Up](#setting-up-2)
     - [Trello](#trello)
+      - [Selecting Trello Boards](#selecting-trello-boards)
       - [Other references for setting up Trello](#other-references-for-setting-up-trello)
 - [Development Runbook](#development-runbook)
   - [Getting Started](#getting-started)
+  - [Development](#development)
+    - [Tools used for development](#tools-used-for-development)
+      - [SQLite3 CLI](#sqlite3-cli)
   - [Building](#building)
     - [General build notes](#general-build-notes)
     - [Build notes for Linux](#build-notes-for-linux)
@@ -246,6 +250,12 @@ Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https:
 
 Retrieve your `accessToken` from [https://trello.com/app-key](https://trello.com/app-key).
 
+#### Selecting Trello Boards
+
+The `boards` property takes in an array of board shortlinks. You can retrieve a board's shortlink by visiting the board in your browser and extracting it from the URL.
+
+Assuming your board can be found at the URL `https://trello.com/b/xxxxxxxx/lorem-ipsum`, the board shortlink is `xxxxxxxx`.
+
 #### Other references for setting up Trello
 
 - [https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)
@@ -260,6 +270,14 @@ Retrieve your `accessToken` from [https://trello.com/app-key](https://trello.com
 1. Clone this repository using `git clone git@gitlab.com:usvc/utils/dev.git`
 2. Install dependencies using `make deps`
 3. Create a local development configuration file at `./dev.yaml` relative to the project root containing [the sample configuration file](#sample-configuration-file)
+
+## Development
+
+### Tools used for development
+
+#### SQLite3 CLI
+
+On Ubuntu install with `sudo apt install sqlite3`.
 
 ## Building
 

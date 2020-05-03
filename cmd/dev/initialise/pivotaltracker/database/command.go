@@ -1,21 +1,22 @@
 package database
 
 import (
-	"log"
+	"os"
 	"os/user"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/db"
+	"github.com/usvc/dev/internal/log"
+	"github.com/usvc/dev/internal/pivotaltracker"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.DatabaseCanonicalNoun,
 		Aliases: constants.DatabaseAliases,
-		Short:   "Initialises a persistent on-disk sqlite3 database",
+		Short:   "Initialises tables for Pivotal Tracker stuff in the local SQLite3 database",
 		Run: func(command *cobra.Command, args []string) {
 			pathToDatabaseFile := constants.DefaultPathToSQLite3DB
 			if len(config.Global.Dev.Client.Database.Path) > 0 {
@@ -29,12 +30,12 @@ func GetCommand() *cobra.Command {
 					pathToDatabaseFile = strings.Replace(pathToDatabaseFile, "~", currentUser.HomeDir, 1)
 				}
 			}
-			log.Printf("initialising database at %s...", pathToDatabaseFile)
-			dbInitError := db.Init(pathToDatabaseFile)
-			if dbInitError != nil {
-				panic(dbInitError)
+			log.Debugf("initialising database at %s...", pathToDatabaseFile)
+			if initError := pivotaltracker.InitSQLite3Database(pathToDatabaseFile); initError != nil {
+				log.Errorf("migration failed: %s", initError)
+				os.Exit(1)
 			}
-			log.Printf("initialised database at %s", pathToDatabaseFile)
+			log.Tracef("initialised database at %s", pathToDatabaseFile)
 		},
 	}
 	return &cmd

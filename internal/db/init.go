@@ -49,7 +49,7 @@ func Init(atPath string) error {
 		return fmt.Errorf("failed to create a file at %s: %s", fullPath, createFileError)
 	}
 	defer databaseFile.Close()
-	openedDB, openDBError := sql.Open("sqlite3", fullPath)
+	openedDB, openDBError := NewConnection(fullPath)
 	if openDBError != nil {
 		return fmt.Errorf("failed to open sqlite3 database at %s: %s", fullPath, openDBError)
 	}
@@ -69,6 +69,33 @@ func Init(atPath string) error {
 	}
 	if closeFileError := databaseFile.Close(); closeFileError != nil {
 		return fmt.Errorf("failed to release the file handler: %s", closeFileError)
+	}
+	return nil
+}
+
+func NewConnection(databasePath string) (*sql.DB, error) {
+	openedDB, openDBError := sql.Open("sqlite3", databasePath)
+	if openDBError != nil {
+		return nil, openDBError
+	}
+	return openedDB, nil
+}
+
+func InitTable(tableName string, connection *sql.DB) error {
+	var execError error
+	_, execError = connection.Exec(fmt.Sprintf(
+		"CREATE TABLE IF NOT EXISTS `%s_migrations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `index` INTEGER NOT NULL, `script` TEXT NOT NULL, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP);",
+		tableName,
+	))
+	if execError != nil {
+		return fmt.Errorf("failed to create `%s`'s migrations table: %s", tableName, execError)
+	}
+	_, execError = connection.Exec(fmt.Sprintf(
+		"CREATE TABLE IF NOT EXISTS `%s` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP);",
+		tableName,
+	))
+	if execError != nil {
+		return fmt.Errorf("failed to create `%s`'s logical table: %s", tableName, execError)
 	}
 	return nil
 }

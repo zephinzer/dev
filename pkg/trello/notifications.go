@@ -14,6 +14,34 @@ import (
 	"github.com/usvc/dev/pkg/utils"
 )
 
+func GetNotifications(accessKey, accessToken string) (*APIv1MemberNotificationResponse, error) {
+	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me/notifications")
+	if urlParseError != nil {
+		return nil, urlParseError
+	}
+	query := targetURL.Query()
+	query.Add("key", accessKey)
+	query.Add("token", accessToken)
+	query.Add("read_filter", "unread")
+	targetURL.RawQuery = query.Encode()
+	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
+	if requestError != nil {
+		return nil, requestError
+	}
+	defer responseObject.Body.Close()
+	responseBody, bodyReadError := ioutil.ReadAll(responseObject.Body)
+	if bodyReadError != nil {
+		return nil, bodyReadError
+	}
+	var response APIv1MemberNotificationResponse
+	unmarshalError := json.Unmarshal(responseBody, &response)
+	if unmarshalError != nil {
+		litter.Dump(string(responseBody))
+		return nil, unmarshalError
+	}
+	return &response, nil
+}
+
 type APIv1MemberNotificationResponse []APIv1MemberNotification
 
 // String converts the notifications object into a CLI-friendly block of text
@@ -96,32 +124,4 @@ func (n APIv1MemberNotification) String() string {
 		}
 		return unknownNotification.String()
 	}
-}
-
-func GetNotifications(accessKey, accessToken string) (*APIv1MemberNotificationResponse, error) {
-	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me/notifications")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("key", accessKey)
-	query.Add("token", accessToken)
-	query.Add("read_filter", "unread")
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
-	if requestError != nil {
-		return nil, requestError
-	}
-	defer responseObject.Body.Close()
-	responseBody, bodyReadError := ioutil.ReadAll(responseObject.Body)
-	if bodyReadError != nil {
-		return nil, bodyReadError
-	}
-	var response APIv1MemberNotificationResponse
-	unmarshalError := json.Unmarshal(responseBody, &response)
-	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
-		return nil, unmarshalError
-	}
-	return &response, nil
 }

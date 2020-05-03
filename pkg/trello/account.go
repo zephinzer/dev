@@ -9,18 +9,6 @@ import (
 	"github.com/usvc/dev/pkg/utils"
 )
 
-type APIv1MemberResponse struct {
-	ID              string   `json:"id" yaml:"id"`
-	Username        string   `json:"username" yaml:"username"`
-	FullName        string   `json:"fullName" yaml:"fullName"`
-	Initials        string   `json:"initials" yaml:"initials"`
-	URL             string   `json:"url" yaml:"url"`
-	Email           string   `json:"email" yaml:"email"`
-	BoardIDs        []string `json:"idBoards" yaml:"idBoards"`
-	OrganizationIDs []string `json:"idOrganizations" yaml:"idOrganizations"`
-	ActivityBlocked bool     `json:"activityBlocked" yaml:"activityBlocked"`
-}
-
 func GetAccount(accessKey, accessToken string) (*APIv1MemberResponse, error) {
 	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me")
 	if urlParseError != nil {
@@ -46,4 +34,16 @@ func GetAccount(accessKey, accessToken string) (*APIv1MemberResponse, error) {
 		return nil, unmarshalError
 	}
 	return &response, nil
+}
+
+type APIv1MemberResponse struct {
+	ID              string   `json:"id" yaml:"id"`
+	Username        string   `json:"username" yaml:"username"`
+	FullName        string   `json:"fullName" yaml:"fullName"`
+	Initials        string   `json:"initials" yaml:"initials"`
+	URL             string   `json:"url" yaml:"url"`
+	Email           string   `json:"email" yaml:"email"`
+	BoardIDs        []string `json:"idBoards" yaml:"idBoards"`
+	OrganizationIDs []string `json:"idOrganizations" yaml:"idOrganizations"`
+	ActivityBlocked bool     `json:"activityBlocked" yaml:"activityBlocked"`
 }

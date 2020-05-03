@@ -3,6 +3,7 @@ package initialise
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/initialise/database"
+	"github.com/usvc/dev/cmd/dev/initialise/pivotaltracker"
 	"github.com/usvc/dev/internal/constants"
 )
 
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(database.GetCommand())
+	cmd.AddCommand(pivotaltracker.GetCommand())
 	return &cmd
 }
