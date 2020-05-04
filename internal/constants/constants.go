@@ -15,6 +15,8 @@ const (
 )
 
 var (
+	DefaultSystrayIcon = SystrayIconLight
+
 	AccountCanonicalNoun        = "account"
 	AccountAliases              = []string{"accounts", "acc", "accs", "a"}
 	CheckCanonicalVerb          = "check"
@@ -51,6 +53,8 @@ var (
 	SoftwareAliases             = []string{"sw", "apps", "s"}
 	StartCanonicalVerb          = "start"
 	StartAliases                = []string{"st", "s"}
+	TelegramCanonicalNoun       = "telegram"
+	TelegramAliases             = []string{"tg", "t.me"}
 	WorkCanonicalNoun           = "work"
 	WorkAliases                 = []string{"stories", "tasks", "tickets", "w"}
 )

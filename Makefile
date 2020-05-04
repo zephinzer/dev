@@ -31,7 +31,8 @@ prepare_icon:
 		printf -- "\033[1m\033[31m⚠️ you need 2goarray in your path for this to work, ensure you've run 'make setup_build'\033[0m\n"; \
 		exit 1; \
 	fi
-	2goarray SystrayIcon constants < ./assets/icon/1024.png > ./internal/constants/icon.go
+	2goarray SystrayIconDark constants < ./assets/icon/512-dark.png > ./internal/constants/icon_dark.go
+	2goarray SystrayIconLight constants < ./assets/icon/512-light.png > ./internal/constants/icon_light.go
 build:
 	go build \
 		-o ./bin/$(BIN_PATH) \

@@ -25,9 +25,9 @@ type MenuItem struct {
 }
 
 func Start(menu Menu, stopped chan struct{}) {
-	systray.SetTitle("title")
-	systray.SetTooltip("hello world")
-	systray.SetIcon(constants.SystrayIcon)
+	systray.SetTitle("dev")
+	systray.SetTooltip("dev cli")
+	systray.SetIcon(constants.DefaultSystrayIcon)
 	systray.Run(func() {
 		for _, item := range menu {
 			switch item.Type {

@@ -102,11 +102,21 @@ type Dev struct {
 }
 
 type DevClient struct {
-	Database DevClientDatabase `json:"database" yaml:"database"`
+	Database      DevClientDatabase      `json:"database" yaml:"database"`
+	Notifications DevClientNotifications `json:"notifications" yaml:"notifications"`
 }
 
 type DevClientDatabase struct {
 	Path string `json:"path" yaml:"path"`
+}
+
+type DevClientNotifications struct {
+	Telegram DevClientNotificationsTelegram `json:"telegram" yaml:"telegram"`
+}
+
+type DevClientNotificationsTelegram struct {
+	Token string `json:"token" yaml:"token"`
+	ID    string `json:"id" yaml:"id"`
 }
 
 // DevDefaults specifies default selections when running `dev <verb> <noum> <this>` commands
