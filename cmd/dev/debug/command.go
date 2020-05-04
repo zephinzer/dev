@@ -3,6 +3,7 @@ package debug
 import (
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/cmd/dev/debug/notifications"
+	systemtray "github.com/usvc/dev/cmd/dev/debug/system-tray"
 	"github.com/usvc/dev/internal/constants"
 )
 
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(notifications.GetCommand())
+	cmd.AddCommand(systemtray.GetCommand())
 	return &cmd
 }
