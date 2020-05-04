@@ -2,7 +2,7 @@
 
 ## Notifications
 
-### Setting up
+### Setting up `dev` to notify you via Telegram
 
 To receive notifications via Telegram, we'll need to setup a new Telegram bot. You can do this by talking to [The BotFather](https://t.me/BotFather) using `/newbot`. Give your bot a logical name (eg. "My Notification Bot") followed by a bot username (eg. `my_notification_bot`) and you'll receive an access token in a message that looks like the following:
 
@@ -21,3 +21,5 @@ The API token should be placed in the configuration YAML at property `dev.client
 You should see logs indicating your bot's name and informing you that `dev` is starting a telegram bot controller. Click on the link that `dev` outputs and hit the **Start** button which should result in a `/start` being sent to the bot.
 
 You should see a YAML snippet containing the configuration you need to merge with your existing configuration.
+
+To test the integration, ensure your chat ID is in the configuration, and run `dev debug notifications`.

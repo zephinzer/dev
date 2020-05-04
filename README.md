@@ -33,6 +33,7 @@ This tool exists to improve the day-to-day work experience of software developer
     - [Trello](#trello)
       - [Selecting Trello Boards](#selecting-trello-boards)
       - [Other references for setting up Trello](#other-references-for-setting-up-trello)
+    - [Telegram](#telegram)
 - [Development Runbook](#development-runbook)
   - [Getting Started](#getting-started)
   - [Development](#development)
@@ -259,6 +260,11 @@ Assuming your board can be found at the URL `https://trello.com/b/xxxxxxxx/lorem
 #### Other references for setting up Trello
 
 - [https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)
+
+
+### Telegram
+
+See the [Telegram Integration](./docs/integrations/telegram.md) for more information.
 
 - - -
 
