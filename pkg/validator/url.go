@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+	stdlibURL "net/url"
 	"regexp"
 	"strings"
 )
@@ -17,9 +18,9 @@ const (
 )
 
 var (
-	// RegexForHTTP defines a regular expression with capture groups that can be used to parse/validate
+	// RegexForGitHTTP defines a regular expression with capture groups that can be used to parse/validate
 	// HTTP(S) URLs
-	RegexForHTTP = fmt.Sprintf(
+	RegexForGitHTTP = fmt.Sprintf(
 		`^(?P<%s>http[s]*)\:\/\/`+ // schema
 			`(?:(?P<%s>[a-zA-Z0-9\_\.\-]+)`+ // username (optional)
 			`(?:\:(?P<%s>.*))?@)*`+ // password (optional)
@@ -31,9 +32,9 @@ var (
 		keySchema, keyUsername, keyPassword, keyHostname, keyPort, keyUser, keyPath,
 	)
 
-	// RegexForSSH defines a regular expression with capture groups that can be used to parse/validate
+	// RegexForGitSSH defines a regular expression with capture groups that can be used to parse/validate
 	// SSH URLs
-	RegexForSSH = fmt.Sprintf(
+	RegexForGitSSH = fmt.Sprintf(
 		`^(?P<%s>[a-zA-Z0-9\-\_\.]+?)@`+ // username
 			`(?P<%s>[a-zA-Z0-9\-\_\.]+?):`+ // hostname
 			`(?:(?P<%s>\d*?)\/)?`+ // port (optional)
@@ -53,6 +54,7 @@ type URL struct {
 	Port     string
 	User     string
 	Path     string
+	Query    string
 }
 
 // String returns a string output of the URL instance
@@ -69,30 +71,52 @@ func (u URL) String() string {
 	return builder.String()
 }
 
-// IsHTTPUrl is used for testing if a provided :test string is a valid HTTP(S) URL
-func IsHTTPUrl(test string) bool {
-	return regexp.MustCompile(RegexForHTTP).MatchString(test)
+// IsGitHTTPUrl is used for testing if a provided :test string is a valid HTTP(S) URL
+func IsGitHTTPUrl(test string) bool {
+	return regexp.MustCompile(RegexForGitHTTP).MatchString(test)
 }
 
-// IsSSHUrl is used for testing if a provided :test string is a valid SSH URL
-func IsSSHUrl(test string) bool {
-	return regexp.MustCompile(RegexForSSH).MatchString(test)
+// IsGitSSHUrl is used for testing if a provided :test string is a valid SSH URL
+func IsGitSSHUrl(test string) bool {
+	return regexp.MustCompile(RegexForGitSSH).MatchString(test)
 }
 
 // ParseURL returns a new *URL based on the remoteURL
 func ParseURL(remoteURL string) (*URL, error) {
 	var selectedRegex string
 	switch true {
-	case IsHTTPUrl(remoteURL):
-		selectedRegex = RegexForHTTP
-	case IsSSHUrl(remoteURL):
-		selectedRegex = RegexForSSH
+	case IsGitHTTPUrl(remoteURL):
+		selectedRegex = RegexForGitHTTP
+	case IsGitSSHUrl(remoteURL):
+		selectedRegex = RegexForGitSSH
 	default:
-		return nil, fmt.Errorf("provided url '%s' is not a valid git remote url", remoteURL)
+		return parseURLWithStdlib(remoteURL)
 	}
 	compiledRegex := regexp.MustCompile(selectedRegex)
 	fields := parseRegexIntoFields(compiledRegex, remoteURL)
 	return serializeFieldsToURL(fields), nil
+}
+
+// parseURLWithStdlib parses the provided url using the default net/url
+// library provided by Go for urls that don't match a Git URL
+func parseURLWithStdlib(remoteURL string) (*URL, error) {
+	parsedURL, parseURLError := stdlibURL.Parse(remoteURL)
+	if parseURLError != nil {
+		return nil, fmt.Errorf("failed to parse url '%s': %s", remoteURL, parseURLError)
+	}
+	password, passwordSet := parsedURL.User.Password()
+	finalURL := URL{
+		Hostname: parsedURL.Hostname(),
+		Port:     parsedURL.Port(),
+		Schema:   parsedURL.Scheme,
+		Username: parsedURL.User.Username(),
+		Path:     parsedURL.Path,
+		Query:    parsedURL.Query().Encode(),
+	}
+	if passwordSet {
+		finalURL.Password = password
+	}
+	return &finalURL, nil
 }
 
 // parseRegexIntoFields is a utility function that is called by ParseURL to create a
