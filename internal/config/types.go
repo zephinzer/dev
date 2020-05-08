@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/usvc/dev/internal/link"
 	"github.com/usvc/dev/pkg/github"
 	"github.com/usvc/dev/pkg/gitlab"
 	"github.com/usvc/dev/pkg/network"
@@ -14,6 +15,7 @@ type File struct {
 	Networks  []network.Network   `json:"network" yaml:"network"`
 	Platforms Platforms           `json:"platforms" yaml:"platforms"`
 	Softwares []software.Software `json:"software" yaml:"software"`
+	Links     []link.Link         `json:"links" yaml:"links"`
 }
 
 func (f *File) MergeWith(other *File) {

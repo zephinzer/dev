@@ -5,6 +5,7 @@ import (
 	"github.com/usvc/dev/cmd/dev/check"
 	"github.com/usvc/dev/cmd/dev/debug"
 	"github.com/usvc/dev/cmd/dev/get"
+	"github.com/usvc/dev/cmd/dev/go_to"
 	"github.com/usvc/dev/cmd/dev/initialise"
 	"github.com/usvc/dev/cmd/dev/open"
 	"github.com/usvc/dev/cmd/dev/start"
@@ -24,5 +25,6 @@ func GetCommand() *cobra.Command {
 	cmd.AddCommand(initialise.GetCommand())
 	cmd.AddCommand(start.GetCommand())
 	cmd.AddCommand(open.GetCommand())
+	cmd.AddCommand(go_to.GetCommand())
 	return &cmd
 }

@@ -35,6 +35,8 @@ var (
 	GitlabAliases               = []string{"gl"}
 	GithubCanonicalNoun         = "github"
 	GithubAliases               = []string{"gh"}
+	GotoCanonicalVerb           = "goto"
+	GotoAliases                 = []string{"go", "go2"}
 	InitialiseCanonicalNoun     = "initialise"
 	InitialiseAliases           = []string{"initialize", "init", "i"}
 	NetworkCanonicalNoun        = "network"
