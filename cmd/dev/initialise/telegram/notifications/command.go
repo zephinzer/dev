@@ -32,7 +32,7 @@ func GetCommand() *cobra.Command {
 				log.Errorf("failed to retrieve bot information using provided token: %s", getBotInfoError)
 				os.Exit(1)
 			}
-			log.Debugf("using bot '%s' (@%s)", botInfo.String(), botInfo.UserName)
+			log.Infof("using bot '%s' (@%s)", botInfo.String(), botInfo.UserName)
 			log.Debug("setting up update configurations...")
 			updateConfig := tgbotapi.NewUpdate(0)
 			updateConfig.Timeout = 10
@@ -41,8 +41,8 @@ func GetCommand() *cobra.Command {
 				log.Errorf("failed to retrieve update stream for bot: %s", updatesStreamError)
 				os.Exit(1)
 			}
-			log.Debugf("starting listener for telegram bot @%s...", botInfo.UserName)
-			log.Debugf("go to https://t.me/%s and click on the **Start** button to retrieve your telegram id", botInfo.UserName)
+			log.Infof("starting listener for telegram bot @%s...", botInfo.UserName)
+			log.Infof("go to https://t.me/%s and click on the **Start** button to retrieve your telegram id", botInfo.UserName)
 			for update := range updatesStream {
 				if update.Message == nil {
 					continue

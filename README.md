@@ -5,8 +5,10 @@ Pimp your developer experience.
 - ✅ Open website of repository you're in - `dev open repo`
 - ✅ Check if you have required software - `dev check software`
 - ✅ Check if you have required network connectivity - `dev check networks`
+- ✅ Search for links within your project - `dev goto`
 - ✅ Get work assigned to you on - `dev get work`
 - ✅ Get notifications from developer platforms - `dev get notifications`
+- ✅ Get notifications from your telegram - `dev init telegram notifications`
 - ✅ Intuitive aliases that become simpler as you use them (example: from `dev get notifications` to `dev get notifs` to `dev g n`)
 
 This tool exists to improve the day-to-day work experience of software developers. Use this to:
