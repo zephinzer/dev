@@ -10,6 +10,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.OpenCanonicalVerb,
 		Aliases: constants.OpenAliases,
+		Short:   "convenience sub-commands to open stuff",
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
 		},

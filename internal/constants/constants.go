@@ -5,6 +5,8 @@ const (
 	DefaultPathToConfiguration = "./dev.yaml"
 	DefaultPathToSQLite3DB     = "./dev.db"
 
+	DevTimeFormat               = "20060102_150405"
+	DevHumanTimeFormat          = "2006-01-02 15:04:05"
 	DateOnlyTimeFormat          = "2006-01-02"
 	GithubAPITimeFormat         = "2006-01-02T15:04:05.99Z"
 	GitlabAPITimeFormat         = "2006-01-02T15:04:05.999Z"
@@ -55,6 +57,8 @@ var (
 	SoftwareAliases             = []string{"sw", "apps", "s"}
 	StartCanonicalVerb          = "start"
 	StartAliases                = []string{"st", "s"}
+	SystemInfoCanonicalNoun     = "sysinfo"
+	SystemInfoAliases           = []string{"system-info", "system", "si"}
 	TelegramCanonicalNoun       = "telegram"
 	TelegramAliases             = []string{"tg", "t.me"}
 	WorkCanonicalNoun           = "work"

@@ -12,6 +12,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.CheckCanonicalVerb,
 		Aliases: constants.CheckAliases,
+		Short:   "perform system checks using provided configuration",
 		Run: func(command *cobra.Command, args []string) {
 			log.Info("running software checks...")
 			software.GetCommand().Run(command, args)

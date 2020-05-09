@@ -12,7 +12,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.InitialiseCanonicalNoun,
 		Aliases: constants.InitialiseAliases,
-		Short:   "Initialises components within the dev CLI tool",
+		Short:   "individually initialise components within this tool",
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
 		},

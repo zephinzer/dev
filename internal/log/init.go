@@ -23,8 +23,21 @@ var (
 	Printf   func(string, ...interface{}) (int, error)
 )
 
-func Init() {
+type Level logger.Level
+
+var (
+	DefaultLevel Level = Level(logger.LevelInfo)
+	LevelDebug   Level = Level(logger.LevelDebug)
+	LevelTrace   Level = Level(logger.LevelTrace)
+)
+
+func Init(level ...Level) {
+	logLevel := DefaultLevel
+	if len(level) > 0 {
+		logLevel = level[0]
+	}
 	instance = logger.New(logger.Options{
+		Level:        logger.Level(logLevel),
 		Output:       logger.OutputStderr,
 		OutputStream: os.Stderr,
 	})

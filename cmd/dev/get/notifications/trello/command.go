@@ -13,12 +13,12 @@ func GetCommand() *cobra.Command {
 		Aliases: []string{"tr"},
 		Short:   "Retrieves notifications from Trello",
 		Run: func(command *cobra.Command, args []string) {
-			notifs, err := trello.GetNotifications(config.Global.Platforms.Trello.AccessKey, config.Global.Platforms.Trello.AccessToken)
+			notifications, err := trello.GetNotifications(config.Global.Platforms.Trello.AccessKey, config.Global.Platforms.Trello.AccessToken)
 			if err != nil {
 				panic(err)
 			}
-			log.Printf("# notifications from trello\n\n%s", notifs.String())
-			log.Printf("> you have a total of %v unread notifications on your linked trello account", len(*notifs))
+			log.Printf("# notifications from trello\n\n%s", notifications.String())
+			log.Printf("> you have a total of %v unread notifications on your linked trello account", len(*notifications))
 		},
 	}
 	return &cmd

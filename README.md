@@ -143,7 +143,22 @@ Configuration is done via YAML. By default, `dev` looks for a file at `${HOME}/d
 ### Sample configuration file
 
 ```yaml
+# this defines configurations for dev itself
+dev:
+  client:
+    ## persistent datastore configurations
+    database:
+      ## this defines the path for the local sqlite3 database
+      path: ./dev.db
+    ## notifications configurations
+    notifications:
+      telegram:
+        ## the bot's api token as provided by the BotFather
+        token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        ## chat id of your personal account according to your bot
+        id: "123456789"
 # this defines networks that should be reachable from your machine
+## run `dev check networks` to run checks on these
 networks:
 - name: internet
   check:
@@ -152,29 +167,27 @@ networks:
   check:
     url: https://gitlab.internal.com
 # this defines software that should be on your machine
+## run `dev check software` to run checks on these
 software:
 - name: golang
   check:
     command: ["go", "version"]
-    exitCode: 0
-    stdout: ^go version go\d\.\d+ [a-zA-Z0-9]+\/[a-zA-Z0-9]+$
+    stdout: ^go version go\d\.\d+(\.\d+)? [a-zA-Z0-9]+\/[a-zA-Z0-9]+$
 - name: node
   check:
     command: ["node", "-v"]
-    exitCode: 0
     stdout: ^v\d+\.\d+\.\d+$
 - name: terraform
   check:
     command: ["terraform", "version"]
-    exitCode: 0
     stdout: ^Terraform v\d+\.\d+\.\d+$
 - name: terragrunt
   check:
     command: ["terragrunt", "-v"]
-    exitCode: 0
     stdout: ^terragrunt version v\d+\.\d+\.\d+$
 # this defines platforms that the developer should have access to
 platforms:
+  ## this defines the pivotal tracker integration
   pivotaltracker:
     accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     projects: # these will be output in your work
@@ -184,11 +197,13 @@ platforms:
       projectID: "XXXXXXX"
       accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     # ... add as you wish ...
+  ## this defines the github integration  
   github:
     accounts:
     - name: personal
       accessToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     # ... add as you wish ...
+  ## this defines the gitlab integration  
   gitlab:
     accounts:
     - name: personal
@@ -203,10 +218,22 @@ platforms:
       # when not specified, defaults to false
       public: true
     # ... add as you wish ...
+  ## this defines the trello integration  
   trello:
     accessKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     accessToken: yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
     boards: # these will be output in your work
+    - shortLink: xXxXxXxX
+      list: xxxxxxxx
+# this defines links that a developer should have access to
+## run `dev goto` to trigger the link search gui in the terminal
+links:
+  - label: internal vpn endpoint
+    categories: ["vpn"]
+    url: https://openvpn.yourdomain.com
+  - label: official source-of-truth release repository
+    categories: ["scm"]
+    url: https://gitlab.com/usvc/utils/dev
 ```
 
 ## Platforms

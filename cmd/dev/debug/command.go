@@ -11,7 +11,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.DebugCanonicalVerb,
 		Aliases: constants.DebugAliases,
-		Short:   "Debugs stuff",
+		Short:   "run debug versions of error-prone functionality to verify behaviour",
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
 		},
