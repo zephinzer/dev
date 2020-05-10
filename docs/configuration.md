@@ -39,14 +39,14 @@ networks:
     url: https://gitlab.internal.com
 ```
 
-## Software
+## Softwares
 
 Working example:
 
 ```yaml
 # this defines software that should be on your machine
 ## run `dev check software` to run checks on these
-software:
+softwares:
 - name: golang
   check:
     command: ["go", "version"]
