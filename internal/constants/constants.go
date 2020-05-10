@@ -41,6 +41,8 @@ var (
 	GotoAliases                 = []string{"go", "go2"}
 	InitialiseCanonicalNoun     = "initialise"
 	InitialiseAliases           = []string{"initialize", "init", "i"}
+	InstallCanonicalVerb        = "install"
+	InstallAliases              = []string{"setup"}
 	NetworkCanonicalNoun        = "network"
 	NetworkAliases              = []string{"networks", "net", "nets", "nw"}
 	NotificationsCanonicalNoun  = "notifications"
@@ -50,11 +52,11 @@ var (
 	PivotalTrackerCanonicalNoun = "pivotaltracker"
 	PivotalTrackerAliases       = []string{"pivotal", "pt"}
 	RepositoryCanonicalNoun     = "repository"
-	RepositoryAliases           = []string{"repo", "rp", "r"}
+	RepositoryAliases           = []string{"repositories", "repo", "repos", "rp", "r"}
 	ServerCanonicalNoun         = "server"
 	ServerAliases               = []string{"syncer"}
 	SoftwareCanonicalNoun       = "software"
-	SoftwareAliases             = []string{"sw", "apps", "s"}
+	SoftwareAliases             = []string{"softwares", "sw", "apps", "s"}
 	StartCanonicalVerb          = "start"
 	StartAliases                = []string{"st", "s"}
 	SystemInfoCanonicalNoun     = "sysinfo"

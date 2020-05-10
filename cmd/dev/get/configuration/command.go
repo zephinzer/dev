@@ -11,7 +11,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.ConfigurationCanonicalNoun,
 		Aliases: constants.ConfigurationAliases,
-		Short:   "Displays the current configuration",
+		Short:   "dumps the current configuration as-is",
 		Run: func(command *cobra.Command, args []string) {
 			fileConfig, readConfigError := config.NewFromFile(constants.DefaultPathToConfiguration)
 			if readConfigError != nil {

@@ -14,6 +14,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.SoftwareCanonicalNoun,
 		Aliases: constants.SoftwareAliases,
+		Short:   "verifies that required software specified in the configuration is installed",
 		Run: func(command *cobra.Command, args []string) {
 			var softwareCheckLog strings.Builder
 			for _, software := range config.Global.Softwares {

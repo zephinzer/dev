@@ -3,8 +3,6 @@ package config
 import (
 	"io/ioutil"
 
-	"github.com/usvc/dev/internal/link"
-	"github.com/usvc/dev/pkg/software"
 	"gopkg.in/yaml.v2"
 )
 
@@ -27,11 +25,12 @@ func NewFromFile(filePath string) (*File, error) {
 }
 
 type File struct {
-	Dev       Dev                 `json:"dev" yaml:"dev"`
-	Networks  Networks            `json:"networks" yaml:"networks"`
-	Platforms Platforms           `json:"platforms" yaml:"platforms"`
-	Softwares []software.Software `json:"softwares" yaml:"softwares"`
-	Links     []link.Link         `json:"links" yaml:"links"`
+	Dev          Dev          `json:"dev" yaml:"dev"`
+	Links        Links        `json:"links" yaml:"links"`
+	Networks     Networks     `json:"networks" yaml:"networks"`
+	Platforms    Platforms    `json:"platforms" yaml:"platforms"`
+	Softwares    Softwares    `json:"softwares" yaml:"softwares"`
+	Repositories Repositories `json:"repositories" yaml:"repositories"`
 }
 
 // MergeWith merges the current File configuration instance with
