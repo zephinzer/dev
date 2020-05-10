@@ -2,20 +2,26 @@
 
 Pimp your developer experience.
 
-- ✅ Open website of repository you're in - `dev open repo`
-- ✅ Check if you have required software - `dev check software`
-- ✅ Check if you have required network connectivity - `dev check networks`
-- ✅ Search for links within your project - `dev goto`
-- ✅ Get work assigned to you on - `dev get work`
-- ✅ Get notifications from developer platforms - `dev get notifications`
-- ✅ Get notifications from your telegram - `dev init telegram notifications`
-- ✅ Intuitive aliases that become simpler as you use them (example: from `dev get notifications` to `dev get notifs` to `dev g n`)
-
 This tool exists to improve the day-to-day work experience of software developers. Use this to:
 
 1. Improve onboarding process through defining required software in code
 2. Improve day-to-day work experience through defining required network connections in code
 3. Improve productivity through moving checking/notification activities to the command line
+
+You can:
+
+- ✅ Check if you have required software - `dev check software`
+- ✅ Check if you have required network connectivity - `dev check networks`
+- ✅ Check if you have required repositories - `dev check repos`
+- ✅ Search for and go to links within your project - `dev goto`
+- ✅ Get work assigned to you - `dev get work`
+- ✅ Get notifications from developer platforms - `dev get notifications`
+- ✅ Get notifications on your desktop
+- ✅ Get notifications on your telegram
+- ✅ Open the website of repository you're in - `dev open repo`
+- ✅ Be l33t by using aliases that become simpler as you use them (example: from `dev get notifications` to `dev get notifs` to `dev g n`)
+
+**Table of Contents**
 
 - [Dev](#dev)
 - [Installation](#installation)
@@ -64,6 +70,8 @@ The following is an overview of what can be done:
 ```sh
 # check stuff
 dev check software; # checks if required software is installed
+dev check networks; # checks if required network access is available
+dev check repositories; # checks if required repositories are available locally
 
 # retrieving account information 
 dev get account github; # from github
@@ -85,6 +93,8 @@ dev get work pivotaltracker; # from pivotal tracker
 
 # initialise persistent database
 dev initialise database;
+# initialise telegram notification integration
+dev initialise telegram notifications;
 
 # open stuff
 dev open repository; # the repository you're currently in

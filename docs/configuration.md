@@ -65,7 +65,31 @@ softwares:
     stdout: ^terragrunt version v\d+\.\d+\.\d+$
 ```
 
+## Repositories
+
+Working example:
+
+```yaml
+# this defines repositories that a developer should have on their machines
+# run `dev check repos` to verify their integrity
+repositories:
+- name: frontend
+  description: our website
+  cloneURL: git@gitlab.com:yourns/frontend.git
+  workspaces: ["dev"]
+- name: api
+  description: our api
+  cloneURL: git@gitlab.com:yourns/api.git
+  workspaces: ["dev"]
+- name: backend
+  description: our backend stuff
+  cloneURL: git@gitlab.com:yourns/backend.git
+  workspaces: ["dev", "ops"]
+```
+
 ## Links
+
+Working example:
 
 ```yaml
 # this defines links that a developer should have access to
@@ -83,6 +107,8 @@ links:
 
 ### Github
 
+Working example:
+
 ```yaml
 platforms:
   ## this defines the github integration  
@@ -93,6 +119,8 @@ platforms:
 ```
 
 ### Gitlab
+
+Working example:
 
 ```yaml
 platforms:
@@ -110,6 +138,8 @@ platforms:
 
 ### Pivotal Tracker
 
+Working example:
+
 ```yaml
 platforms:
   ## this defines the pivotal tracker integration
@@ -124,6 +154,8 @@ platforms:
 ```
 
 ### Trello
+
+Working example:
 
 ```yaml
 platforms:
