@@ -5,8 +5,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-
-	"github.com/sanity-io/litter"
 )
 
 func GetSshCloneUrlFromHttpLinkUrl(httpLinkUrl string) (string, error) {
@@ -14,7 +12,6 @@ func GetSshCloneUrlFromHttpLinkUrl(httpLinkUrl string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	litter.Dump(u)
 	return fmt.Sprintf("git@%s:%s.git", u.Hostname(), strings.TrimLeft(u.Path, "/")), nil
 }
 
@@ -65,6 +62,5 @@ func GetHttpLinkFromSshCloneUrl(sshCloneUrl string) (string, error) {
 		Path:   matches["path"],
 		Scheme: "https",
 	}
-	litter.Dump(u.String())
 	return u.String(), nil
 }

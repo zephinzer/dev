@@ -23,9 +23,9 @@ setup_build_linux:
 		sudo apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev; \
 	fi
 run:
-	go run ./cmd/$(CMD_ROOT)
+	go run -v -mod=vendor ./cmd/$(CMD_ROOT) ${args}
 test:
-	go test -v ./... -cover -coverprofile c.out
+	go test -v -mod=vendor ./... -cover -coverprofile c.out
 prepare_icon:
 	@if ! 2goarray -h >/dev/null; then \
 		printf -- "\033[1m\033[31m⚠️ you need 2goarray in your path for this to work, ensure you've run 'make setup_build'\033[0m\n"; \
@@ -33,8 +33,10 @@ prepare_icon:
 	fi
 	2goarray SystrayIconDark constants < ./assets/icon/512-dark.png > ./internal/constants/icon_dark.go
 	2goarray SystrayIconLight constants < ./assets/icon/512-light.png > ./internal/constants/icon_light.go
+install_local:
+	go install -v -mod=vendor ./cmd/$(CMD_ROOT)
 build:
-	go build \
+	go build -mod=vendor \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_ROOT)
 	rm -rf ./bin/$(CMD_ROOT)
@@ -42,7 +44,7 @@ build:
 		&& ln -s ./$(BIN_PATH) ./$(CMD_ROOT)
 build_production:
 	CGO_ENABLED=0 \
-	go build -a -v \
+	go build -a -v -mod=vendor \
 		-ldflags "-X main.Commit=$(GIT_COMMIT) \
 			-X main.Version=$(GIT_TAG) \
 			-X main.Timestamp=$(TIMESTAMP) \

@@ -9,6 +9,7 @@ import (
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/log"
+	"github.com/usvc/dev/pkg/utils"
 	"github.com/usvc/dev/pkg/validator"
 )
 
@@ -48,13 +49,28 @@ func GetCommand() *cobra.Command {
 						continue
 					}
 					localPath = path.Join(homeDir, parsedURL.Hostname, parsedURL.User, parsedURL.Path)
+				} else if _, parseError := validator.ParseURL(repository.CloneURL); parseError != nil {
+					log.Warnf("failed to parse url '%s'", repository.CloneURL)
+					continue
+				} else {
+					cloneURL, getCloneURLError := utils.GetSshCloneUrlFromHttpLinkUrl(repository.CloneURL)
+					if getCloneURLError != nil {
+						log.Warnf("failed to convert '%s' to a git SSH clone URL", repository.CloneURL)
+						continue
+					}
+					parsedURL, parseError := validator.ParseURL(cloneURL)
+					if parseError != nil {
+						log.Warnf("failed to parse clone url '%s'", cloneURL)
+						continue
+					}
+					localPath = path.Join(homeDir, parsedURL.Hostname, parsedURL.User, parsedURL.Path)
 				}
 				log.Debugf("  url : %s", repository.CloneURL)
 				log.Debugf("  path: %s", localPath)
 				repositoryExistsLocally := false
-				fileInfo, lstatError := os.Lstat(path.Join(localPath, "/.git"))
+				fileInfo, lstatError := os.Stat(path.Join(localPath, "/.git"))
 				if lstatError != nil {
-					if lstatError != os.ErrNotExist {
+					if !os.IsNotExist(lstatError) {
 						log.Warnf("  failed to check existence: %s", lstatError)
 						continue
 					}

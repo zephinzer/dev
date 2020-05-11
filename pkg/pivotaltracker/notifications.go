@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/pkg/utils"
 )
@@ -39,7 +38,6 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	var response APIv5NotificationsResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil

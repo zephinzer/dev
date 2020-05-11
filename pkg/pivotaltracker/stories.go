@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/pkg/utils"
 )
@@ -51,7 +50,6 @@ func GetStories(accessToken string, inProjectID string, since ...time.Time) (*AP
 	var response APIv5StoriesResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil

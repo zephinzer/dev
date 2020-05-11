@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/pkg/utils"
 )
 
@@ -30,7 +29,6 @@ func GetAccount(accessKey, accessToken string) (*APIv1MemberResponse, error) {
 	var response APIv1MemberResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil

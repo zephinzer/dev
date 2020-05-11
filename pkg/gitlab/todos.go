@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/pkg/utils"
 )
 
@@ -31,7 +30,6 @@ func GetTodos(hostname, accessToken string, since ...time.Time) (*APIv4TodoRespo
 	var response APIv4TodoResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil

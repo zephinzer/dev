@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/pkg/utils"
 )
@@ -36,7 +35,6 @@ func GetNotifications(accessKey, accessToken string) (*APIv1MemberNotificationRe
 	var response APIv1MemberNotificationResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil

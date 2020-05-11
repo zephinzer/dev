@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/sanity-io/litter"
 	"github.com/usvc/dev/pkg/utils"
 )
 
@@ -33,7 +32,6 @@ func GetBoards(accessKey, accessToken string) (*APIv1BoardsResponse, error) {
 	var response APIv1BoardsResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil
@@ -62,7 +60,6 @@ func GetListCards(accessKey, accessToken, listID string) (*APIv1ListCardsRespons
 	var response APIv1ListCardsResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		litter.Dump(string(responseBody))
 		return nil, unmarshalError
 	}
 	return &response, nil
