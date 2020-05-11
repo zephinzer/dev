@@ -51,6 +51,8 @@ var (
 	OpenAliases                 = []string{"op", "o"}
 	PivotalTrackerCanonicalNoun = "pivotaltracker"
 	PivotalTrackerAliases       = []string{"pivotal", "pt"}
+	PlatformCanonicalNoun       = "platform"
+	PlatformAliases             = []string{"platforms", "pf"}
 	RepositoryCanonicalNoun     = "repository"
 	RepositoryAliases           = []string{"repositories", "repo", "repos", "rp", "r"}
 	ServerCanonicalNoun         = "server"

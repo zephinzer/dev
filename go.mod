@@ -11,6 +11,7 @@ require (
 	github.com/go-git/go-git/v5 v5.0.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
+	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.4
 	github.com/jroimartin/gocui v0.4.0
 	github.com/kylelemons/godebug v1.1.0 // indirect
@@ -24,6 +25,6 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/usvc/go-config v0.2.2
-	github.com/usvc/go-logger v0.6.2
+	github.com/usvc/go-logger v0.6.3
 	gopkg.in/yaml.v2 v2.2.4
 )
