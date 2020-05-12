@@ -73,14 +73,10 @@ func Init(atPath string) error {
 	return nil
 }
 
-func NewConnection(databasePath string) (*sql.DB, error) {
-	openedDB, openDBError := sql.Open("sqlite3", databasePath)
-	if openDBError != nil {
-		return nil, openDBError
-	}
-	return openedDB, nil
-}
-
+// InitTable creates 2 tables, one named `tableName` and the other named
+// `tableName`_migrations using the provided `connection`; this way of doing things
+// distributes the migrations so that each table is independently migratable
+// and hence independently removable
 func InitTable(tableName string, connection *sql.DB) error {
 	var execError error
 	_, execError = connection.Exec(fmt.Sprintf(
