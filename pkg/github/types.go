@@ -9,70 +9,6 @@ import (
 	"github.com/usvc/dev/internal/constants"
 )
 
-type Config struct {
-	Accounts Accounts `json:"accounts" yaml:"accounts"`
-}
-
-func (c Config) GetSanitized() Config {
-	return Config{
-		Accounts: c.Accounts.GetSanitized(),
-	}
-}
-
-type Accounts []Account
-
-func (a Accounts) GetSanitized() Accounts {
-	accounts := []Account{}
-	for _, account := range a {
-		if account.Public {
-			accounts = append(accounts, account.GetSanitized())
-		}
-	}
-	return accounts
-}
-
-type Account struct {
-	// Name is the user-defined label for this github account
-	Name string `json:"name" yaml:"name"`
-	// Description is a user-defined description of what this account is for
-	Description string `json:"description" yaml:"description"`
-	// AccessToken is the token that can be generated for use as a Personal Access Token,
-	// this can be created at https://github.com/settings/tokens
-	//
-	// You'll need the following list of permissions when generating this:
-	// - repo:status
-	// - repo_deployment
-	// - public_repo
-	// - repo:invite
-	// - read:packages
-	// - read:org
-	// - read:public_key
-	// - read:repo_hook
-	// - notifications
-	// - read:user
-	// - read:discussion
-	// - read:enterprise
-	// - read:gpg_key
-	AccessToken string `json:"accessToken" yaml:"accessToken"`
-	// Public indicates whether this account should be public, if so, the /platforms
-	// endpoint on the dev server will expose this account; this is done to accomodate
-	// using both personal and work accounts
-	Public bool `json:"public" yaml:"public"`
-}
-
-func (a Account) GetSanitized() Account {
-	return Account{
-		Name:        a.Name,
-		Description: a.Description,
-		AccessToken: "[REDACTED]",
-		Public:      a.Public,
-	}
-}
-
-// APIv3EmailsResponse defines the response structure from the
-// https://api.github.com/user/public_emails endpoint
-type APIv3EmailsResponse []APIv3Email
-
 // APIv3UserResponse defines the response structure from the
 // https://api.github.com/user endpoint
 type APIv3UserResponse struct {
@@ -145,13 +81,6 @@ func (u APIv3UserResponse) String() string {
 	output.WriteString(fmt.Sprintf("  public gists: %v\n", u.PublicGists))
 	output.WriteString(fmt.Sprintf("  total gists : %v\n", u.PublicGists+u.PrivateGists))
 	return output.String()
-}
-
-type APIv3Email struct {
-	Email      string `json:"email"`
-	Verified   bool   `json:"verified"`
-	Primary    bool   `json:"primary"`
-	Visibility string `json:"visibility"`
 }
 
 type APIv3Plan struct {
