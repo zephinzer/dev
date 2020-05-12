@@ -1,6 +1,8 @@
 package constants
 
 const (
+	CanonicalRepositoryURL = "https://gitlab.com/usvc/utils/dev"
+
 	DefaultGitlabHostname      = "gitlab.com"
 	DefaultPathToConfiguration = "./dev.yaml"
 	DefaultPathToSQLite3DB     = "./dev.db"
