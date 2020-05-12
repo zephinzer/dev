@@ -1,11 +1,10 @@
 package gitlab
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
+	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/pkg/gitlab"
 )
 
@@ -18,35 +17,44 @@ func GetCommand() *cobra.Command {
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
 			for _, account := range config.Global.Platforms.Gitlab.Accounts {
-				accountAccessToken := account.AccessToken
-				accountHostname := account.Hostname
-				if len(account.Hostname) == 0 {
-					accountHostname = constants.DefaultGitlabHostname
+				name := account.Name
+				if len(name) == 0 {
+					name = "unnamed"
 				}
-				if len(accountAccessToken) == 0 {
-
-					log.Println("skipping '%s'@'%s': access token was not specified", account.Name, accountHostname)
+				hostname := account.Hostname
+				if len(account.Hostname) == 0 {
+					hostname = constants.DefaultGitlabHostname
+				}
+				accessToken := account.AccessToken
+				if len(accessToken) == 0 {
+					log.Infof("skipping '%s'@'%s': access token was not specified", name, hostname)
 					continue
 				}
-				if accountsEncountered[accountAccessToken] == nil {
-					accountsEncountered[accountAccessToken] = true
-					log.Printf("account information for '%s'@'%s'\n", account.Name, accountHostname)
-					printAccountInfo(accountHostname, accountAccessToken)
+
+				if accountsEncountered[accessToken] == nil {
+					accountsEncountered[accessToken] = true
+					log.Infof("account information for '%s'@'%s'\n", name, hostname)
+					accountInfo, err := gitlab.GetAccount(hostname, accessToken)
+					if err != nil {
+						log.Warnf("unable to retrieve account information for '%s'@'%s'", name, hostname)
+						continue
+					}
+					log.Infof(accountInfo.String())
 					totalAccountsCount++
 				}
 			}
-			log.Printf("total listed projects    : %v", len(config.Global.Platforms.Gitlab.Accounts))
-			log.Printf("total accessible accounts: %v", totalAccountsCount)
+			log.Infof("total listed accounts     : %v", len(config.Global.Platforms.Gitlab.Accounts))
+			log.Infof("total accessible accounts : %v", totalAccountsCount)
 		},
 	}
 	return &cmd
 }
 
-func printAccountInfo(hostname, accessToken string) {
+func printAccountInfo(hostname, accessToken string) error {
 	accountInfo, err := gitlab.GetAccount(hostname, accessToken)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	// litter.Dump(accountInfo)
-	log.Println(accountInfo.String())
+	log.Infof(accountInfo.String())
+	return nil
 }

@@ -1,11 +1,10 @@
 package github
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
+	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/pkg/github"
 )
 
@@ -20,28 +19,24 @@ func GetCommand() *cobra.Command {
 			for _, account := range config.Global.Platforms.Github.Accounts {
 				accountAccessToken := account.AccessToken
 				if len(accountAccessToken) == 0 {
-					log.Println("skipping '%s': access token was not specified", account.Name)
+					log.Infof("skipping '%s': access token was not specified", account.Name)
 					continue
 				}
 				if accountsEncountered[accountAccessToken] == nil {
 					accountsEncountered[accountAccessToken] = true
-					log.Printf("account information for '%s'\n", account.Name)
-					printAccountInfo(accountAccessToken)
+					log.Infof("account information for '%s'\n", account.Name)
+					accountInfo, err := github.GetAccount(accountAccessToken)
+					if err != nil {
+						log.Warnf("failed to retrieve account information for '%s'", account.Name)
+						continue
+					}
+					log.Info(accountInfo.String())
 					totalAccountsCount++
 				}
 			}
-			log.Printf("total listed projects    : %v", len(config.Global.Platforms.Github.Accounts))
-			log.Printf("total accessible accounts: %v", totalAccountsCount)
+			log.Infof("total listed accounts    : %v", len(config.Global.Platforms.Github.Accounts))
+			log.Infof("total accessible accounts: %v", totalAccountsCount)
 		},
 	}
 	return &cmd
-}
-
-func printAccountInfo(accessToken string) {
-	accountInfo, err := github.GetAccount(accessToken)
-	if err != nil {
-		panic(err)
-	}
-	// litter.Dump(accountInfo)
-	log.Println(accountInfo.String())
 }

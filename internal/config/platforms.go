@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/usvc/dev/pkg/github"
-	"github.com/usvc/dev/pkg/gitlab"
+	"github.com/usvc/dev/internal/github"
+	"github.com/usvc/dev/internal/gitlab"
 	"github.com/usvc/dev/pkg/pivotaltracker"
 	"github.com/usvc/dev/pkg/trello"
 )
