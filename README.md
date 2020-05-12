@@ -51,7 +51,7 @@ You can:
 
 ## Via Git Repository
 
-Clone this repository and run `go install ./cmd/dev`.
+Clone this repository and run `make install_local`.
 
 ## Other Ways
 

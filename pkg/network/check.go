@@ -26,6 +26,15 @@ type Check struct {
 	observed     *http.Response
 }
 
+// GetObserved returns the response object from the check; if no check has
+// been performed yet, the http.Response will be of zero value with an error
+func (c *Check) GetObserved() (http.Response, error) {
+	if c.observed == nil {
+		return http.Response{}, fmt.Errorf("network check to '%s' has not been run yet", c.URL)
+	}
+	return *c.observed, nil
+}
+
 // Run executes the target network check and places the response in the
 // .observed property (used by .Verify to check if the check succeeded); Run
 // will return an error on any network issues that result in the .observed

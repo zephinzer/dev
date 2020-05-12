@@ -9,8 +9,6 @@ import (
 	"github.com/usvc/dev/internal/config"
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/pkg/utils"
-	"github.com/usvc/dev/pkg/validator"
 )
 
 func GetCommand() *cobra.Command {
@@ -46,34 +44,16 @@ func Run(command *cobra.Command, args []string) {
 		if len(repository.Name) > 0 {
 			repositoryName = repository.Name
 		}
-		log.Infof("processing repository '%s': %s", repositoryName, repository.Description)
-		var localPath string
-		if validator.IsGitHTTPUrl(repository.CloneURL) || validator.IsGitSSHUrl(repository.CloneURL) {
-			parsedURL, parseError := validator.ParseURL(repository.CloneURL)
-			if parseError != nil {
-				log.Warnf("failed to parse clone url '%s'", repository.CloneURL)
-				continue
-			}
-			localPath = path.Join(homeDir, parsedURL.Hostname, parsedURL.User, parsedURL.Path)
-		} else if _, parseError := validator.ParseURL(repository.CloneURL); parseError != nil {
-			log.Warnf("failed to parse url '%s'", repository.CloneURL)
+		localPath, getPathError := repository.GetPath(homeDir)
+		if getPathError != nil {
+			log.Warnf("failed to process local path '%s': %s", repositoryName, getPathError)
 			continue
-		} else {
-			cloneURL, getCloneURLError := utils.GetSshCloneUrlFromHttpLinkUrl(repository.CloneURL)
-			if getCloneURLError != nil {
-				log.Warnf("failed to convert '%s' to a git SSH clone URL", repository.CloneURL)
-				continue
-			}
-			parsedURL, parseError := validator.ParseURL(cloneURL)
-			if parseError != nil {
-				log.Warnf("failed to parse clone url '%s'", cloneURL)
-				continue
-			}
-			localPath = path.Join(homeDir, parsedURL.Hostname, parsedURL.User, parsedURL.Path)
 		}
+		repositoryExistsLocally := false
+
+		log.Infof("processing repository '%s': %s", repositoryName, repository.Description)
 		log.Debugf("  url : %s", repository.CloneURL)
 		log.Debugf("  path: %s", localPath)
-		repositoryExistsLocally := false
 		fileInfo, lstatError := os.Stat(path.Join(localPath, "/.git"))
 		if lstatError != nil {
 			if !os.IsNotExist(lstatError) {
@@ -85,7 +65,7 @@ func Run(command *cobra.Command, args []string) {
 			repositoryExistsLocally = fileInfo.IsDir()
 		}
 		if repositoryExistsLocally {
-			log.Debugf("repository '%s' exists", repositoryName)
+			log.Infof("repository '%s' already exists, skipping...", repositoryName)
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
 			_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{
@@ -99,7 +79,5 @@ func Run(command *cobra.Command, args []string) {
 			log.Infof("repository '%s' successfully set up at '%s'", repository.CloneURL, localPath)
 		}
 	}
-	if errorCount > 0 {
-		os.Exit(errorCount)
-	}
+	os.Exit(errorCount)
 }

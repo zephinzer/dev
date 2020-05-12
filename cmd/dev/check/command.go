@@ -16,11 +16,11 @@ func GetCommand() *cobra.Command {
 		Short:   "perform system checks using provided configuration",
 		Run: func(command *cobra.Command, args []string) {
 			if len(args) == 0 {
-				log.Print("running network checks...")
+				log.Print("running network checks...\n")
 				network.GetCommand().Run(command, args)
-				log.Print("running software checks...")
+				log.Print("running software checks...\n")
 				software.GetCommand().Run(command, args)
-				log.Print("running repository checks...")
+				log.Print("running repository checks...\n")
 				repositories.GetCommand().Run(command, args)
 				return
 			}

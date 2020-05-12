@@ -30,6 +30,7 @@ func Run(command *cobra.Command, args []string) {
 
 	for _, nw := range config.Global.Networks {
 		waiter.Add(1)
+
 		// using goroutines so they can happen asynchronously
 		go func(network network.Network) {
 			var networkCheckLog strings.Builder
@@ -39,6 +40,7 @@ func Run(command *cobra.Command, args []string) {
 			} else if verifyError := network.Check.Verify(); verifyError != nil {
 				networkCheckLog.WriteString(fmt.Sprintf("%s", verifyError))
 			}
+
 			if networkCheckLog.Len() == 0 {
 				log.Printf(constants.CheckSuccessFormat, network.Name)
 				log.Printf("connected to %s", network.Check.URL)

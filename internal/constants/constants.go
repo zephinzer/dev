@@ -67,4 +67,6 @@ var (
 	TelegramAliases             = []string{"tg", "t.me"}
 	WorkCanonicalNoun           = "work"
 	WorkAliases                 = []string{"stories", "tasks", "tickets", "w"}
+	WorkspaceCanonicalNoun      = "workspace"
+	WorkspaceAliases            = []string{"ws"}
 )

@@ -7,6 +7,7 @@ import (
 	"github.com/usvc/dev/cmd/dev/get/notifications"
 	"github.com/usvc/dev/cmd/dev/get/sysinfo"
 	"github.com/usvc/dev/cmd/dev/get/work"
+	"github.com/usvc/dev/cmd/dev/get/workspace"
 	"github.com/usvc/dev/internal/constants"
 )
 
@@ -24,5 +25,6 @@ func GetCommand() *cobra.Command {
 	cmd.AddCommand(notifications.GetCommand())
 	cmd.AddCommand(sysinfo.GetCommand())
 	cmd.AddCommand(work.GetCommand())
+	cmd.AddCommand(workspace.GetCommand())
 	return &cmd
 }
