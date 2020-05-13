@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/usvc/dev/internal/constants"
 )
 
 // Check represents a network check
@@ -44,7 +46,11 @@ func (c *Check) Run() error {
 	client := http.Client{
 		Timeout: time.Second * 10,
 	}
-	request, err := http.NewRequest(c.Method, c.URL, nil)
+	method := c.Method
+	if len(method) == 0 {
+		method = constants.DefaultNetworkCheckMethod
+	}
+	request, err := http.NewRequest(method, c.URL, nil)
 	if err != nil {
 		return err
 	}

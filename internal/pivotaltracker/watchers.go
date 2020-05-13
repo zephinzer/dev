@@ -3,19 +3,25 @@ package pivotaltracker
 import (
 	"time"
 
+	"github.com/usvc/dev/internal/log"
 	"github.com/usvc/dev/internal/types"
+	pkgpivotaltracker "github.com/usvc/dev/pkg/pivotaltracker"
 )
 
-type Notifications []types.Notification
-
-func WatchNotifications(updateInterval time.Duration, stop chan struct{}) chan Notifications {
-	notificationsChannel := make(chan Notifications, 1)
+func WatchNotifications(
+	accessToken string,
+	fromProjects pkgpivotaltracker.Projects,
+	updateInterval time.Duration,
+	stop chan struct{},
+) chan types.Notification {
+	notificationsChannel := make(chan types.Notification, 1)
 	go func(tick <-chan time.Time) {
 		for {
 			select {
 			case <-tick:
+				log.Trace("pivotal tracker notifications watcher triggered")
 				// TODO - implement code to retrieve notifications
-				notificationsChannel <- []types.Notification{PlaceholderNotification{}}
+				notificationsChannel <- PlaceholderNotification{}
 			case <-stop:
 				return
 			}
