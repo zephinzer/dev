@@ -7,6 +7,7 @@
     - [Array2go](#array2go)
     - [`rsrc`](#rsrc)
     - [SQLite3 CLI](#sqlite3-cli)
+      - [Common Commands](#common-commands)
 - [Building](#building)
   - [General build notes](#general-build-notes)
   - [Build notes for Linux](#build-notes-for-linux)
@@ -58,6 +59,13 @@ The local database uses SQLite3, to install it run the install for your appropri
 | MacOS | `brew install sqlite3` |
 | Windows | `choco install sqlite` |
 | Alpine | `apk add sqlite` |
+
+#### Common Commands
+
+| Action | Command |
+| --- | --- |
+| Show tables | `.tables` |
+| Describe table | `.schema table_name` |
 
 # Building
 

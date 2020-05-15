@@ -2,6 +2,7 @@ package pivotaltracker
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"time"
@@ -19,7 +20,6 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	query := targetURL.Query()
 	query.Add("notification_types", ":all")
 	if len(since) > 0 {
-		query.Add("created_after", since[0].Format(constants.PivotalTrackerAPITimeFormat))
 		query.Add("updated_after", since[0].Format(constants.PivotalTrackerAPITimeFormat))
 	}
 	targetURL.RawQuery = query.Encode()
@@ -38,7 +38,7 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	var response APIv5NotificationsResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		return nil, unmarshalError
+		return nil, fmt.Errorf("failed to unmarshal json: %s\n\noriginal text: %s", unmarshalError, string(responseBody))
 	}
 	return &response, nil
 }

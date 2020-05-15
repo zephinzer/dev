@@ -12,8 +12,8 @@ func GetCommand() *cobra.Command {
 		Use:     constants.StartCanonicalVerb,
 		Aliases: constants.StartAliases,
 		Short:   "starts dev as a long-running background process",
-		Run: func(command *cobra.Command, _ []string) {
-			client.GetCommand().Execute()
+		Run: func(command *cobra.Command, args []string) {
+			client.GetCommand().Run(command, args)
 		},
 	}
 	cmd.AddCommand(server.GetCommand())

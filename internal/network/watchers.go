@@ -7,17 +7,10 @@ import (
 
 	"github.com/usvc/dev/internal/constants"
 	"github.com/usvc/dev/internal/log"
+	"github.com/usvc/dev/internal/notifications"
 	"github.com/usvc/dev/internal/types"
 	pkgnetwork "github.com/usvc/dev/pkg/network"
 )
-
-type ConnectionNotification struct {
-	title   string
-	message string
-}
-
-func (cn ConnectionNotification) GetTitle() string   { return cn.title }
-func (cn ConnectionNotification) GetMessage() string { return cn.message }
 
 func WatchConnections(
 	networks []pkgnetwork.Network,
@@ -81,15 +74,15 @@ func WatchConnections(
 						}
 						if stateChanged && !isInitialRun {
 							if _, ok := isOnline[networkName]; ok {
-								notificationsChannel <- ConnectionNotification{
+								notificationsChannel <- notifications.New(
 									"Network change detected",
 									fmt.Sprintf("Network [ %s ] is now ONLINE", networkName),
-								}
+								)
 							} else if _, ok := isOffline[networkName]; ok {
-								notificationsChannel <- ConnectionNotification{
+								notificationsChannel <- notifications.New(
 									"Network change detected",
 									fmt.Sprintf("Network [ %s ] is now OFFLINE", networkName),
-								}
+								)
 							}
 						}
 						waiter.Done()
