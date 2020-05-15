@@ -33,7 +33,7 @@ unit test:
   variables:
     BIN_NAME: dev
   before_script: ["git fetch"]
-  script: ["entrypoint"]
+  script: ["make", "build_production"]
 .build_linux:
   extends: .build
   variables:

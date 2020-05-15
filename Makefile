@@ -18,6 +18,9 @@ setup_build:
 	go get github.com/cratonica/2goarray
 	# this is required to compile manifest resources for windows
 	go get github.com/akavel/rsrc
+	# these are required to compile dev without cgo
+	go install github.com/mattn/go-sqlite3
+	go install github.com/getlantern/systray
 setup_build_linux:
 	if ! apt-get --version >/dev/null; then \
 		sudo apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev; \
@@ -43,7 +46,7 @@ build:
 	cd ./bin \
 		&& ln -s ./$(BIN_PATH) ./$(CMD_ROOT)
 build_production:
-	go build -a -v -mod=vendor \
+	go build -a -v \
 		-ldflags "-X main.Commit=$(GIT_COMMIT) \
 			-X main.Version=$(GIT_TAG) \
 			-X main.Timestamp=$(TIMESTAMP) \
