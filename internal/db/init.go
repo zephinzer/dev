@@ -20,18 +20,6 @@ func Init(atPath string) error {
 		}
 		directory = path.Join(cwd, directory)
 	}
-	dirInfo, checkDirectoryError := os.Lstat(directory)
-	if checkDirectoryError == nil {
-		if !dirInfo.IsDir() {
-			return fmt.Errorf("path %s appears to already exist as a file", directory)
-		}
-	} else if checkDirectoryError != os.ErrNotExist {
-		return fmt.Errorf("failed to run checks on path %s: %s", directory, checkDirectoryError)
-	}
-	if makeDirectoryError := os.MkdirAll(directory, os.ModePerm); makeDirectoryError != nil {
-		return fmt.Errorf("failed to create directories leading up to %s: %s", directory, makeDirectoryError)
-	}
-
 	filename := filepath.Base(atPath)
 	fullPath := path.Join(directory, filename)
 	fullPathInfo, checkFileError := os.Lstat(fullPath)

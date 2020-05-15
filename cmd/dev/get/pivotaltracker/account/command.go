@@ -1,4 +1,4 @@
-package pivotaltracker
+package account
 
 import (
 	"github.com/spf13/cobra"
@@ -17,8 +17,8 @@ var conf = cf.Map{
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     constants.PivotalTrackerCanonicalNoun,
-		Aliases: constants.PivotalTrackerAliases,
+		Use:     constants.AccountCanonicalNoun,
+		Aliases: constants.AccountAliases,
 		Short:   "Retrieves account information from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
 			totalAccountsCount := 0

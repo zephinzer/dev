@@ -24,7 +24,7 @@ var (
 	DefaultSystrayIcon = SystrayIconLight
 
 	AccountCanonicalNoun        = "account"
-	AccountAliases              = []string{"accounts", "acc", "accs", "a"}
+	AccountAliases              = []string{"accounts", "acct", "accts", "acc", "accs", "a"}
 	CheckCanonicalVerb          = "check"
 	CheckAliases                = []string{"c", "verify"}
 	ClientCanonicalNoun         = "client"
@@ -69,6 +69,8 @@ var (
 	SystemInfoAliases           = []string{"system-info", "system", "si"}
 	TelegramCanonicalNoun       = "telegram"
 	TelegramAliases             = []string{"tg", "t.me"}
+	TrelloCanonicalNoun         = "trello"
+	TrelloAliases               = []string{"tr"}
 	WorkCanonicalNoun           = "work"
 	WorkAliases                 = []string{"stories", "tasks", "tickets", "w"}
 	WorkspaceCanonicalNoun      = "workspace"

@@ -1,4 +1,4 @@
-package trello
+package account
 
 import (
 	"log"
@@ -6,13 +6,14 @@ import (
 	"github.com/sanity-io/litter"
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/pkg/trello"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "trello",
-		Aliases: []string{"tr"},
+		Use:     constants.AccountCanonicalNoun,
+		Aliases: constants.AccountAliases,
 		Short:   "Retrieves account information from Trello",
 		Run: func(command *cobra.Command, args []string) {
 			totalAccountsCount := 0

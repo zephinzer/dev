@@ -1,4 +1,4 @@
-package gitlab
+package account
 
 import (
 	"github.com/spf13/cobra"
@@ -10,22 +10,23 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     constants.GitlabCanonicalNoun,
-		Aliases: constants.GitlabAliases,
+		Use:     constants.AccountCanonicalNoun,
+		Aliases: constants.AccountAliases,
 		Short:   "Retrieves account information from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
-			for _, account := range config.Global.Platforms.Gitlab.Accounts {
-				name := account.Name
+
+			for _, gitlabAccount := range config.Global.Platforms.Gitlab.Accounts {
+				name := gitlabAccount.Name
 				if len(name) == 0 {
 					name = "unnamed"
 				}
-				hostname := account.Hostname
-				if len(account.Hostname) == 0 {
+				hostname := gitlabAccount.Hostname
+				if len(gitlabAccount.Hostname) == 0 {
 					hostname = constants.DefaultGitlabHostname
 				}
-				accessToken := account.AccessToken
+				accessToken := gitlabAccount.AccessToken
 				if len(accessToken) == 0 {
 					log.Infof("skipping '%s'@'%s': access token was not specified", name, hostname)
 					continue

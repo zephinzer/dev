@@ -103,6 +103,9 @@ func (n APIv1MemberNotification) String() string {
 	case "mentionedOnCard":
 		return fmt.Sprintf("[%s/%s]\n  - you were mentioned by %s (@%s) about %s\n  - link: https://trello.com/c/%s/", n.Data.Board.Name, n.Data.Card.Name, n.MemberCreator.FullName, n.MemberCreator.Username, datetime, n.Data.Card.ShortLink)
 	case "changeCard":
+		if n.Data.ListAfter == nil {
+			return fmt.Sprintf("[%s/%s]\n  - card was changed by %s (@%s) about %s\n  - link: https://trello.com/c/%s/", n.Data.Board.Name, n.Data.Card.Name, n.MemberCreator.FullName, n.MemberCreator.Username, datetime, n.Data.Card.ShortLink)
+		}
 		return fmt.Sprintf("[%s/%s]\n  - card was shifted to %s by %s (@%s) about %s\n  - link: https://trello.com/c/%s/", n.Data.Board.Name, n.Data.Card.Name, n.Data.ListAfter.Name, n.MemberCreator.FullName, n.MemberCreator.Username, datetime, n.Data.Card.ShortLink)
 	case "removedFromBoard":
 		return fmt.Sprintf("[%s/**]\n  - you were removed by %s (@%s) about %s\n  - link: https://trello.com/b/%s/", n.Data.Board.Name, n.MemberCreator.FullName, n.MemberCreator.Username, datetime, n.Data.Board.ShortLink)

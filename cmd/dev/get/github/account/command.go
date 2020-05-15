@@ -1,4 +1,4 @@
-package github
+package account
 
 import (
 	"github.com/spf13/cobra"
@@ -10,24 +10,25 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     constants.GithubCanonicalNoun,
-		Aliases: constants.GithubAliases,
+		Use:     constants.AccountCanonicalNoun,
+		Aliases: constants.AccountAliases,
 		Short:   "Retrieves account information from Github",
 		Run: func(command *cobra.Command, args []string) {
 			totalAccountsCount := 0
 			accountsEncountered := map[string]interface{}{}
-			for _, account := range config.Global.Platforms.Github.Accounts {
-				accountAccessToken := account.AccessToken
+			for _, githubAccount := range config.Global.Platforms.Github.Accounts {
+				accountName := githubAccount.Name
+				accountAccessToken := githubAccount.AccessToken
 				if len(accountAccessToken) == 0 {
-					log.Infof("skipping '%s': access token was not specified", account.Name)
+					log.Infof("skipping '%s': access token was not specified", accountName)
 					continue
 				}
 				if accountsEncountered[accountAccessToken] == nil {
 					accountsEncountered[accountAccessToken] = true
-					log.Infof("account information for '%s'\n", account.Name)
+					log.Infof("account information for '%s'\n", accountName)
 					accountInfo, err := github.GetAccount(accountAccessToken)
 					if err != nil {
-						log.Warnf("failed to retrieve account information for '%s'", account.Name)
+						log.Warnf("failed to retrieve account information for '%s'", accountName)
 						continue
 					}
 					log.Info(accountInfo.String())

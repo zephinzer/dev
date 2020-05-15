@@ -77,10 +77,10 @@ dev check networks; # checks if required network access is available
 dev check repositories; # checks if required repositories are available locally
 
 # retrieving account information 
-dev get account github; # from github
-dev get account gitlab; # from gitlab
-dev get account pivotaltracker; # from pivotal tracker
-dev get account trello; # from trello
+dev get github account; # from github
+dev get gitlab account; # from gitlab
+dev get pivotaltracker account; # from pivotal tracker
+dev get trello account; # from trello
 
 # retrieve consumed configuration
 dev get config;
