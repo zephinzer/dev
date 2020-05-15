@@ -2,10 +2,10 @@ package notifications
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/get/notifications/gitlab"
-	"github.com/usvc/dev/cmd/dev/get/notifications/pivotaltracker"
-	"github.com/usvc/dev/cmd/dev/get/notifications/trello"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/get/notifications/gitlab"
+	"github.com/zephinzer/dev/cmd/dev/get/notifications/pivotaltracker"
+	"github.com/zephinzer/dev/cmd/dev/get/notifications/trello"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

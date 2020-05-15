@@ -1,5 +1,5 @@
 package config
 
-import "github.com/usvc/dev/pkg/network"
+import "github.com/zephinzer/dev/pkg/network"
 
 type Networks []network.Network

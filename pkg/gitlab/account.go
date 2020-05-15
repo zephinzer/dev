@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetAccount(hostname, accessToken string) (*APIv4UserResponse, error) {

@@ -2,9 +2,9 @@ package start
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/start/client"
-	"github.com/usvc/dev/cmd/dev/start/server"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/start/client"
+	"github.com/zephinzer/dev/cmd/dev/start/server"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

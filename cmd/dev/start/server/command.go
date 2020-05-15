@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
 	cf "github.com/usvc/go-config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 var conf = cf.Map{

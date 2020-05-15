@@ -8,9 +8,9 @@ import (
 
 	"github.com/jroimartin/gocui"
 	"github.com/sahilm/fuzzy"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 var g *gocui.Gui

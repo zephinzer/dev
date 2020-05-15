@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/check"
-	"github.com/usvc/dev/cmd/dev/debug"
-	"github.com/usvc/dev/cmd/dev/get"
-	"github.com/usvc/dev/cmd/dev/go_to"
-	"github.com/usvc/dev/cmd/dev/initialise"
-	"github.com/usvc/dev/cmd/dev/install"
-	"github.com/usvc/dev/cmd/dev/open"
-	"github.com/usvc/dev/cmd/dev/start"
-	"github.com/usvc/dev/internal/constants"
 	configuration "github.com/usvc/go-config"
+	"github.com/zephinzer/dev/cmd/dev/check"
+	"github.com/zephinzer/dev/cmd/dev/debug"
+	"github.com/zephinzer/dev/cmd/dev/get"
+	"github.com/zephinzer/dev/cmd/dev/go_to"
+	"github.com/zephinzer/dev/cmd/dev/initialise"
+	"github.com/zephinzer/dev/cmd/dev/install"
+	"github.com/zephinzer/dev/cmd/dev/open"
+	"github.com/zephinzer/dev/cmd/dev/start"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 var (

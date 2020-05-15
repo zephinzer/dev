@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/internal/pivotaltracker"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/internal/pivotaltracker"
 )
 
 func GetCommand() *cobra.Command {

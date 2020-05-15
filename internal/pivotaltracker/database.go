@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/usvc/dev/internal/db"
-	pkgpivotaltracker "github.com/usvc/dev/pkg/pivotaltracker"
+	"github.com/zephinzer/dev/internal/db"
+	pkgpivotaltracker "github.com/zephinzer/dev/pkg/pivotaltracker"
 )
 
 const (

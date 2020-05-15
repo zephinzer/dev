@@ -2,8 +2,8 @@ package install
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/install/repository"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/install/repository"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

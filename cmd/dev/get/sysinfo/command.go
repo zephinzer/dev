@@ -10,8 +10,8 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func GetCommand() *cobra.Command {

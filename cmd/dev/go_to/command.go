@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/pkg/validator"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/pkg/validator"
 )
 
 func GetCommand() *cobra.Command {

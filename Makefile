@@ -1,5 +1,5 @@
 CMD_ROOT=dev
-DOCKER_NAMESPACE=usvc
+DOCKER_NAMESPACE=zephinzer
 DOCKER_IMAGE_NAME=dev
 PROJECT_NAME=dev
 GIT_COMMIT=$$(git rev-parse --verify HEAD)
@@ -90,7 +90,7 @@ dockerhub:
 	docker push $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
 
 see_ci:
-	xdg-open https://gitlab.com/usvc/utils/dev/pipelines
+	xdg-open https://gitlab.com/zephinzer/dev/pipelines
 
 .ssh:
 	mkdir -p ./.ssh

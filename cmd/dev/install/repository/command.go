@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func GetCommand() *cobra.Command {

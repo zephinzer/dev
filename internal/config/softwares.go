@@ -1,5 +1,5 @@
 package config
 
-import "github.com/usvc/dev/pkg/software"
+import "github.com/zephinzer/dev/pkg/software"
 
 type Softwares []software.Software

@@ -7,15 +7,15 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/db"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/internal/network"
-	"github.com/usvc/dev/internal/notifications"
-	"github.com/usvc/dev/internal/pivotaltracker"
-	"github.com/usvc/dev/internal/systemtray"
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/db"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/internal/network"
+	"github.com/zephinzer/dev/internal/notifications"
+	"github.com/zephinzer/dev/internal/pivotaltracker"
+	"github.com/zephinzer/dev/internal/systemtray"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetCommand() *cobra.Command {

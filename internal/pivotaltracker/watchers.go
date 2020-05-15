@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/internal/notifications"
-	"github.com/usvc/dev/internal/types"
-	pkgpivotaltracker "github.com/usvc/dev/pkg/pivotaltracker"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/internal/notifications"
+	"github.com/zephinzer/dev/internal/types"
+	pkgpivotaltracker "github.com/zephinzer/dev/pkg/pivotaltracker"
 )
 
 func WatchNotifications(

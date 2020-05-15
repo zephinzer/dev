@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetNotifications(accessKey, accessToken string) (*APIv1MemberNotificationResponse, error) {

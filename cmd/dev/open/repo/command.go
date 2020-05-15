@@ -5,10 +5,10 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/pkg/utils"
-	"github.com/usvc/dev/pkg/validator"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/validator"
 )
 
 const (

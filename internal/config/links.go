@@ -1,5 +1,5 @@
 package config
 
-import "github.com/usvc/dev/internal/link"
+import "github.com/zephinzer/dev/internal/link"
 
 type Links []link.Link

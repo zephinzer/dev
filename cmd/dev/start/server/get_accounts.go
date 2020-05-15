@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ghodss/yaml"
-	"github.com/usvc/dev/internal/config"
+	"github.com/zephinzer/dev/internal/config"
 )
 
 func getAccountsHandler(res http.ResponseWriter, req *http.Request) {

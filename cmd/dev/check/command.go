@@ -2,11 +2,11 @@ package check
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/check/network"
-	"github.com/usvc/dev/cmd/dev/check/repositories"
-	"github.com/usvc/dev/cmd/dev/check/software"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/cmd/dev/check/network"
+	"github.com/zephinzer/dev/cmd/dev/check/repositories"
+	"github.com/zephinzer/dev/cmd/dev/check/software"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func GetCommand() *cobra.Command {

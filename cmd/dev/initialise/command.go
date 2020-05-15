@@ -2,10 +2,10 @@ package initialise
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/initialise/database"
-	"github.com/usvc/dev/cmd/dev/initialise/pivotaltracker"
-	"github.com/usvc/dev/cmd/dev/initialise/telegram"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/initialise/database"
+	"github.com/zephinzer/dev/cmd/dev/initialise/pivotaltracker"
+	"github.com/zephinzer/dev/cmd/dev/initialise/telegram"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

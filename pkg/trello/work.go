@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetBoards(accessKey, accessToken string) (*APIv1BoardsResponse, error) {

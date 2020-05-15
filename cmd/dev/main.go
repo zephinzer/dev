@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func main() {

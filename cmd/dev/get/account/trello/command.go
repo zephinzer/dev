@@ -5,8 +5,8 @@ import (
 
 	"github.com/sanity-io/litter"
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/pkg/trello"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/pkg/trello"
 )
 
 func GetCommand() *cobra.Command {

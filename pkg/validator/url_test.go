@@ -22,31 +22,31 @@ func TestValidator(t *testing.T) {
 
 func (s *ValidatorTests) TestIsGitHTTPUrl() {
 	regex := regexp.MustCompile(RegexForGitHTTP)
-	givenURL := "http://gitlab.com/usvc/utils/dev.git"
+	givenURL := "http://gitlab.com/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
 		[]string{"http", "", "", "gitlab.com", "", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "https://gitlab.com/usvc/utils/dev.git"
+	givenURL = "https://gitlab.com/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
 		[]string{"https", "", "", "gitlab.com", "", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "https://gitlab.com:12345/usvc/utils/dev.git"
+	givenURL = "https://gitlab.com:12345/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
 		[]string{"https", "", "", "gitlab.com", "12345", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "https://username@gitlab.com:12345/usvc/utils/dev.git"
+	givenURL = "https://username@gitlab.com:12345/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
 		[]string{"https", "username", "", "gitlab.com", "12345", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "https://username:password@gitlab.com:12345/usvc/utils/dev.git"
+	givenURL = "https://username:password@gitlab.com:12345/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
 		[]string{"https", "username", "password", "gitlab.com", "12345", "usvc", "utils/dev"},
@@ -56,34 +56,34 @@ func (s *ValidatorTests) TestIsGitHTTPUrl() {
 
 func (s *ValidatorTests) TestIsGitSSHURL() {
 	regex := regexp.MustCompile(RegexForGitSSH)
-	givenURL := "git@gitlab.com:usvc/utils/dev.git"
+	givenURL := "git@gitlab.com:zephinzer/dev.git"
 	s.True(IsGitSSHUrl(givenURL))
 	s.Equal(
 		[]string{"git", "gitlab.com", "", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "git@gitlab.com:22/usvc/utils/dev.git"
+	givenURL = "git@gitlab.com:22/zephinzer/dev.git"
 	s.True(IsGitSSHUrl(givenURL))
 	s.Equal(
 		[]string{"git", "gitlab.com", "22", "usvc", "utils/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "git@gitlab.com:22a/usvc/utils/dev.git"
+	givenURL = "git@gitlab.com:22a/zephinzer/dev.git"
 	s.True(IsGitSSHUrl(givenURL))
 	s.Equal(
-		[]string{"git", "gitlab.com", "", "22a", "usvc/utils/dev"},
+		[]string{"git", "gitlab.com", "", "22a", "zephinzer/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
-	givenURL = "git@gitlab.com:a22/usvc/utils/dev.git"
+	givenURL = "git@gitlab.com:a22/zephinzer/dev.git"
 	s.True(IsGitSSHUrl(givenURL))
 	s.Equal(
-		[]string{"git", "gitlab.com", "", "a22", "usvc/utils/dev"},
+		[]string{"git", "gitlab.com", "", "a22", "zephinzer/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP() {
-	given := "https://gitlab.com/usvc/utils/dev.git"
+	given := "https://gitlab.com/zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "https",
 		Hostname: "gitlab.com",
@@ -108,11 +108,11 @@ func (s *ValidatorTests) TestParseURL_Custom() {
 }
 
 func (s *ValidatorTests) TestParseURL_HTTP() {
-	given := "http://gitlab.com/usvc/utils/dev"
+	given := "http://gitlab.com/zephinzer/dev"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
-		Path:     "/usvc/utils/dev",
+		Path:     "/zephinzer/dev",
 	}
 	observed, err := ParseURL(given)
 	s.Nil(err)
@@ -120,12 +120,12 @@ func (s *ValidatorTests) TestParseURL_HTTP() {
 }
 
 func (s *ValidatorTests) TestParseURL_HTTP_withPort() {
-	given := "http://gitlab.com:123456/usvc/utils/dev"
+	given := "http://gitlab.com:123456/zephinzer/dev"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
 		Port:     "123456",
-		Path:     "/usvc/utils/dev",
+		Path:     "/zephinzer/dev",
 	}
 	observed, err := ParseURL(given)
 	s.Nil(err)
@@ -133,11 +133,11 @@ func (s *ValidatorTests) TestParseURL_HTTP_withPort() {
 }
 
 func (s *ValidatorTests) TestParseURL_HTTP_withQueryParameters() {
-	given := "http://gitlab.com/usvc/utils/dev?a=1&b=hello world, love, dev"
+	given := "http://gitlab.com/zephinzer/dev?a=1&b=hello world, love, dev"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
-		Path:     "/usvc/utils/dev",
+		Path:     "/zephinzer/dev",
 		Query:    "a=1&b=hello+world%2C+love%2C+dev",
 	}
 	observed, err := ParseURL(given)
@@ -150,11 +150,11 @@ func (s *ValidatorTests) TestParseURL_HTTP_withQueryParameters() {
 }
 
 func (s *ValidatorTests) TestParseURL_HTTP_withUsernameCredentials() {
-	given := "http://username@gitlab.com/usvc/utils/dev"
+	given := "http://username@gitlab.com/zephinzer/dev"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
-		Path:     "/usvc/utils/dev",
+		Path:     "/zephinzer/dev",
 		Username: "username",
 	}
 	observed, err := ParseURL(given)
@@ -163,11 +163,11 @@ func (s *ValidatorTests) TestParseURL_HTTP_withUsernameCredentials() {
 }
 
 func (s *ValidatorTests) TestParseURL_HTTP_withFullCredentials() {
-	given := "http://username:password@gitlab.com/usvc/utils/dev"
+	given := "http://username:password@gitlab.com/zephinzer/dev"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
-		Path:     "/usvc/utils/dev",
+		Path:     "/zephinzer/dev",
 		Username: "username",
 		Password: "password",
 	}
@@ -177,7 +177,7 @@ func (s *ValidatorTests) TestParseURL_HTTP_withFullCredentials() {
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_insecure() {
-	given := "http://gitlab.com/usvc/utils/dev.git"
+	given := "http://gitlab.com/zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
@@ -190,7 +190,7 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_insecure() {
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_withCredentials() {
-	given := "https://username:password@gitlab.com/usvc/utils/dev.git"
+	given := "https://username:password@gitlab.com/zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "https",
 		Username: "username",
@@ -205,7 +205,7 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_withCredentials() {
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_withPorts() {
-	given := "https://gitlab.com:443/usvc/utils/dev.git"
+	given := "https://gitlab.com:443/zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "https",
 		Hostname: "gitlab.com",
@@ -219,7 +219,7 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_withPorts() {
 }
 
 func (s *ValidatorTests) TestParseURL_GitSSH() {
-	given := "git@gitlab.com:usvc/utils/dev.git"
+	given := "git@gitlab.com:zephinzer/dev.git"
 	expected := &URL{
 		Username: "git",
 		Hostname: "gitlab.com",
@@ -232,7 +232,7 @@ func (s *ValidatorTests) TestParseURL_GitSSH() {
 }
 
 func (s *ValidatorTests) TestParseURL_GitSSH_withPort() {
-	given := "git@gitlab.com:8888/usvc/utils/dev.git"
+	given := "git@gitlab.com:8888/zephinzer/dev.git"
 	expected := &URL{
 		Username: "git",
 		Hostname: "gitlab.com",

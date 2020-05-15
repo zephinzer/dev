@@ -7,8 +7,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 // GetNotifs returns a user's current notifications

@@ -19,7 +19,7 @@
 
 ## Getting started
 
-1. Clone this repository using `git clone git@gitlab.com:usvc/utils/dev.git`
+1. Clone this repository using `git clone git@gitlab.com:zephinzer/dev.git`
 2. Install dependencies using `make deps`
 3. Create a local development configuration file at `./dev.yaml` relative to the project root containing [the sample configuration file](#sample-configuration-file)
 

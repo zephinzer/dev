@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
-	iworkspace "github.com/usvc/dev/internal/workspace"
-	"github.com/usvc/dev/pkg/repository"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	iworkspace "github.com/zephinzer/dev/internal/workspace"
+	"github.com/zephinzer/dev/pkg/repository"
 )
 
 func GetCommand() *cobra.Command {

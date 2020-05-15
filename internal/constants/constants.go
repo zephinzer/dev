@@ -1,8 +1,8 @@
 package constants
 
 const (
-	CanonicalRepositoryURL     = "https://gitlab.com/usvc/utils/dev"
-	RepositoryURLConfiguration = "https://gitlab.com/usvc/utils/dev/-/blob/master/docs/configuration.md"
+	CanonicalRepositoryURL     = "https://gitlab.com/zephinzer/dev"
+	RepositoryURLConfiguration = "https://gitlab.com/zephinzer/dev/-/blob/master/docs/configuration.md"
 
 	DefaultGitlabHostname      = "gitlab.com"
 	DefaultNetworkCheckMethod  = "GET"

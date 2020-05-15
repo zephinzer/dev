@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/db"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/db"
 )
 
 func GetCommand() *cobra.Command {

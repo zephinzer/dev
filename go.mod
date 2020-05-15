@@ -1,4 +1,4 @@
-module github.com/usvc/dev
+module github.com/zephinzer/dev
 
 go 1.13
 

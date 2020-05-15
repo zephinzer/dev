@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func getRouter() http.Handler {

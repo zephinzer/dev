@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 // Check represents a network check

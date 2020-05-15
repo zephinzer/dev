@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/internal/notifications"
-	"github.com/usvc/dev/internal/types"
-	pkgnetwork "github.com/usvc/dev/pkg/network"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/internal/notifications"
+	"github.com/zephinzer/dev/internal/types"
+	pkgnetwork "github.com/zephinzer/dev/pkg/network"
 )
 
 func WatchConnections(

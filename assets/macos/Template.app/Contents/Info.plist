@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>Dev)</string>
+	<string>Dev</string>
 	<key>CFBundleIdentifier</key>
-	<string>dev.usvc.dev</string>
+	<string>dev.getthat.dev</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

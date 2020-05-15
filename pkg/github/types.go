@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 // APIv3UserResponse defines the response structure from the

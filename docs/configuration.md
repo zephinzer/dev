@@ -100,7 +100,7 @@ links:
     url: https://openvpn.yourdomain.com
   - label: official source-of-truth release repository
     categories: ["scm"]
-    url: https://gitlab.com/usvc/utils/dev
+    url: https://gitlab.com/zephinzer/dev
 ```
 
 ## Platform Integrations

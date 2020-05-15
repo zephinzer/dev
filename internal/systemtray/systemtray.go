@@ -2,8 +2,8 @@ package systemtray
 
 import (
 	"github.com/getlantern/systray"
-	"github.com/usvc/dev/internal/constants"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 type MenuItemType string

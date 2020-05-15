@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetTodos(hostname, accessToken string, since ...time.Time) (*APIv4TodoResponse, error) {

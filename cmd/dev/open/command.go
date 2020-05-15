@@ -2,8 +2,8 @@ package open
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/open/repo"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/open/repo"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

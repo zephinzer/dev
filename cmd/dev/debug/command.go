@@ -2,9 +2,9 @@ package debug
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/cmd/dev/debug/notifications"
-	systemtray "github.com/usvc/dev/cmd/dev/debug/system-tray"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/cmd/dev/debug/notifications"
+	systemtray "github.com/zephinzer/dev/cmd/dev/debug/system-tray"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 func GetCommand() *cobra.Command {

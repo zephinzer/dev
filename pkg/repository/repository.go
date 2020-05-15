@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/usvc/dev/pkg/utils"
-	"github.com/usvc/dev/pkg/validator"
+	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/validator"
 )
 
 // Repository represents a code repo

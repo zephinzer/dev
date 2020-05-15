@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 // ApplyMigrations runs all the `migrations` on the sqlite3 database which

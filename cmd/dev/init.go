@@ -4,8 +4,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/usvc/dev/internal/config"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func initialiseConfiguration() {

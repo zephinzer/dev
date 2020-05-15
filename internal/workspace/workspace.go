@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/usvc/dev/internal/log"
-	"github.com/usvc/dev/pkg/repository"
+	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/pkg/repository"
 )
 
 // Workspace represents a project-scoped set of code repos

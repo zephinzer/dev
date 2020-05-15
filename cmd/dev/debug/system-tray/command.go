@@ -2,8 +2,8 @@ package systemtray
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/usvc/dev/internal/log"
-	systray "github.com/usvc/dev/internal/systemtray"
+	"github.com/zephinzer/dev/internal/log"
+	systray "github.com/zephinzer/dev/internal/systemtray"
 )
 
 func GetCommand() *cobra.Command {

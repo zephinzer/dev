@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/usvc/dev/internal/log"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func applyLoggerMiddleware(next http.Handler) http.Handler {

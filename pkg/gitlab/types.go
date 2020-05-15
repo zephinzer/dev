@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 // APIv4TodoResponse defines the response structure for a call to the Gitlab

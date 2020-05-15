@@ -1,10 +1,10 @@
 package config
 
 import (
-	"github.com/usvc/dev/internal/github"
-	"github.com/usvc/dev/internal/gitlab"
-	"github.com/usvc/dev/pkg/pivotaltracker"
-	"github.com/usvc/dev/pkg/trello"
+	"github.com/zephinzer/dev/internal/github"
+	"github.com/zephinzer/dev/internal/gitlab"
+	"github.com/zephinzer/dev/pkg/pivotaltracker"
+	"github.com/zephinzer/dev/pkg/trello"
 )
 
 // Platforms specifies the configurations available

@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/usvc/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetAccount(accessToken string) (*APIv5MeResponse, error) {

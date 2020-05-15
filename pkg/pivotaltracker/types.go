@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/usvc/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/constants"
 )
 
 // Config defines the structure of the configuration that can be consumed for tracking
