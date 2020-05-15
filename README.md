@@ -1,5 +1,8 @@
 # Dev
 
+[![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)
+![github release (latest semver)](https://img.shields.io/github/v/release/zephinzer/dev)
+
 Pimp your developer experience.
 
 This tool exists to improve the day-to-day work experience of software developers. Use this to:
