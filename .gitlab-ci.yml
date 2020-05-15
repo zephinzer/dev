@@ -33,6 +33,7 @@ unit test:
   variables:
     BIN_NAME: dev
   before_script:
+    - make setup_build_linux
     - make setup_build
     - git fetch
   script: ["make build_production"]
