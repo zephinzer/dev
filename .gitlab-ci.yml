@@ -33,8 +33,7 @@ unit test:
   variables:
     BIN_NAME: dev
   before_script:
-    - make setup_build_linux
-    - make setup_build
+    - apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev
     - git fetch
   script: ["make build_production"]
 .build_linux:
