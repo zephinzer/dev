@@ -74,12 +74,12 @@ version bump:
   image: usvc/ci:version-bump-gitlab
   script: ["entrypoint"]
 
-coverage report:
-  allow_failure: true
-  stage: release
-  dependencies: ["unit test"]
-  image: usvc/ci:go-coverage-code-climate
-  script: ["entrypoint"]
+# coverage report:
+#   allow_failure: true
+#   stage: release
+#   dependencies: ["unit test"]
+#   image: usvc/ci:go-coverage-code-climate
+#   script: ["entrypoint"]
 
 compress:
   stage: package
