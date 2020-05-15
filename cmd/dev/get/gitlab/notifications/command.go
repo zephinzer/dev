@@ -1,4 +1,4 @@
-package gitlab
+package notifications
 
 import (
 	"github.com/spf13/cobra"
@@ -10,8 +10,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     constants.GitlabCanonicalNoun,
-		Aliases: constants.GitlabAliases,
+		Use:     constants.NotificationsCanonicalNoun,
+		Aliases: constants.NotificationsAliases,
 		Short:   "Retrieves notifications from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
 			log.Printf("# notifications from gitlab\n\n")

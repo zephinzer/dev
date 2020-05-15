@@ -2,9 +2,9 @@ package notifications
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/zephinzer/dev/cmd/dev/get/notifications/gitlab"
-	"github.com/zephinzer/dev/cmd/dev/get/notifications/pivotaltracker"
-	"github.com/zephinzer/dev/cmd/dev/get/notifications/trello"
+	gitlab "github.com/zephinzer/dev/cmd/dev/get/gitlab/notifications"
+	pivotaltracker "github.com/zephinzer/dev/cmd/dev/get/pivotaltracker/notifications"
+	trello "github.com/zephinzer/dev/cmd/dev/get/trello/notifications"
 	"github.com/zephinzer/dev/internal/constants"
 )
 
@@ -17,8 +17,21 @@ func GetCommand() *cobra.Command {
 			command.Help()
 		},
 	}
-	cmd.AddCommand(gitlab.GetCommand())
-	cmd.AddCommand(pivotaltracker.GetCommand())
-	cmd.AddCommand(trello.GetCommand())
+
+	gitlabCommand := gitlab.GetCommand()
+	gitlabCommand.Use = constants.GitlabCanonicalNoun
+	gitlabCommand.Aliases = constants.GitlabAliases
+	cmd.AddCommand()
+
+	pivotaltrackerCommand := pivotaltracker.GetCommand()
+	pivotaltrackerCommand.Use = constants.PivotalTrackerCanonicalNoun
+	pivotaltrackerCommand.Aliases = constants.PivotalTrackerAliases
+	cmd.AddCommand()
+
+	trelloCommand := trello.GetCommand()
+	trelloCommand.Use = constants.TrelloCanonicalNoun
+	trelloCommand.Aliases = constants.TrelloAliases
+	cmd.AddCommand()
+
 	return &cmd
 }

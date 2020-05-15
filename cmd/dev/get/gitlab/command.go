@@ -3,6 +3,7 @@ package gitlab
 import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/cmd/dev/get/gitlab/account"
+	"github.com/zephinzer/dev/cmd/dev/get/gitlab/notifications"
 	"github.com/zephinzer/dev/internal/constants"
 )
 
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(account.GetCommand())
+	cmd.AddCommand(notifications.GetCommand())
 	return &cmd
 }

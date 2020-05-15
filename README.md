@@ -82,17 +82,16 @@ dev get gitlab account; # from gitlab
 dev get pivotaltracker account; # from pivotal tracker
 dev get trello account; # from trello
 
-# retrieve consumed configuration
-dev get config;
-
-# retrieve notifications (todos)
-dev get notifications github; # from github
-dev get notifications gitlab; # from gitlab
-dev get notifications pivotaltracker; # pivotal tracker
-dev get notifications trello; # trello
+# retrieve notifications
+dev get gitlab notifications; # from gitlab
+dev get pivotaltracker notifications; # pivotal tracker
+dev get trello notifications; # trello
 
 # retrieve your work 
 dev get work pivotaltracker; # from pivotal tracker
+
+# retrieve consumed configuration
+dev get config;
 
 # initialise persistent database
 dev initialise database;

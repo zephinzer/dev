@@ -1,4 +1,4 @@
-package pivotaltracker
+package notifications
 
 import (
 	"github.com/spf13/cobra"
@@ -10,8 +10,8 @@ import (
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     constants.PivotalTrackerCanonicalNoun,
-		Aliases: constants.PivotalTrackerAliases,
+		Use:     constants.NotificationsCanonicalNoun,
+		Aliases: constants.NotificationsAliases,
 		Short:   "Retrieves notifications from Pivotal Tracker",
 		Run: func(command *cobra.Command, args []string) {
 			notifs, err := pivotaltracker.GetNotifs(config.Global.Platforms.PivotalTracker.AccessToken)

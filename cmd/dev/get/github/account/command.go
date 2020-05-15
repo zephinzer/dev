@@ -4,8 +4,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/github"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/github"
+	"github.com/zephinzer/dev/internal/types"
 )
 
 func GetCommand() *cobra.Command {
@@ -26,12 +27,12 @@ func GetCommand() *cobra.Command {
 				if accountsEncountered[accountAccessToken] == nil {
 					accountsEncountered[accountAccessToken] = true
 					log.Infof("account information for '%s'\n", accountName)
-					accountInfo, err := github.GetAccount(accountAccessToken)
-					if err != nil {
-						log.Warnf("failed to retrieve account information for '%s'", accountName)
+					accountInfo, getAccountError := github.GetAccount(accountAccessToken)
+					if getAccountError != nil {
+						log.Warnf("failed to retrieve account information for '%s': %s", accountName, getAccountError)
 						continue
 					}
-					log.Info(accountInfo.String())
+					log.Printf(types.PrintAccount(accountInfo))
 					totalAccountsCount++
 				}
 			}

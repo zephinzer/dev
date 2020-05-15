@@ -15,6 +15,13 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.AccountAliases,
 		Short:   "Retrieves account information",
 		Run: func(command *cobra.Command, args []string) {
+			if len(args) == 0 {
+				github.GetCommand().Run(command, args)
+				gitlab.GetCommand().Run(command, args)
+				pivotaltracker.GetCommand().Run(command, args)
+				trello.GetCommand().Run(command, args)
+				return
+			}
 			command.Help()
 		},
 	}

@@ -4,8 +4,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/gitlab"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/gitlab"
+	"github.com/zephinzer/dev/internal/types"
 )
 
 func GetCommand() *cobra.Command {
@@ -37,10 +38,10 @@ func GetCommand() *cobra.Command {
 					log.Infof("account information for '%s'@'%s'\n", name, hostname)
 					accountInfo, err := gitlab.GetAccount(hostname, accessToken)
 					if err != nil {
-						log.Warnf("unable to retrieve account information for '%s'@'%s'", name, hostname)
+						log.Warnf("failed to retrieve account information for '%s'@'%s'", name, hostname)
 						continue
 					}
-					log.Infof(accountInfo.String())
+					log.Printf(types.PrintAccount(accountInfo))
 					totalAccountsCount++
 				}
 			}
@@ -49,13 +50,4 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	return &cmd
-}
-
-func printAccountInfo(hostname, accessToken string) error {
-	accountInfo, err := gitlab.GetAccount(hostname, accessToken)
-	if err != nil {
-		return err
-	}
-	log.Infof(accountInfo.String())
-	return nil
 }

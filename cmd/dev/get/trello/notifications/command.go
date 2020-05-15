@@ -1,16 +1,17 @@
-package trello
+package notifications
 
 import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
+	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/pkg/trello"
 )
 
 func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
-		Use:     "trello",
-		Aliases: []string{"tr"},
+		Use:     constants.NotificationsCanonicalNoun,
+		Aliases: constants.NotificationsAliases,
 		Short:   "Retrieves notifications from Trello",
 		Run: func(command *cobra.Command, args []string) {
 			notifications, err := trello.GetNotifications(config.Global.Platforms.Trello.AccessKey, config.Global.Platforms.Trello.AccessToken)
