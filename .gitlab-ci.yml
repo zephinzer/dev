@@ -31,7 +31,7 @@ unit test:
   artifacts:
     paths: ["./bin/*"]
   variables:
-    BIN_NAME: echoserver
+    BIN_NAME: dev
   before_script: ["git fetch"]
   script: ["entrypoint"]
 .build_linux:
@@ -106,7 +106,7 @@ compress:
 #   artifacts:
 #     paths: ["./build/*"]
 #   variables:
-#     DOCKER_IMAGE_URL: usvc/echoserver
+#     DOCKER_IMAGE_URL: usvc/dev
 #   script: ["entrypoint"]
 
 # dockerhub:
@@ -116,5 +116,5 @@ compress:
 #   image: usvc/ci:docker-publish
 #   dependencies: ["dockerize"]
 #   variables:
-#     DOCKER_IMAGE_URL: usvc/echoserver
+#     DOCKER_IMAGE_URL: usvc/dev
 #   script: ["entrypoint"]

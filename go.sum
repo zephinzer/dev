@@ -223,8 +223,6 @@ github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
 github.com/usvc/go-config v0.2.2 h1:b2xfNgDU9Pz6bG1V/xoGVf6+5apODN/5Yidnt7MgJeY=
 github.com/usvc/go-config v0.2.2/go.mod h1:dOPlwKrDyUPKQk+AI6MqP70ZEi0tDd13Olpg9RZ+1Y8=
-github.com/usvc/go-logger v0.6.2 h1:tcvgrJujkkRkpfzz5/bTBpOVaGfL9D+uRP9dbEaABlU=
-github.com/usvc/go-logger v0.6.2/go.mod h1:oYFRWtuNsf4rxmVrmNamYa8G8ILWOW3yFs1f1fNQyxc=
 github.com/usvc/go-logger v0.6.3 h1:Yjz1/IWwDY7Ofe/m0wUBvAN8Pjc9/lPSp6dHOLeLCio=
 github.com/usvc/go-logger v0.6.3/go.mod h1:oYFRWtuNsf4rxmVrmNamYa8G8ILWOW3yFs1f1fNQyxc=
 github.com/xanzy/ssh-agent v0.2.1 h1:TCbipTQL2JiiCprBWx9frJ2eJlCYT00NmctrHxVAr70=
