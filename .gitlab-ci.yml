@@ -32,7 +32,9 @@ unit test:
     paths: ["./bin/*"]
   variables:
     BIN_NAME: dev
-  before_script: ["git fetch"]
+  before_script:
+    - make setup_build
+    - git fetch
   script: ["make build_production"]
 .build_linux:
   extends: .build
