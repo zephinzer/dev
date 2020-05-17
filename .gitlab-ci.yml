@@ -16,6 +16,19 @@ init:
     paths: ["./vendor"]
   script: ["entrypoint"]
 
+prepare builder:
+  stage: init
+  image: usvc/ci:docker-build
+  services: ["docker:19.03.1-dind"]
+  before_script:
+    - docker login docker.io -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
+  script:
+    - docker build -f ./deploy/builder/Dockerfile -t zephinzer/dev:builder ./deploy/builder
+    - docker push zephinzer/dev:builder
+  after_script:
+    - docker logout
+    - rm -rf ~/.docker/config.json
+
 unit test:
   stage: test & build
   image: usvc/ci:go-test
@@ -25,7 +38,7 @@ unit test:
   script: ["entrypoint"]
 
 .build:
-  image: usvc/ci:go-build-production
+  image: zephinzer/dev:builder
   stage: test & build
   dependencies: ["init"]
   artifacts:
@@ -33,7 +46,7 @@ unit test:
   variables:
     BIN_NAME: dev
   before_script:
-    - apt-get install -y libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev
+    - apt-get install -y libwxgtk3.0-dev libappindicator-dev libwebkit2gtk-4.0-dev
     - git fetch
   script: ["make build_production"]
 .build_linux:
