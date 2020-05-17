@@ -46,7 +46,7 @@ unit test:
   variables:
     BIN_NAME: dev
   before_script:
-    - apt-get install -y libwxgtk3.0-dev libappindicator-dev libwebkit2gtk-4.0-dev
+    - apt-get install -y libwxgtk3.0-dev libappindicator3-dev libwebkit2gtk-4.0-dev
     - git fetch
   script: ["make build_production"]
 .build_linux:
