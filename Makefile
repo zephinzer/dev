@@ -20,7 +20,6 @@ setup_build:
 	go get github.com/akavel/rsrc
 	# these are required to compile dev without cgo
 	go install github.com/mattn/go-sqlite3
-	go install github.com/getlantern/systray
 setup_build_linux:
 	if ! apt-get --version >/dev/null; then \
 		sudo apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev; \

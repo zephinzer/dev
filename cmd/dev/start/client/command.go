@@ -2,10 +2,8 @@ package client
 
 import (
 	"os"
-	"runtime"
 	"time"
 
-	"github.com/getlantern/systray"
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
@@ -14,8 +12,6 @@ import (
 	"github.com/zephinzer/dev/internal/network"
 	"github.com/zephinzer/dev/internal/notifications"
 	"github.com/zephinzer/dev/internal/pivotaltracker"
-	"github.com/zephinzer/dev/internal/systemtray"
-	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetCommand() *cobra.Command {
@@ -58,40 +54,6 @@ func GetCommand() *cobra.Command {
 					}
 				}
 			}()
-
-			log.Debugf("adding system tray icon...")
-			systemTrayStopped := make(chan struct{})
-			systemtray.Start(systemtray.Menu{
-				{
-					Label:   "About",
-					Tooltip: "The dev repository",
-					Handler: func() {
-						theURL := constants.CanonicalRepositoryURL
-						log.Infof("opening '%s' for the '%s' platform", theURL, runtime.GOOS)
-						utils.OpenURIWithDefaultApplication(theURL)
-					},
-				},
-				{
-					Label:   "Configuration",
-					Tooltip: "Information about configuring dev",
-					Handler: func() {
-						theURL := constants.RepositoryURLConfiguration
-						log.Infof("opening '%s' for the '%s' platform", theURL, runtime.GOOS)
-						utils.OpenURIWithDefaultApplication(theURL)
-					},
-				},
-				{
-					Type: systemtray.TypeSeparator,
-				},
-				{
-					Label:   "Exit",
-					Tooltip: "Shut down the Dev client tool",
-					Handler: func() {
-						log.Info("exit was clicked")
-						systray.Quit()
-					},
-				},
-			}, systemTrayStopped)
 		},
 	}
 	return &cmd
