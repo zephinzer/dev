@@ -44,6 +44,7 @@ func GetCommand() *cobra.Command {
 				time.Second*15,
 				stopPivotalWatcher,
 			)
+			close := make(chan struct{}, 1)
 			go func() {
 				for {
 					select {
@@ -54,6 +55,7 @@ func GetCommand() *cobra.Command {
 					}
 				}
 			}()
+			<-close
 		},
 	}
 	return &cmd

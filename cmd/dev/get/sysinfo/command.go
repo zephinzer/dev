@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"runtime"
-	"syscall"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -20,8 +19,6 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.SystemInfoAliases,
 		Short:   "retrieves information about the current host system",
 		Run: func(command *cobra.Command, args []string) {
-			var info syscall.Sysinfo_t
-			syscall.Sysinfo(&info)
 			workingDirectory, getwdError := os.Getwd()
 			if getwdError != nil {
 				workingDirectory = "(unknown)"

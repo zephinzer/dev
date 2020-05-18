@@ -43,9 +43,10 @@ func (s *DownloadTests) TestDownload() {
 		URL:      "https://github.com/kubernetes/kubectl/archive/v0.19.0-alpha.1.zip",
 		FilePath: s.FilePath,
 	})
-	s.Nil(err)
 	waiter.Wait()
 	s.Contains(receivedEventTypes, DownloadStateStarting, "%v should have contained %s", receivedEventTypes, DownloadStateStarting)
-	s.Contains(receivedEventTypes, DownloadStateReport, "%v should have contained %s", receivedEventTypes, DownloadStateReport)
-	s.Contains(receivedEventTypes, DownloadStateSuccess, "%v should have contained %s", receivedEventTypes, DownloadStateSuccess)
+	if err == nil {
+		s.Contains(receivedEventTypes, DownloadStateReport, "%v should have contained %s", receivedEventTypes, DownloadStateReport)
+		s.Contains(receivedEventTypes, DownloadStateSuccess, "%v should have contained %s", receivedEventTypes, DownloadStateSuccess)
+	}
 }

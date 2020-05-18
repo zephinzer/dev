@@ -59,7 +59,7 @@ func (s *TypesTests) TestCheck_Run_givesStdoutLogs() {
 	s.Nil(checkErr)
 	observed := check.GetObserved()
 	s.Equal(0, observed.ExitCode)
-	s.Equal("hello world\n", *observed.Stdout)
+	s.Equal("hello world", *observed.Stdout)
 }
 
 func (s *TypesTests) TestCheck_Run_givesStderrLogs() {
@@ -70,7 +70,7 @@ func (s *TypesTests) TestCheck_Run_givesStderrLogs() {
 	s.Nil(checkErr)
 	observed := check.GetObserved()
 	s.Equal(0, observed.ExitCode)
-	s.Equal("hello world\n", *observed.Stderr)
+	s.Equal("hello world", *observed.Stderr)
 }
 
 func (s *TypesTests) TestCheck_Verify() {
@@ -111,7 +111,7 @@ func (s *TypesTests) TestCheck_Verify_ensuresExitCodeMatches() {
 
 func (s *TypesTests) TestCheck_Verify_ensuresStdoutMatches() {
 	expectedStdout := "stdout"
-	unexpectedStdout := "__stdout"
+	unexpectedStdout := "std_out"
 	check := Check{
 		Command:  []string{"test"},
 		ExitCode: 0,
@@ -125,7 +125,7 @@ func (s *TypesTests) TestCheck_Verify_ensuresStdoutMatches() {
 
 func (s *TypesTests) TestCheck_Verify_ensuresStderrMatches() {
 	expectedStderr := "stderr"
-	unexpectedStderr := "__stderr"
+	unexpectedStderr := "std_err"
 	check := Check{
 		Command:  []string{"test"},
 		ExitCode: 0,

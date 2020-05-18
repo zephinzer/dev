@@ -4,11 +4,8 @@ go 1.13
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
-	github.com/akavel/rsrc v0.9.0 // indirect
-	github.com/cratonica/2goarray v0.0.0-20190331194516-514510793eaa // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gen2brain/beeep v0.0.0-20200420150314-13046a26d502
-	github.com/getlantern/systray v0.0.0-20200324212034-d3ab4fd25d99
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-git/go-git/v5 v5.0.0
 	github.com/go-ole/go-ole v1.2.4 // indirect

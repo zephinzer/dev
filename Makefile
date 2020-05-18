@@ -45,10 +45,12 @@ build:
 	cd ./bin \
 		&& ln -s ./$(BIN_PATH) ./$(CMD_ROOT)
 build_production:
+	CGO_ENABLED=0 \
 	go build -a -v \
 		-ldflags "-X main.Commit=$(GIT_COMMIT) \
 			-X main.Version=$(GIT_TAG) \
 			-X main.Timestamp=$(TIMESTAMP) \
+			-extldflags '-static' \
 			-s -w" \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_ROOT)
