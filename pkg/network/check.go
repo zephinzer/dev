@@ -44,7 +44,7 @@ func (c *Check) GetObserved() (http.Response, error) {
 func (c *Check) Run() error {
 	var err error
 	client := http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 5,
 	}
 	method := c.Method
 	if len(method) == 0 {

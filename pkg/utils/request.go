@@ -7,7 +7,7 @@ import (
 )
 
 func HTTPGet(targetURL url.URL, headers map[string]string) (*http.Response, error) {
-	timeout := time.Second * 15
+	timeout := time.Second * 10
 	client := http.Client{Timeout: timeout}
 	request, err := http.NewRequest("GET", targetURL.String(), nil)
 	for key, value := range headers {

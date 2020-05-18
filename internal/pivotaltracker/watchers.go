@@ -32,7 +32,7 @@ func WatchNotifications(
 						accessTokens = append(accessTokens, project.AccessToken)
 					}
 				}
-				log.Debug("retrieving notifications for %v account(s)", len(accessTokens))
+				log.Debugf("retrieving notifications for %v account(s)", len(accessTokens))
 
 				var waiter sync.WaitGroup
 				for _, token := range accessTokens {

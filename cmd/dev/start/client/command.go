@@ -41,7 +41,7 @@ func GetCommand() *cobra.Command {
 				config.Global.Platforms.PivotalTracker.AccessToken,
 				config.Global.Platforms.PivotalTracker.Projects,
 				connection,
-				time.Second*15,
+				time.Second*20,
 				stopPivotalWatcher,
 			)
 			close := make(chan struct{}, 1)
