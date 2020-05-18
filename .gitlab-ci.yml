@@ -70,6 +70,13 @@ build windows:
   extends: .build_windows
   only: ["tags"]
 
+coverage report:
+  allow_failure: true
+  stage: release
+  dependencies: ["unit test"]
+  image: usvc/ci:go-coverage-code-climate
+  script: ["entrypoint"]
+
 version bump:
   stage: release
   only: ["master"]
@@ -100,23 +107,23 @@ compress:
     - GOOS=darwin GOARCH=amd64 make compress
     - GOOS=windows GOARCH=386 BIN_EXT=.exe make compress
 
-# dockerize:
-#   stage: package
-#   only: ["tags"]
-#   services: ["docker:19.03.1-dind"]
-#   image: usvc/ci:docker-build
-#   artifacts:
-#     paths: ["./build/*"]
-#   variables:
-#     DOCKER_IMAGE_URL: usvc/dev
-#   script: ["entrypoint"]
+dockerize:
+  stage: package
+  only: ["tags"]
+  services: ["docker:19.03.1-dind"]
+  image: usvc/ci:docker-build
+  artifacts:
+    paths: ["./build/*"]
+  variables:
+    DOCKER_IMAGE_URL: zephinzer/dev
+  script: ["entrypoint"]
 
-# dockerhub:
-#   stage: publish
-#   only: ["tags"]
-#   services: ["docker:19.03.1-dind"]
-#   image: usvc/ci:docker-publish
-#   dependencies: ["dockerize"]
-#   variables:
-#     DOCKER_IMAGE_URL: usvc/dev
-#   script: ["entrypoint"]
+dockerhub:
+  stage: publish
+  only: ["tags"]
+  services: ["docker:19.03.1-dind"]
+  image: usvc/ci:docker-publish
+  dependencies: ["dockerize"]
+  variables:
+    DOCKER_IMAGE_URL: zephinzer/dev
+  script: ["entrypoint"]
