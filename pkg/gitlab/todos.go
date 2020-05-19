@@ -10,6 +10,23 @@ import (
 	"github.com/zephinzer/dev/pkg/utils"
 )
 
+// APIv4TodoResponse defines the response structure for a call to the Gitlab
+// API endpoint at https://GITLAB_HOSTNAME/api/v4/todos
+type APIv4TodoResponse []APIv4Todo
+
+type APIv4Todo struct {
+	ID         int          `json:"id"`
+	Project    APIv4Project `json:"project"`
+	Author     APIv4Author  `json:"author"`
+	ActionName string       `json:"action_name"`
+	TargetType string       `json:"target_type"`
+	Target     APIv4Target  `json:"target"`
+	TargetURL  string       `json:"target_url"`
+	Body       string       `json:"body"`
+	State      string       `json:"state"`
+	CreatedAt  time.Time    `json:"created_at"`
+}
+
 func GetTodos(hostname, accessToken string, since ...time.Time) (*APIv4TodoResponse, error) {
 	targetURL, urlParseError := url.Parse(fmt.Sprintf("https://%s/api/v4/todos", hostname))
 	if urlParseError != nil {

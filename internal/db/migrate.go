@@ -20,17 +20,17 @@ func ApplyMigrations(tableName string, migrations []string, databasePath string)
 		return initError
 	}
 	for index, script := range migrations {
-		log.Debugf("checking and applying migration[%v] (script: '%s')...\n", index, script)
+		log.Tracef("checking and applying migration[%v] (script: '%s')...\n", index, script)
 		applied, validityError := IsMigrationAppliedAndValid(tableName, index, script, connection)
 		if validityError != nil {
 			return fmt.Errorf("encountered validation error at migration[%v] (script: '%s'): %s", index, script, validityError)
 		} else if applied {
-			log.Tracef("migration[%v] already applied\n", index)
+			log.Debugf("migration[%v] already applied\n", index)
 		} else {
 			if migrationError := RunMigration(tableName, index, script, connection); migrationError != nil {
 				return fmt.Errorf("encountered migration error at migration[%v] (script: '%s'): %s", index, script, migrationError)
 			}
-			log.Infof("migration[%v] successfully applied\n", index)
+			log.Infof("migration[%v] (\"%s\") successfully applied\n", index, script)
 		}
 	}
 	return nil
@@ -44,7 +44,7 @@ func IsMigrationAppliedAndValid(
 	migrationScript string,
 	connection *sql.DB,
 ) (bool, error) {
-	row := connection.QueryRow(fmt.Sprintf("SELECT `index`, `script` FROM `%s_migrations` WHERE `index` = ? AND `script` = ?", tableName), migrationIndex, migrationScript)
+	row := connection.QueryRow(fmt.Sprintf("SELECT `index`, `script` FROM `%s_migrations` WHERE `index` = ? OR (`index` = ? AND `script` = ?)", tableName), migrationIndex, migrationIndex, migrationScript)
 	var storedIndex int
 	var storedScript string
 	var scanError error
@@ -55,7 +55,7 @@ func IsMigrationAppliedAndValid(
 		return false, fmt.Errorf("failed to retrieve migration from `%s`'s migrations table: %s", tableName, scanError)
 	}
 	if storedIndex != migrationIndex || storedScript != migrationScript {
-		return true, fmt.Errorf("migration '%s' at index %v does not seem equivalent to stored migration '%s' seen last at index %v", migrationScript, migrationIndex, storedScript, storedIndex)
+		return true, fmt.Errorf("migration \"%s\" at index %v does not seem equivalent to stored migration \"%s\" seen last at index %v", migrationScript, migrationIndex, storedScript, storedIndex)
 	}
 	return true, nil
 }

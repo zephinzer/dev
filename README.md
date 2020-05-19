@@ -33,6 +33,7 @@ You can:
 - [Usage](#usage)
   - [Overview](#overview)
   - [Table of Canonical Tokens](#table-of-canonical-tokens)
+  - [Logs Output](#logs-output)
   - [Configuration](#configuration)
   - [Platforms](#platforms)
     - [Github](#github)
@@ -72,38 +73,65 @@ The following is an overview of what can be done:
 
 ```sh
 # check stuff
+#############
 dev check software; # checks if required software is installed
+# l33t: dev c sw
+
 dev check networks; # checks if required network access is available
+# l33t: dev c nw
+
 dev check repositories; # checks if required repositories are available locally
+# l33t: dev c r
+
 
 # retrieving account information 
+################################
 dev get github account; # from github
+# l33t: dev g gh a
+
 dev get gitlab account; # from gitlab
+# l33t: dev g gl a
+
 dev get pivotaltracker account; # from pivotal tracker
+# l33t: dev g pt a
+
 dev get trello account; # from trello
+# l33t: dev g tr a
+
 
 # retrieve notifications
+########################
 dev get gitlab notifications; # from gitlab
+# l33t: dev g gl n
+
 dev get pivotaltracker notifications; # pivotal tracker
-dev get trello notifications; # trello
+# l33t: dev g pt n
+
 
 # retrieve your work 
+####################
 dev get work pivotaltracker; # from pivotal tracker
+# l33t: dev g w pt
 
-# retrieve consumed configuration
-dev get config;
+dev get config; # retrieve consumed configuration
+# l33t: dev g c
 
 # initialise persistent database
+################################
 dev initialise database;
+
 # initialise telegram notification integration
+##############################################
 dev initialise telegram notifications;
 
-# open stuff
-dev open repository; # the repository you're currently in
+dev open repository; # opens the website of the repository you're currently in
+# l33t: dev o r
 
-# start stuff
 dev start client; # starts the desktop client helper application
+# l33t: dev s
 ```
+
+
 
 ## Table of Canonical Tokens
 
@@ -125,6 +153,18 @@ dev start client; # starts the desktop client helper application
 | Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
 | Open | Verb | `open` | `o` |
 | Start | Verb | `start` | `st`, `s` |
+
+
+
+## Logs Output
+
+Labelled logs are sent to `stderr` and unlabelled logs are sent to `stdout`. Pipable output is typically sent to `stdout` so you can pipe or stream it to another IO source, logs that indicate inner workings of the application are sent to `stderr`.
+
+- To pipe the **`stdout` logs** only, use the **`>` operator** (`stderr` logs will be sent to terminal).
+- To pipe the **`stderr` logs** only, use the **`2>` operator** (`stdout` logs will be sent to terminal).
+- To pipe **all logs** use the **`&>` operator**.
+
+
 
 ## Configuration
 

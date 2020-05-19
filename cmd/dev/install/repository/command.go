@@ -3,6 +3,7 @@ package repository
 import (
 	"os"
 	"path"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
@@ -16,12 +17,12 @@ func GetCommand() *cobra.Command {
 		Use:     constants.RepositoryCanonicalNoun,
 		Aliases: constants.RepositoryAliases,
 		Short:   "verifies that the repositories specified in the configuration exists",
-		Run:     Run,
+		Run:     run,
 	}
 	return &cmd
 }
 
-func Run(command *cobra.Command, args []string) {
+func run(command *cobra.Command, args []string) {
 	if config.Global.Repositories == nil {
 		log.Error("no repositories have been defined")
 		os.Exit(1)
@@ -39,7 +40,13 @@ func Run(command *cobra.Command, args []string) {
 	}
 
 	errorCount := 0
+	successCount := 0
+	newCount := 0
+	workspaceIndex := map[string]bool{}
 	for _, repository := range config.Global.Repositories {
+		for _, workspace := range repository.Workspaces {
+			workspaceIndex[workspace] = true
+		}
 		repositoryName := "unnamed"
 		if len(repository.Name) > 0 {
 			repositoryName = repository.Name
@@ -47,17 +54,19 @@ func Run(command *cobra.Command, args []string) {
 		localPath, getPathError := repository.GetPath(homeDir)
 		if getPathError != nil {
 			log.Warnf("failed to process local path '%s': %s", repositoryName, getPathError)
+			errorCount++
 			continue
 		}
 		repositoryExistsLocally := false
 
-		log.Infof("processing repository '%s': %s", repositoryName, repository.Description)
-		log.Debugf("  url : %s", repository.CloneURL)
-		log.Debugf("  path: %s", localPath)
+		log.Tracef("processing repository '%s': %s", repositoryName, repository.Description)
+		log.Tracef("  url : %s", repository.CloneURL)
+		log.Tracef("  path: %s", localPath)
 		fileInfo, lstatError := os.Stat(path.Join(localPath, "/.git"))
 		if lstatError != nil {
 			if !os.IsNotExist(lstatError) {
 				log.Warnf("  failed to check existence: %s", lstatError)
+				errorCount++
 				continue
 			}
 			repositoryExistsLocally = false
@@ -65,12 +74,13 @@ func Run(command *cobra.Command, args []string) {
 			repositoryExistsLocally = fileInfo.IsDir()
 		}
 		if repositoryExistsLocally {
-			log.Infof("repository '%s' already exists, skipping...", repositoryName)
+			log.Debugf("repository '%s' already exists, skipping...", repositoryName)
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
 			_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{
 				URL: repository.CloneURL,
 			})
+			newCount++
 			if cloneError != nil {
 				log.Warnf("failed to clone repository from url '%s': %s", repository.CloneURL, cloneError)
 				errorCount++
@@ -78,6 +88,19 @@ func Run(command *cobra.Command, args []string) {
 			}
 			log.Infof("repository '%s' successfully set up at '%s'", repository.CloneURL, localPath)
 		}
+		successCount++
 	}
+
+	workspaces := []string{}
+	for workspaceName, _ := range workspaceIndex {
+		workspaces = append(workspaces, workspaceName)
+	}
+
+	log.Infof("available workspaces   : %s", strings.Join(workspaces, ", "))
+	log.Infof("total repositories     : %v", len(config.Global.Repositories))
+	log.Infof("new repositories       : %v", newCount)
+	log.Infof("successfully processed : %v", len(config.Global.Repositories))
+	log.Infof("failed to process      : %v", errorCount)
+
 	os.Exit(errorCount)
 }

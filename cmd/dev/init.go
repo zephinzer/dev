@@ -8,7 +8,18 @@ import (
 	"github.com/zephinzer/dev/internal/log"
 )
 
-func initialiseConfiguration() {
+func initialiseLogger() {
+	switch true {
+	case conf.GetBool("debug"):
+		log.Init(log.LevelDebug)
+	case conf.GetBool("trace"):
+		log.Init(log.LevelTrace)
+	default:
+		log.Init()
+	}
+}
+
+func loadConfiguration() {
 	log.Debug("loading configuration...")
 	log.Trace("loading configuration from ~/dev.yaml...")
 	homeDir, getHomeDirError := os.UserHomeDir()
@@ -33,15 +44,9 @@ func initialiseConfiguration() {
 	} else {
 		config.Global.MergeWith(localConfiguration)
 	}
-}
 
-func initialiseLogger() {
-	switch true {
-	case conf.GetBool("debug"):
-		log.Init(log.LevelDebug)
-	case conf.GetBool("trace"):
-		log.Init(log.LevelTrace)
-	default:
-		log.Init()
+	if config.Global == nil {
+		log.Warn("no stored configuration was loaded, using defaults for all commands")
+		config.Global = &config.File{}
 	}
 }

@@ -68,7 +68,7 @@ func Init(atPath string) error {
 func InitTable(tableName string, connection *sql.DB) error {
 	var execError error
 	_, execError = connection.Exec(fmt.Sprintf(
-		"CREATE TABLE IF NOT EXISTS `%s_migrations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `index` INTEGER NOT NULL, `script` TEXT NOT NULL, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP);",
+		"CREATE TABLE IF NOT EXISTS `%s_migrations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `index` INTEGER UNIQUE NOT NULL, `script` TEXT NOT NULL, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP);",
 		tableName,
 	))
 	if execError != nil {

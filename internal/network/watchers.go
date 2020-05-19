@@ -12,20 +12,54 @@ import (
 	pkgnetwork "github.com/zephinzer/dev/pkg/network"
 )
 
+var (
+	isOnline  = map[string]pkgnetwork.Network{}
+	isOffline = map[string]pkgnetwork.Network{}
+)
+
+type NetworkConnectionStatus struct {
+	Online  bool
+	Network pkgnetwork.Network
+}
+
 func WatchConnections(
 	networks []pkgnetwork.Network,
 	updateInterval time.Duration,
 	stop chan struct{},
 ) chan types.Notification {
 	notificationsChannel := make(chan types.Notification, 16)
-	isOnline := map[string]pkgnetwork.Network{}
-	isOffline := map[string]pkgnetwork.Network{}
+	statusChannel := make(chan NetworkConnectionStatus, 8)
 	isInitialRun := true
 	go func(tick <-chan time.Time) {
 		for {
 			select {
 			case <-stop:
 				return
+			case statusUpdate := <-statusChannel:
+				nwName := statusUpdate.Network.Name
+				if statusUpdate.Online {
+					isOnline[nwName] = statusUpdate.Network
+					if _, ok := isOffline[nwName]; ok {
+						delete(isOffline, nwName)
+						if !isInitialRun {
+							notificationsChannel <- notifications.New(
+								"Network change detected",
+								fmt.Sprintf("Network [ %s ] is now ONLINE", nwName),
+							)
+						}
+					}
+				} else {
+					isOffline[nwName] = statusUpdate.Network
+					if _, ok := isOnline[nwName]; ok {
+						delete(isOnline, nwName)
+						if !isInitialRun {
+							notificationsChannel <- notifications.New(
+								"Network change detected",
+								fmt.Sprintf("Network [ %s ] is now OFFLINE", nwName),
+							)
+						}
+					}
+				}
 			case <-tick:
 				log.Trace("network connections watcher triggered")
 				var waiter sync.WaitGroup
@@ -42,17 +76,10 @@ func WatchConnections(
 					}
 					waiter.Add(1)
 					go func(nw pkgnetwork.Network) {
-						stateChanged := false
+						defer waiter.Done()
 						if runError := nw.Check.Run(); runError != nil {
-							log.Warnf("unable to run network check '%s': %s",
-								networkName,
-								runError,
-							)
-							isOffline[networkName] = nw
-							if _, ok := isOnline[networkName]; ok {
-								delete(isOnline, networkName)
-								stateChanged = true
-							}
+							log.Warnf("unable to run network check '%s': %s", networkName, runError)
+							statusChannel <- NetworkConnectionStatus{false, nw}
 						} else if verificationError := nw.Check.Verify(); verificationError != nil {
 							log.Warnf("unable to verify network check '%s' to %s '%s': %s",
 								networkName,
@@ -60,32 +87,10 @@ func WatchConnections(
 								networkCheckURL,
 								verificationError,
 							)
-							isOffline[networkName] = nw
-							if _, ok := isOnline[networkName]; ok {
-								delete(isOnline, networkName)
-								stateChanged = true
-							}
+							statusChannel <- NetworkConnectionStatus{false, nw}
 						} else {
-							isOnline[networkName] = nw
-							if _, ok := isOffline[networkName]; ok {
-								delete(isOffline, networkName)
-								stateChanged = true
-							}
+							statusChannel <- NetworkConnectionStatus{true, nw}
 						}
-						if stateChanged && !isInitialRun {
-							if _, ok := isOnline[networkName]; ok {
-								notificationsChannel <- notifications.New(
-									"Network change detected",
-									fmt.Sprintf("Network [ %s ] is now ONLINE", networkName),
-								)
-							} else if _, ok := isOffline[networkName]; ok {
-								notificationsChannel <- notifications.New(
-									"Network change detected",
-									fmt.Sprintf("Network [ %s ] is now OFFLINE", networkName),
-								)
-							}
-						}
-						waiter.Done()
 					}(nw)
 				}
 				waiter.Wait()

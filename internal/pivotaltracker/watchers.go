@@ -68,6 +68,7 @@ func WatchNotifications(
 				}
 				waiter.Wait()
 			case <-stop:
+				close(notificationsChannel)
 				return
 			}
 		}

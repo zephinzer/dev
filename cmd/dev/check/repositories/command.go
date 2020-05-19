@@ -42,6 +42,7 @@ func run(command *cobra.Command, args []string) {
 	}
 
 	errorCount := 0
+	workspaceIndex := map[string]bool{}
 	for _, repository := range config.Global.Repositories {
 		repositoryName := "unnamed"
 		if len(repository.Name) > 0 {
@@ -75,12 +76,23 @@ func run(command *cobra.Command, args []string) {
 		} else {
 			log.Printf(constants.CheckFailureFormat, repositoryName)
 		}
-		log.Printf("(path: %s", localPath)
 		if len(repository.Workspaces) > 0 {
-			log.Printf(" | workspaces: %s", strings.Join(repository.Workspaces, ","))
+			log.Printf("\n  workspaces: %s", strings.Join(repository.Workspaces, ","))
+			for _, workspace := range repository.Workspaces {
+				workspaceIndex[workspace] = true
+			}
 		}
-		log.Printf(" | src: %s", repository.CloneURL)
-		log.Printf(")\n")
+		log.Printf("\n  path      : %s", localPath)
+		log.Printf("\n  src       : %s", repository.CloneURL)
+		log.Printf("\n")
 	}
+	workspaces := []string{}
+	for workspace, _ := range workspaceIndex {
+		workspaces = append(workspaces, workspace)
+	}
+
+	log.Infof("available workspaces   : %s", strings.Join(workspaces, ", "))
+	log.Infof("total repositories     : %v", len(config.Global.Repositories))
+
 	os.Exit(errorCount)
 }

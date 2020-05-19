@@ -3,7 +3,7 @@ package gitlab
 // Config defines the structure of the configuration for the
 // Gitlab integration
 type Config struct {
-	Accounts Accounts `json:"accounts" yaml:"accounts"`
+	Accounts AccountConfigs `json:"accounts" yaml:"accounts"`
 }
 
 // GetSanitized returns a copy of this Config instance without
@@ -14,14 +14,14 @@ func (c Config) GetSanitized() Config {
 	}
 }
 
-// Accounts defines a list of Account instances which can be
+// AccountConfigs defines a list of AccountConfig instances which can be
 // operated on internally
-type Accounts []Account
+type AccountConfigs []AccountConfig
 
-// GetSanitized returns a copy of this Accounts instance without
+// GetSanitized returns a copy of this AccountConfigs instance without
 // sensitive credentials
-func (a Accounts) GetSanitized() []Account {
-	accounts := []Account{}
+func (a AccountConfigs) GetSanitized() []AccountConfig {
+	accounts := []AccountConfig{}
 	for _, account := range a {
 		if account.Public {
 			accounts = append(accounts, account.GetSanitized())
@@ -30,9 +30,9 @@ func (a Accounts) GetSanitized() []Account {
 	return accounts
 }
 
-// Account defines the configuration structure for a logical Gitlab
+// AccountConfig defines the configuration structure for a logical Gitlab
 // account to be consumed
-type Account struct {
+type AccountConfig struct {
 	// Name is the user-defined label for this account
 	Name string `json:"name" yaml:"name"`
 	// Description is a user-defined description of what this account is for
@@ -58,8 +58,8 @@ type Account struct {
 
 // GetSanitized returns a copy of this Account instance without
 // sensitive credentials
-func (a Account) GetSanitized() Account {
-	return Account{
+func (a AccountConfig) GetSanitized() AccountConfig {
+	return AccountConfig{
 		Name:        a.Name,
 		Description: a.Description,
 		AccessToken: "[REDACTED]",

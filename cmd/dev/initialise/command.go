@@ -3,6 +3,7 @@ package initialise
 import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/cmd/dev/initialise/database"
+	"github.com/zephinzer/dev/cmd/dev/initialise/gitlab"
 	"github.com/zephinzer/dev/cmd/dev/initialise/pivotaltracker"
 	"github.com/zephinzer/dev/cmd/dev/initialise/telegram"
 	"github.com/zephinzer/dev/internal/constants"
@@ -18,6 +19,7 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(database.GetCommand())
+	cmd.AddCommand(gitlab.GetCommand())
 	cmd.AddCommand(pivotaltracker.GetCommand())
 	cmd.AddCommand(telegram.GetCommand())
 	return &cmd

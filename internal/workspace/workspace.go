@@ -1,11 +1,9 @@
 package workspace
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/pkg/repository"
 )
 
@@ -16,36 +14,23 @@ type Workspace struct {
 	Repositories []repository.Repository `json:"repositories" yaml:"repositories"`
 }
 
-type VSCode struct {
-	Folders []VSCodeFolder `json:"folders"`
-}
-
-type VSCodeFolder struct {
-	Name string `json:"name"`
-	Path string `json:"path"`
-}
-
-func (ws Workspace) GetVSCode() (string, error) {
+func (ws Workspace) ToVSCode() (*VSCode, error) {
 	homeDir, getHomeDirError := os.UserHomeDir()
 	if getHomeDirError != nil {
-		log.Errorf("unable to retrieve user's home directory: %s", getHomeDirError)
-		os.Exit(1)
+		return nil, fmt.Errorf("unable to retrieve user's home directory: %s", getHomeDirError)
 	}
 
 	folders := []VSCodeFolder{}
 	for _, repository := range ws.Repositories {
 		repositoryPath, getPathError := repository.GetPath(homeDir)
 		if getPathError != nil {
-			return "", fmt.Errorf("failed to retrieve path of repository '%s': %s", repository.Name, getPathError)
+			return nil, fmt.Errorf("failed to retrieve path of repository '%s': %s", repository.Name, getPathError)
 		}
 		folders = append(folders, VSCodeFolder{
 			Name: repository.Name,
 			Path: repositoryPath,
 		})
 	}
-	vscodeWorkspace, marshalError := json.MarshalIndent(VSCode{Folders: folders}, "", "  ")
-	if marshalError != nil {
-		return "", fmt.Errorf("failed to generate JSON for vscode workspace: %s", marshalError)
-	}
-	return string(vscodeWorkspace) + "\n", nil
+
+	return &VSCode{Folders: folders}, nil
 }

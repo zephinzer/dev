@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/gitlab"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/gitlab"
 )
 
 func GetCommand() *cobra.Command {
@@ -30,11 +30,13 @@ func GetCommand() *cobra.Command {
 				if err != nil {
 					log.Errorf("an error occurred while retrieving notifications from %s\n", hostname)
 				} else {
-					log.Printf("%s", todos.String())
+					for index, todo := range todos {
+						log.Printf("%v. %s\n%s\n\n- - -\n\n", index+1, todo.GetTitle(), todo.GetMessage())
+					}
 				}
 				todoCount := 0
 				if todos != nil {
-					todoCount = len(*todos)
+					todoCount = len(todos)
 				}
 				totalTodoCount += todoCount
 				log.Printf("> you have a total of %v unread notifications from %s (%s)\n\n", todoCount, account.Name, hostname)

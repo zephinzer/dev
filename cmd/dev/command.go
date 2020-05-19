@@ -42,7 +42,7 @@ func GetCommand() *cobra.Command {
 		Version: fmt.Sprintf("%s-%s built at %s", Version, Commit, Timestamp),
 		PersistentPreRun: func(command *cobra.Command, args []string) {
 			initialiseLogger()
-			initialiseConfiguration()
+			loadConfiguration()
 		},
 		Run: func(command *cobra.Command, args []string) {
 			command.Help()
