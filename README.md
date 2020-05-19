@@ -1,15 +1,16 @@
-# Dev
+# Dev*(ice)*
 
 [![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)
 ![github tag (latest semver)](https://img.shields.io/github/v/tag/zephinzer/dev)
+[![maintainability](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/maintainability)](https://codeclimate.com/github/zephinzer/dev/maintainability)
+[![test coverage](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/test_coverage)](https://codeclimate.com/github/zephinzer/dev/test_coverage)
 
-Pimp your developer experience.
+Dev aims to improve the developer experience through a CLI tool.
 
 This tool exists to improve the day-to-day work experience of software developers. Use this to:
 
-1. Improve onboarding process through defining required software in code
-2. Improve day-to-day work experience through defining required network connections in code
-3. Improve productivity through moving checking/notification activities to the command line
+1. Improve **onboarding** through defining required software in code
+2. Improve **productivity** through a background service that integrates with your platforms
 
 You can:
 
@@ -26,13 +27,16 @@ You can:
 
 **Table of Contents**
 
-- [Dev](#dev)
+- [Dev*(ice)*](#device)
 - [Installation](#installation)
   - [Via Git Repository](#via-git-repository)
+  - [Via Github Releases](#via-github-releases)
   - [Other Ways](#other-ways)
 - [Usage](#usage)
   - [Overview](#overview)
-  - [Table of Canonical Tokens](#table-of-canonical-tokens)
+  - [Canonical Tokens](#canonical-tokens)
+    - [Nouns](#nouns)
+    - [Verbs](#verbs)
   - [Logs Output](#logs-output)
   - [Configuration](#configuration)
   - [Platforms](#platforms)
@@ -56,6 +60,10 @@ You can:
 ## Via Git Repository
 
 Clone this repository and run `make install_local`.
+
+## Via Github Releases
+
+Go to the [Releases tab of the Github repository](https://github.com/zephinzer/dev/releases).
 
 ## Other Ways
 
@@ -133,26 +141,41 @@ dev start client; # starts the desktop client helper application
 
 
 
-## Table of Canonical Tokens
+## Canonical Tokens
 
-| Concept | Type | Canon | Aliases |
-| --- | --- | --- | --- |
-| Account | Noun | `account` | `accounts`, `acc`, `accs`, `a` |
-| Configuration | Noun | `configuration` | `config`, `conf`, `cf`, `c` |
-| Database | Noun | `database` | `db` |
-| Gitlab | Noun | `gitlab` | `gl` |
-| Github | Noun | `github` | `gh` |
-| Network | Noun | `network` | `networks`, `net`, `nets`, `nw` |
-| Notifications | Noun | `notifications` | `notification`, `notif`, `notifs`, `n` |
-| Repository | Noun | `repository` | `repo`, `rp`, `r` |
-| PivotalTracker | Noun | `pivotaltracker` | `pivotal`, `pt` |
-| Software | Noun | `software` | `sw`, `s`, `apps` |
-| Work | Noun | `work` | `stories`, `tasks`, `tickets`, `w` |
-| Check | Verb | `check` | `c`, `verify` |
-| Get | Verb | `get` | `retrieve`, `g` |
-| Initialise | Verb | `initialise` | `initialize`, `init`, `i` |
-| Open | Verb | `open` | `o` |
-| Start | Verb | `start` | `st`, `s` |
+### Nouns
+
+| Object | Canon | Aliases |
+| --- | --- | --- |
+| Account | `account` | `accounts`, `acc`, `accs`, `a` |
+| Client | `client` | `cl` |
+| Configuration | `configuration` | `config`, `conf`, `cf`, `c` |
+| Database | `database` | `db` |
+| Gitlab | `gitlab` | `gl` |
+| Github | `github` | `gh` |
+| Network | `network` | `networks`, `net`, `nets`, `nw` |
+| Notifications | `notifications` | `notification`, `notif`, `notifs`, `n` |
+| Repository | `repository` | `repo`, `rp`, `r` |
+| PivotalTracker | `pivotaltracker` | `pivotal`, `pt` |
+| Server | `server` | `syncer` |
+| Software | `software` | `sw`, `s`, `apps` |
+| System Info | `sysinfo` | `system-info`, `system`, `si` |
+| Telegram | `telegram` | `tg`, `t.me` |
+| Trello | `trello` | `tr` |
+| Work | `work` | `stories`, `tasks`, `tickets`, `w` |
+| Workspace | `workspace` | `ws` |
+
+### Verbs
+
+| Action | Canon | Aliases |
+| --- | --- | --- |
+| Check | `check` | `c`, `verify` |
+| Debug | `debug` | `test` |
+| Get | `get` | `retrieve`, `g` |
+| Initialise | `initialise` | `initialize`, `init`, `i` |
+| Install | `install` | `setup` |
+| Open | `open` | `op`, `o` |
+| Start | `start` | `st`, `s` |
 
 
 
