@@ -1,4 +1,4 @@
-# Dev*(ice)*
+# Dev
 
 [![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)
 ![github tag (latest semver)](https://img.shields.io/github/v/tag/zephinzer/dev)
@@ -27,7 +27,7 @@ You can:
 
 **Table of Contents**
 
-- [Dev*(ice)*](#device)
+- [Dev](#dev)
 - [Installation](#installation)
   - [Via Git Repository](#via-git-repository)
   - [Via Github Releases](#via-github-releases)

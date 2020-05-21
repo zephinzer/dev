@@ -13,7 +13,7 @@ import (
 
 func WatchNotifications(
 	accessToken string,
-	fromProjects pkgpivotaltracker.Projects,
+	fromProjects Projects,
 	databaseConnection *sql.DB,
 	updateInterval time.Duration,
 	stop chan struct{},
@@ -47,22 +47,26 @@ func WatchNotifications(
 						waiter.Add(1)
 						go func(notif pkgpivotaltracker.APINotification) {
 							defer waiter.Done()
-							log.Debugf("processing notification with id %v", notif.ID)
+							log.Tracef("processing pivotal tracker notification with id %v", notif.ID)
 							exists, queryExistsError := QueryNotification(notif, databaseConnection)
 							if queryExistsError != nil {
-								log.Warnf("failed to check existence of notification with id '%v': %s", notif.ID, queryExistsError)
+								log.Warnf("failed to check existence of pivotal tracker notification with id '%v': %s", notif.ID, queryExistsError)
 								return
 							}
 							if !exists {
+								log.Tracef("saving pivotal tracker notification with id %v to the database", notif.ID)
 								if insertError := InsertNotification(notif, databaseConnection); insertError != nil {
-									log.Warnf("failed to insert notification with id '%v' to data storage: %s", notif.ID, insertError)
+									log.Warnf("failed to insert pivotal tracker notification with id '%v' to data storage: %s", notif.ID, insertError)
 									return
 								}
+								log.Debugf("sending pivotal tracker notification with id '%v' to the notifications channel", notif.ID)
 								notificationsChannel <- notifications.New(
 									"Pivotal Tracker ["+notif.Project.Name+"]",
 									notif.Message+" on \""+notif.Story.Name+"\"",
 								)
+								return
 							}
+							log.Debugf("skipped pivotal tracker notification with id '%v' because it already exists in the database", notif.ID)
 						}(currentNotification)
 					}
 				}

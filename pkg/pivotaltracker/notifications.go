@@ -42,3 +42,32 @@ func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsRespo
 	}
 	return &response, nil
 }
+
+// APIv5NotificationsResponse defines the response structure for a request made to
+// the endpoint at https://www.pivotaltracker.com/services/v5/my/notifications
+type APIv5NotificationsResponse []APINotification
+
+// APINotification defines the structure for a Notification object in responses to API queries
+type APINotification struct {
+	Kind               string                    `json:"kind"`
+	ID                 int                       `json:"id"`
+	Project            APINotificationReference  `json:"project"`
+	Performer          APINotificationReference  `json:"performer"`
+	Message            string                    `json:"message"`
+	NotificationType   string                    `json:"notification_type"`
+	NewAttachmentCount int                       `json:"new_attachment_count,omitempty"`
+	Action             string                    `json:"action"`
+	Story              APINotificationReference  `json:"story,omitempty"`
+	CreatedAt          string                    `json:"created_at"`
+	UpdatedAt          string                    `json:"updated_at"`
+	Epic               *APINotificationReference `json:"epic,omitempty"`
+	CommentID          int                       `json:"comment_id,omitempty"`
+	ReadAt             string                    `json:"read_at,omitempty"`
+}
+
+// APINotificationReference defines the structure for an object reference in responses to API queries
+type APINotificationReference struct {
+	Kind string `json:"kind"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}

@@ -43,39 +43,39 @@ func WatchNotifications(
 						}
 						accessToken := acc.AccessToken
 						if len(accessToken) == 0 {
-							log.Tracef("['%s'@'%s'] skipping: no access token found", name, hostname)
+							log.Tracef("[%s] skipping: no access token found for gitlab at %s", name, hostname)
 							return
 						}
 
-						log.Tracef("['%s'@'%s'] checking for todos from gitlab...", name, hostname)
+						log.Tracef("[%s] checking for todos from gitlab at %s...", name, hostname)
 						todos, getTodosError := pkggitlab.GetTodos(hostname, accessToken, since)
 						if getTodosError != nil {
-							log.Warnf("['%s'@'%s'] failed to retrieve gitlab todos: %s", name, hostname, getTodosError)
+							log.Warnf("[%s] failed to retrieve gitlab todos from %s: %s", name, hostname, getTodosError)
 							return
 						}
-						log.Debugf("['%s'@'%s'] received %v gitlab todos", name, hostname, len(*todos))
+						log.Debugf("[%s] received %v todos from gitlab at %s", name, len(*todos), hostname)
 
 						for _, todo := range *todos {
 							waiter.Add(1)
 							go func(notif pkggitlab.APIv4Todo) {
 								defer waiter.Done()
-								log.Tracef("processing gitlab todo with id %v...", notif.ID)
+								log.Tracef("[%s] processing gitlab todo with id '%v@%s'...", name, notif.ID, hostname)
 								exists, queryExistsError := QueryNotification(todo, hostname, databaseConnection)
 								if queryExistsError != nil {
-									log.Warnf("failed to check existence of gitlab notification with id '%v': %s", notif.ID, queryExistsError)
+									log.Warnf("[%s] failed to check existence of gitlab notification with id '%v@%s': %s", name, notif.ID, hostname, queryExistsError)
 									return
 								}
 								if !exists {
-									log.Tracef("saving gitlab todo with id '%v' to the database...", todo.ID)
+									log.Tracef("[%s] saving gitlab todo with id '%v@%s' to the database...", name, notif.ID, hostname)
 									if insertError := InsertNotification(notif, hostname, databaseConnection); insertError != nil {
-										log.Warnf("failed to insert gitlab notification with id '%v' to the database: %s", notif.ID, insertError)
+										log.Warnf("failed to insert gitlab notification with id '%v@%s' to the database: %s", notif.ID, hostname, insertError)
 										return
 									}
-									log.Debugf("sending gitlab todo with id '%v' to the notifications channel", todo.ID)
-									notificationsChannel <- TodoSerializer(todo)
+									log.Debugf("[%s] triggering notification for gitlab todo with id '%v@%s'", name, notif.ID, hostname)
+									notificationsChannel <- TodoSerializer(notif)
 									return
 								}
-								log.Debugf("skipped gitlab todo with id '%v' because it already exists in the database", todo.ID)
+								log.Debugf("[%s] skipped gitlab todo with id '%v@%s' because it already exists in the database", name, notif.ID, hostname)
 							}(todo)
 						}
 					}(account)

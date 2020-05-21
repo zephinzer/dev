@@ -14,7 +14,6 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.NotificationsAliases,
 		Short:   "Retrieves notifications from Gitlab",
 		Run: func(command *cobra.Command, args []string) {
-			log.Printf("# notifications from gitlab\n\n")
 			totalTodoCount := 0
 			for _, account := range config.Global.Platforms.Gitlab.Accounts {
 				hostname := "gitlab.com"
@@ -22,26 +21,21 @@ func GetCommand() *cobra.Command {
 					hostname = account.Hostname
 				}
 				if len(account.AccessToken) == 0 {
-					log.Printf("no access token found for %s\n", account.Name)
+					log.Warnf("no access token found for %s\n", account.Name)
 					break
 				}
-				log.Printf("## notifications from %s\n\n", account.Name)
 				todos, err := gitlab.GetTodos(hostname, account.AccessToken)
 				if err != nil {
-					log.Errorf("an error occurred while retrieving notifications from %s\n", hostname)
-				} else {
-					for index, todo := range todos {
-						log.Printf("%v. %s\n%s\n\n- - -\n\n", index+1, todo.GetTitle(), todo.GetMessage())
-					}
+					log.Warnf("an error occurred while retrieving notifications from %s\n", hostname)
+					continue
 				}
-				todoCount := 0
-				if todos != nil {
-					todoCount = len(todos)
+				log.Infof("Notifications from gitlab '%s'@'%s' (total: %v)\n\n", account.Name, account.Hostname, len(todos))
+				for index, todo := range todos {
+					log.Printf("%v. %s\n%s\n\n- - -\n\n", totalTodoCount+index+1, todo.GetTitle(), todo.GetMessage())
 				}
-				totalTodoCount += todoCount
-				log.Printf("> you have a total of %v unread notifications from %s (%s)\n\n", todoCount, account.Name, hostname)
+				totalTodoCount += len(todos)
 			}
-			log.Printf("> you have a total of %v unread notifications from your gitlab accounts\n\n", totalTodoCount)
+			log.Infof("You have a total of %v unread notifications from your linked gitlab accounts\n\n", totalTodoCount)
 		},
 	}
 	return &cmd

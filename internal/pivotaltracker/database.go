@@ -24,9 +24,10 @@ func InitSQLite3Database(databasePath string) error {
 	return db.ApplyMigrations(TableName, SQLite3Migrations, databasePath)
 }
 
-func InsertNotification(notification pkgpivotaltracker.APINotification, connection *sql.DB) error {
-	notificationID := strconv.Itoa(notification.ID)
-	notificationMessage := notification.String()
+func InsertNotification(ptNotification pkgpivotaltracker.APINotification, connection *sql.DB) error {
+	notification := Notification(ptNotification)
+	notificationID := strconv.Itoa(ptNotification.ID)
+	notificationMessage := fmt.Sprintf("%s: %s", notification.GetTitle(), notification.GetMessage())
 	notificationRaw, marshalError := json.Marshal(notification)
 	if marshalError != nil {
 		return marshalError

@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/zephinzer/dev/internal/github"
 	"github.com/zephinzer/dev/internal/gitlab"
-	"github.com/zephinzer/dev/pkg/pivotaltracker"
+	"github.com/zephinzer/dev/internal/pivotaltracker"
 	"github.com/zephinzer/dev/pkg/trello"
 )
 

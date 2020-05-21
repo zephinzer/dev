@@ -2,6 +2,7 @@ package client
 
 import (
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -13,6 +14,7 @@ import (
 	"github.com/zephinzer/dev/internal/network"
 	"github.com/zephinzer/dev/internal/notifications"
 	"github.com/zephinzer/dev/internal/pivotaltracker"
+	"github.com/zephinzer/dev/internal/types"
 )
 
 func GetCommand() *cobra.Command {
@@ -30,7 +32,7 @@ func GetCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			networkConnectionWatcherInterval := time.Second * 20
+			networkConnectionWatcherInterval := time.Second * 10
 			log.Infof("starting network connections watcher... (interval: %v)", networkConnectionWatcherInterval)
 			stopNetworkConnectionWatcher := make(chan struct{})
 			networkConnectionWatcher := network.WatchConnections(
@@ -50,7 +52,7 @@ func GetCommand() *cobra.Command {
 				stopPivotalWatcher,
 			)
 
-			gitlabNotificationWatcherInterval := time.Second * 5
+			gitlabNotificationWatcherInterval := time.Second * 20
 			log.Infof("starting gitlab notifications watcher... (interval: %v)", gitlabNotificationWatcherInterval)
 			stopGitlabWatcher := make(chan struct{})
 			gitlabWatcher := gitlab.WatchNotifications(
@@ -66,10 +68,13 @@ func GetCommand() *cobra.Command {
 					select {
 					case notification := <-pivotalWatcher:
 						notifications.TriggerDesktop(notification.GetTitle(), notification.GetMessage())
+						go sendTelegramNotification(notification)
 					case notification := <-networkConnectionWatcher:
 						notifications.TriggerDesktop(notification.GetTitle(), notification.GetMessage())
+						go sendTelegramNotification(notification)
 					case notification := <-gitlabWatcher:
 						notifications.TriggerDesktop(notification.GetTitle(), notification.GetMessage())
+						go sendTelegramNotification(notification)
 					}
 				}
 			}()
@@ -77,4 +82,15 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	return &cmd
+}
+
+func sendTelegramNotification(notification types.Notification) {
+	token := config.Global.Dev.Client.Notifications.Telegram.Token
+	chatID, atoiError := strconv.Atoi(config.Global.Dev.Client.Notifications.Telegram.ID)
+	if atoiError != nil {
+		log.Warnf("failed to send telegram notification: %s", atoiError)
+	}
+	if len(token) > 0 && chatID > 0 {
+		notifications.TriggerTelegram(token, int64(chatID), notification.GetTitle()+"\n\nMessage: "+notification.GetMessage())
+	}
 }
