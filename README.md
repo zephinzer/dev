@@ -109,6 +109,9 @@ dev get trello account; # from trello
 
 # retrieve notifications
 ########################
+dev get github notifications; # from github
+# l33t: dev g ph n
+
 dev get gitlab notifications; # from gitlab
 # l33t: dev g gl n
 
@@ -124,9 +127,12 @@ dev get work pivotaltracker; # from pivotal tracker
 dev get config; # retrieve consumed configuration
 # l33t: dev g c
 
+
 # initialise persistent database
 ################################
 dev initialise database;
+# l33t: dev i db
+
 
 # initialise telegram notification integration
 ##############################################

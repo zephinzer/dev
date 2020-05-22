@@ -18,7 +18,7 @@ func main() {
 				runtime.ReadMemStats(&memoryStatistics)
 				log.Tracef("profile as of %s", time.Now().Format(constants.DevTimeFormat))
 				log.Tracef("goroutines  : %v", runtime.NumGoroutine())
-				log.Tracef("alloc/total : %v / %v", humanize.Bytes(memoryStatistics.TotalAlloc), humanize.Bytes(memoryStatistics.Sys))
+				log.Tracef("total/heap/sys : %v / %v", humanize.Bytes(memoryStatistics.TotalAlloc), humanize.Bytes(memoryStatistics.HeapAlloc), humanize.Bytes(memoryStatistics.Sys))
 			}
 		}
 	}(time.Tick(time.Second * 5))

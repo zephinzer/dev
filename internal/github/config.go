@@ -3,7 +3,7 @@ package github
 // Config defines the structure of the configuration
 // for the github platform
 type Config struct {
-	Accounts Accounts `json:"accounts" yaml:"accounts"`
+	Accounts AccountConfigs `json:"accounts" yaml:"accounts"`
 }
 
 // GetSanitized returns a clone of the current Config instance
@@ -14,13 +14,13 @@ func (c Config) GetSanitized() Config {
 	}
 }
 
-// Accounts defines a list of accounts that can be operated on
-type Accounts []Account
+// AccountConfigs defines a list of accounts that can be operated on
+type AccountConfigs []AccountConfig
 
 // GetSanitized returns a clone of the current Accounts instance
 // without sensitive credentials
-func (a Accounts) GetSanitized() Accounts {
-	accounts := []Account{}
+func (a AccountConfigs) GetSanitized() AccountConfigs {
+	accounts := []AccountConfig{}
 	for _, account := range a {
 		if account.Public {
 			accounts = append(accounts, account.GetSanitized())
@@ -29,9 +29,9 @@ func (a Accounts) GetSanitized() Accounts {
 	return accounts
 }
 
-// Account defines the structure of the configuration for a single
+// AccountConfig defines the structure of the configuration for a single
 // logical Github account in the configuration
-type Account struct {
+type AccountConfig struct {
 	// Name is the user-defined label for this github account
 	Name string `json:"name" yaml:"name"`
 	// Description is a user-defined description of what this account is for
@@ -62,8 +62,8 @@ type Account struct {
 
 // GetSanitized returns a copy of the current Account instance with
 // sensitive credentials removed
-func (a Account) GetSanitized() Account {
-	return Account{
+func (a AccountConfig) GetSanitized() AccountConfig {
+	return AccountConfig{
 		Name:        a.Name,
 		Description: a.Description,
 		AccessToken: "[REDACTED]",
