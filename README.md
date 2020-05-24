@@ -1,259 +1,145 @@
-# Dev
+# That Dev Tool
 
 [![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)
 ![github tag (latest semver)](https://img.shields.io/github/v/tag/zephinzer/dev)
 [![maintainability](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/maintainability)](https://codeclimate.com/github/zephinzer/dev/maintainability)
 [![test coverage](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/test_coverage)](https://codeclimate.com/github/zephinzer/dev/test_coverage)
 
-Dev aims to improve the developer experience through a CLI tool.
+A CLI tool for improving the developer experience.
 
-This tool exists to improve the day-to-day work experience of software developers. Use this to:
+**Onboarding**
+- Software checks to verify required software is installed
+- Network checks to verify required connectivity is established
+- Link directory to quickly access project-related URLs
 
-1. Improve **onboarding** through defining required software in code
-2. Improve **productivity** through a background service that integrates with your platforms
-
-You can:
-
-- ✅ Check if you have required software - `dev check software`
-- ✅ Check if you have required network connectivity - `dev check networks`
-- ✅ Check if you have required repositories - `dev check repos`
-- ✅ Search for and go to links within your project - `dev goto`
-- ✅ Get work assigned to you - `dev get work`
-- ✅ Get notifications from developer platforms - `dev get notifications`
-- ✅ Get notifications on your desktop
-- ✅ Get notifications on your telegram
-- ✅ Open the website of repository you're in - `dev open repo`
-- ✅ Be l33t by using aliases that become simpler as you use them (example: from `dev get notifications` to `dev get notifs` to `dev g n`)
-
-**Table of Contents**
-
-- [Dev](#dev)
-- [Installation](#installation)
-  - [Via Git Repository](#via-git-repository)
-  - [Via Github Releases](#via-github-releases)
-  - [Other Ways](#other-ways)
-- [Usage](#usage)
-  - [Overview](#overview)
-  - [Canonical Tokens](#canonical-tokens)
-    - [Nouns](#nouns)
-    - [Verbs](#verbs)
-  - [Logs Output](#logs-output)
-  - [Configuration](#configuration)
-  - [Platforms](#platforms)
-    - [Github](#github)
-      - [Setting Up](#setting-up)
-    - [Gitlab](#gitlab)
-    - [PivotalTracker](#pivotaltracker)
-    - [Trello](#trello)
-    - [Telegram](#telegram)
-- [Development Notes](#development-notes)
-- [Licensing](#licensing)
-
-
-
-- - -
-
-
+**Development**
+- Receive notifications on todos/work from common developer platforms (Gitlab, Pivotal Tracker)
+- Receive notifications on your desktop, or on Telegram
+- Open repository website using the default browser
 
 # Installation
 
-## Via Git Repository
+Releases are available on Github at [https://github.com/zephinzer/dev/releases](https://github.com/zephinzer/dev/releases).
 
-Clone this repository and run `make install_local`.
+You can also install it via `go install`:
 
-## Via Github Releases
+```sh
+go install github.com/zephinzer/dev
+```
 
-Go to the [Releases tab of the Github repository](https://github.com/zephinzer/dev/releases).
-
-## Other Ways
-
-Coming soon!
-
-
-- - -
-
+Test the installation works by running `dev -v`.
 
 # Usage
 
-## Overview
+`dev` loads its configuration from `~/dev.yaml` where `~` is your home directory. It also searches for a local `./dev.yaml` in your current working directory and if found, merges it with the global configuration.
 
-The following is an overview of what can be done:
+## Software checks
+
+### Setting up software checks
+
+### Using software checks
 
 ```sh
-# check stuff
-#############
-dev check software; # checks if required software is installed
-# l33t: dev c sw
-
-dev check networks; # checks if required network access is available
-# l33t: dev c nw
-
-dev check repositories; # checks if required repositories are available locally
-# l33t: dev c r
-
-
-# retrieving account information 
-################################
-dev get github account; # from github
-# l33t: dev g gh a
-
-dev get gitlab account; # from gitlab
-# l33t: dev g gl a
-
-dev get pivotaltracker account; # from pivotal tracker
-# l33t: dev g pt a
-
-dev get trello account; # from trello
-# l33t: dev g tr a
-
-
-# retrieve notifications
-########################
-dev get github notifications; # from github
-# l33t: dev g ph n
-
-dev get gitlab notifications; # from gitlab
-# l33t: dev g gl n
-
-dev get pivotaltracker notifications; # pivotal tracker
-# l33t: dev g pt n
-
-
-# retrieve your work 
-####################
-dev get work pivotaltracker; # from pivotal tracker
-# l33t: dev g w pt
-
-dev get config; # retrieve consumed configuration
-# l33t: dev g c
-
-
-# initialise persistent database
-################################
-dev initialise database;
-# l33t: dev i db
-
-
-# initialise telegram notification integration
-##############################################
-dev initialise telegram notifications;
-
-dev open repository; # opens the website of the repository you're currently in
-# l33t: dev o r
-
-dev start client; # starts the desktop client helper application
-# l33t: dev s
+dev check software;
 ```
 
+## Network checks
 
+### Setting up network checks
 
-## Canonical Tokens
+### Using network checks
 
-### Nouns
+```sh
+dev check networks;
+```
 
-| Object | Canon | Aliases |
-| --- | --- | --- |
-| Account | `account` | `accounts`, `acc`, `accs`, `a` |
-| Client | `client` | `cl` |
-| Configuration | `configuration` | `config`, `conf`, `cf`, `c` |
-| Database | `database` | `db` |
-| Gitlab | `gitlab` | `gl` |
-| Github | `github` | `gh` |
-| Network | `network` | `networks`, `net`, `nets`, `nw` |
-| Notifications | `notifications` | `notification`, `notif`, `notifs`, `n` |
-| Repository | `repository` | `repo`, `rp`, `r` |
-| PivotalTracker | `pivotaltracker` | `pivotal`, `pt` |
-| Server | `server` | `syncer` |
-| Software | `software` | `sw`, `s`, `apps` |
-| System Info | `sysinfo` | `system-info`, `system`, `si` |
-| Telegram | `telegram` | `tg`, `t.me` |
-| Trello | `trello` | `tr` |
-| Work | `work` | `stories`, `tasks`, `tickets`, `w` |
-| Workspace | `workspace` | `ws` |
+## Link directory
 
-### Verbs
+### Setting up the link directory
 
-| Action | Canon | Aliases |
-| --- | --- | --- |
-| Check | `check` | `c`, `verify` |
-| Debug | `debug` | `test` |
-| Get | `get` | `retrieve`, `g` |
-| Initialise | `initialise` | `initialize`, `init`, `i` |
-| Install | `install` | `setup` |
-| Open | `open` | `op`, `o` |
-| Start | `start` | `st`, `s` |
+### Using the link directory
 
+```sh
+dev goto;
+```
 
-
-## Logs Output
-
-Labelled logs are sent to `stderr` and unlabelled logs are sent to `stdout`. Pipable output is typically sent to `stdout` so you can pipe or stream it to another IO source, logs that indicate inner workings of the application are sent to `stderr`.
-
-- To pipe the **`stdout` logs** only, use the **`>` operator** (`stderr` logs will be sent to terminal).
-- To pipe the **`stderr` logs** only, use the **`2>` operator** (`stdout` logs will be sent to terminal).
-- To pipe **all logs** use the **`&>` operator**.
-
-
-
-## Configuration
-
-See the [documentation on Configuration](./docs/configuration.md) for more information.
-
-## Platforms
+## Platform integrations
 
 ### Github
 
-#### Setting Up
+#### Setting up Github integration
 
-Retrieve your `accessToken` by generating a new personal access token from [https://github.com/settings/tokens](https://github.com/settings/tokens). You'll need the following scopes:
+#### Using the Github integration
 
-- repo:status
-- repo_deployment
-- public_repo
-- repo:invite
-- read:packages
-- read:org
-- read:public_key
-- read:repo_hook
-- notifications
-- read:user
-- read:discussion
-- read:enterprise
-- read:gpg_key
+```sh
+dev get github account;
+dev get github notifs;
+```
 
 ### Gitlab
 
-Retrieve your `accessToken` by generating a new personal access token from [https://gitlab.com/profile/personal_access_tokens](https://gitlab.com/profile/personal_access_tokens). You'll need the following scopes:
+#### Setting up Gitlab integration
 
-- api
-- read_api
+#### Using the Gitlab integration
 
-> If you're using an on-premise Gitlab, change `gitlab.com` to your Gitlab's hostname
+```sh
+dev get gitlab account;
+dev get gitlab notifs;
+```
 
-### PivotalTracker
+### Pivotal Tracker
 
-See the [Pivotal Tracker integration](./docs/integrations/pivotal-tracker.md) for more information.
+#### Setting up Pivotal Tracker integration
+
+#### Using the Pivotal Tracker integration
+
+```sh
+dev get pivotal account;
+dev get pivotal notifs;
+```
 
 ### Trello
 
-See the [Trello Integration](./docs/integrations/trello.md) for more information.
+#### Setting up Trello integration
+
+#### Using the Trello integration
+
+```sh
+dev get trello account;
+dev get trello notifs;
+```
+
+## Notification integrations
 
 ### Telegram
 
-See the [Telegram Integration](./docs/integrations/telegram.md) for more information.
+`dev` is able to notify you via Telegram if the integration has been set up.
 
+#### Setting up Telegram notifications integration
 
-- - -
+1. Talk to [The BotFather](https://t.me/BotFather) using `/start` if you haven't talked to it before.
+2. Send the `/newbot` command to create a new bot. Give your bot a logical name (eg. "My Notification Bot") followed by a bot username (eg. `my_notification_bot`).
+3. You should receive an access token of the form `1234556789:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`, add the access token at the property `dev.client.notifications.telegram.token`.
+4. Run `dev init telegram notifs`
+5. Talk to your bot and you should see a chat ID appear in `dev`'s logs
+6. Copy and paste this chat ID to the property `dev.client.notifications.telegram.id` **as a string** (surround the ID with quotes)
+7. To test the integration, ensure your chat ID is in the configuration, and run `dev debug notifications` and confirm you receive a notification in Telegram
 
+Your configuration should look like:
 
-# Development Notes
+```yaml
+# ... other properties ...
+dev:
+  # ... other properties ...
+  notifications:
+    telegram:
+      token: 1234556789:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      id: "987654321"
+# ... other properties ...
+```
 
-See the [documentation on Development Notes](./docs/development.md) for more information.
+# Contributing
 
-
-- - -
-
-
-# Licensing
+# License
 
 Code is licensed under the MIT license. [Click here to view the full text](./LICENSE).

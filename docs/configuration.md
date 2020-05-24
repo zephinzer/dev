@@ -2,6 +2,18 @@
 
 Configuration is done via YAML. By default, `dev` looks for a file at `${HOME}/dev.yaml` and uses that as the base. Next, `dev` will look for a file at `$(pwd)/dev.yaml` and if that is found, merges (add-only) it with the base. If a base configuration is not found, the local `$(pwd)/dev.yaml` will be used. If both are not found and is required by the command you are trying to invoke, an error will be raised.
 
+- [Configuration](#configuration)
+  - [Application](#application)
+  - [Networks](#networks)
+  - [Softwares](#softwares)
+  - [Repositories](#repositories)
+  - [Links](#links)
+  - [Platform Integrations](#platform-integrations)
+    - [Github](#github)
+    - [Gitlab](#gitlab)
+    - [Pivotal Tracker](#pivotal-tracker)
+    - [Trello](#trello)
+
 ## Application
 
 Working example:
