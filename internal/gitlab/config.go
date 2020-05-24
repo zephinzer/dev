@@ -14,6 +14,22 @@ func (c Config) GetSanitized() Config {
 	}
 }
 
+// MergeWith merges the current Config instance with a provided
+// Config instance. The merge strategy is add-only
+func (c *Config) MergeWith(o Config) {
+	seen := map[string]bool{}
+	for _, a := range c.Accounts {
+		seen[a.AccessToken] = true
+	}
+	for _, a := range o.Accounts {
+		if seen[a.AccessToken] == true {
+			continue
+		}
+		c.Accounts = append(c.Accounts, a)
+		seen[a.AccessToken] = true
+	}
+}
+
 // AccountConfigs defines a list of AccountConfig instances which can be
 // operated on internally
 type AccountConfigs []AccountConfig

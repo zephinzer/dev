@@ -1,4 +1,13 @@
 package config
 
-// Global contains the global configuration usable by all CLI commands
-var Global *File
+// Global contains the global configuration usable by all CLI commands,
+// all root properties are guaranteed to exist
+var Global = &Config{
+	Dev:          Dev{},
+	Includes:     Includes{},
+	Links:        Links{},
+	Networks:     Networks{},
+	Platforms:    Platforms{},
+	Softwares:    Softwares{},
+	Repositories: Repositories{},
+}
