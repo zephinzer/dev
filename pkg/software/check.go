@@ -65,9 +65,9 @@ func (check *Check) Run() error {
 			return err
 		}
 	}
-	stderrOutput := strings.Trim(stderr.String(), "\r\n\t ")
+	stderrOutput := strings.TrimSpace(stderr.String())
 	check.observed.Stderr = &stderrOutput
-	stdoutOutput := strings.Trim(stdout.String(), "\r\n\t ")
+	stdoutOutput := strings.TrimSpace(stdout.String())
 	check.observed.Stdout = &stdoutOutput
 	return nil
 }

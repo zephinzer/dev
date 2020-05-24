@@ -37,6 +37,26 @@ Test the installation works by running `dev -v`.
 
 ### Setting up software checks
 
+```yaml
+softwares:
+- name: golang
+  check:
+    command: ["go", "version"]
+    stdout: ^go version go\d\.\d+(\.\d+)? [a-zA-Z0-9]+\/[a-zA-Z0-9]+$
+- name: node
+  check:
+    command: ["node", "-v"]
+    stdout: ^v\d+\.\d+\.\d+$
+- name: terraform
+  check:
+    command: ["terraform", "version"]
+    stdout: ^Terraform v\d+\.\d+\.\d+$
+- name: terragrunt
+  check:
+    command: ["terragrunt", "-v"]
+    stdout: ^terragrunt version v\d+\.\d+\.\d+$
+```
+
 ### Using software checks
 
 ```sh
@@ -47,6 +67,16 @@ dev check software;
 
 ### Setting up network checks
 
+```yaml
+networks:
+- name: internet
+  check:
+    url: https://google.com
+- name: internal-vpn
+  check:
+    url: https://gitlab.internal.com
+```
+
 ### Using network checks
 
 ```sh
@@ -56,6 +86,28 @@ dev check networks;
 ## Link directory
 
 ### Setting up the link directory
+
+```yaml
+links:
+- label: internal vpn endpoint
+  categories: ["vpn"]
+  url: https://openvpn.yourdomain.com
+- label: official source-of-truth release repository
+  categories: ["scm"]
+  url: https://gitlab.com/zephinzer/dev
+- label: dev tool build pipeline
+  categories: ["cicd"]
+  url: https://gitlab.com/zephinzer/dev/pipelines
+- label: dev tool release pipeline
+  categories: ["cicd", "release"]
+  url: https://travis-ci.org/github/zephinzer/dev/
+- label: dev tool code quality checks
+  categories: ["cicd"]
+  url: https://codeclimate.com/github/zephinzer/dev
+- label: dev tool releases
+  categories: ["cicd", "release]
+  url: https://github.com/zephinzer/dev/releases
+```
 
 ### Using the link directory
 
@@ -91,6 +143,45 @@ dev get gitlab notifs;
 
 #### Setting up Pivotal Tracker integration
 
+##### Setting up Pivotal Tracker API keys
+
+1. Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https://www.pivotaltracker.com/profile).
+2. Enter the `accessToken` as a property at `platforms.pivotaltracker`
+
+Example:
+
+```yaml
+# ...
+platforms:
+  # ...
+  pivotaltracker:
+    accessToken: ...
+# ...
+```
+
+##### Configuring specific Pivotal Tracker projects
+
+1. Navigate to the project you want to receive work/notifications from
+2. From the URL, extract the project ID (assuming a URL like `https://www.pivotaltracker.com/n/projects/1234567`, the project ID is `1234567`)
+3. Add an array item to the property at `platforms.pivotaltracker.projects`. The array item has a structure containing 3 properties:
+   1. `name`: an arbitrary label you can use to identify the project
+   2. `projectID` the project ID as retrieved from above **as a string** (surround with `"double quotes"` to be sure)
+
+Example:
+
+```yaml
+# ...
+platforms:
+  # ...
+  pivotaltracker:
+    accessToken: ...
+    projects:
+    - name: (some arbitrary name you use to identify your project)
+      projectID: "1234567"
+    # ... other projects ...
+# ...
+```
+
 #### Using the Pivotal Tracker integration
 
 ```sh
@@ -101,6 +192,43 @@ dev get pivotal notifs;
 ### Trello
 
 #### Setting up Trello integration
+
+##### Setting up Trello API credentials
+
+1. Retrieve your `accessKey` from [https://trello.com/app-key](https://trello.com/app-key).
+2. Generate your `accessToken` from the link to **Token** from the above link
+3. Enter the `accessKey` and `accessToken` as properties at `platforms.trello`
+
+Example:
+
+```yaml
+# ...
+platforms:
+  # ...
+  trello:
+    accessKey: ...
+    accessToken: ...
+# ...
+```
+
+##### Configuring boards
+
+The `boards` property at `platforms.trello.boards` takes in an array of board shortlinks. You can retrieve a board's shortlink by visiting the board in your browser and extracting it from the URL.
+
+Assuming your board can be found at the URL `https://trello.com/b/xxxxxxxx/lorem-ipsum`, the board shortlink is `xxxxxxxx`.
+
+Example:
+
+```yaml
+# ...
+platforms:
+  # ...
+  trello:
+    # ... api keys ...
+    boards:
+    - xxxxxxxx
+# ...
+```
 
 #### Using the Trello integration
 
