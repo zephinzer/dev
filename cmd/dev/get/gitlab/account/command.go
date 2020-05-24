@@ -35,7 +35,7 @@ func GetCommand() *cobra.Command {
 
 				if accountsEncountered[accessToken] == nil {
 					accountsEncountered[accessToken] = true
-					log.Infof("account information for '%s'@'%s'\n", name, hostname)
+					log.Infof("account information for '%s'@'%s' gitlab account", name, hostname)
 					accountInfo, err := gitlab.GetAccount(hostname, accessToken)
 					if err != nil {
 						log.Warnf("failed to retrieve account information for '%s'@'%s'", name, hostname)
@@ -45,8 +45,8 @@ func GetCommand() *cobra.Command {
 					totalAccountsCount++
 				}
 			}
-			log.Infof("total listed accounts     : %v", len(config.Global.Platforms.Gitlab.Accounts))
-			log.Infof("total accessible accounts : %v", totalAccountsCount)
+			log.Infof("total listed gitlab accounts     : %v", len(config.Global.Platforms.Gitlab.Accounts))
+			log.Infof("total accessible gitlab accounts : %v", totalAccountsCount)
 		},
 	}
 	return &cmd

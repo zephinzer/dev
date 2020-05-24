@@ -27,7 +27,7 @@ func GetCommand() *cobra.Command {
 			defaultAccessToken := config.Global.Platforms.PivotalTracker.AccessToken
 			if len(config.Global.Platforms.PivotalTracker.Projects) == 0 && len(defaultAccessToken) > 0 {
 				accountsEncountered[defaultAccessToken] = true
-				log.Info("account information for root credentials")
+				log.Info("account information for root pivotal tracker account")
 				account, err := pivotaltracker.GetAccount(defaultAccessToken)
 				if err != nil {
 					log.Warnf("failed to retrieve account information for pivotal tracker using the default access credentials")
@@ -43,7 +43,7 @@ func GetCommand() *cobra.Command {
 				}
 				if accountsEncountered[projectAccessToken] == nil {
 					accountsEncountered[projectAccessToken] = true
-					log.Infof("account information for project '%s' (id: %s)", project.Name, project.ProjectID)
+					log.Infof("account information for pivotal tracker project '%s' (id: %s)", project.Name, project.ProjectID)
 					account, err := pivotaltracker.GetAccount(projectAccessToken)
 					if err != nil {
 						log.Warnf("failed to retrieve account information for associated pivotal tracker project '%s'", project.Name)
@@ -53,8 +53,8 @@ func GetCommand() *cobra.Command {
 					}
 				}
 			}
-			log.Infof("total listed projects: %v\n", len(config.Global.Platforms.PivotalTracker.Projects))
-			log.Infof("total accounts: %v\n", totalAccountsCount)
+			log.Infof("total listed pivotal tracker projects : %v\n", len(config.Global.Platforms.PivotalTracker.Projects))
+			log.Infof("total pivotal tracker accounts        : %v\n", totalAccountsCount)
 		},
 	}
 	conf.ApplyToFlagSet(cmd.Flags())

@@ -21,7 +21,7 @@ func GetCommand() *cobra.Command {
 			defaultAccessToken := config.Global.Platforms.Trello.AccessToken
 			if len(config.Global.Platforms.Trello.Boards) == 0 && (len(defaultAccessToken) > 0 && len(defaultAccessKey) > 0) {
 				accountsEncountered[defaultAccessKey+defaultAccessToken] = true
-				log.Info("account information for root credentials")
+				log.Info("account information for root trello account")
 				account, getAccountError := trello.GetAccount(defaultAccessKey, defaultAccessToken)
 				if getAccountError != nil {
 					log.Warnf("failed to retrieve account information for trello using the default access credentials")
@@ -41,7 +41,7 @@ func GetCommand() *cobra.Command {
 				}
 				if accountsEncountered[boardAccessKey+boardAccessToken] == nil {
 					accountsEncountered[boardAccessKey+boardAccessToken] = true
-					log.Infof("account information for board '%s' (id: %s)", board.Name, board.ID)
+					log.Infof("account information for trello board '%s' (id: %s)", board.Name, board.ID)
 					account, getAccountError := trello.GetAccount(boardAccessKey, boardAccessToken)
 					if getAccountError != nil {
 						log.Warnf("failed to retrieve account information for associated trello board '%s'", board.Name)
@@ -51,8 +51,8 @@ func GetCommand() *cobra.Command {
 					}
 				}
 			}
-			log.Infof("total listed boards: %v\n", len(config.Global.Platforms.Trello.Boards))
-			log.Infof("total accounts: %v\n", totalAccountsCount)
+			log.Infof("total listed trello boards : %v\n", len(config.Global.Platforms.Trello.Boards))
+			log.Infof("total trello accounts      : %v\n", totalAccountsCount)
 		},
 	}
 	return &cmd

@@ -26,7 +26,7 @@ func GetCommand() *cobra.Command {
 				}
 				if accountsEncountered[accountAccessToken] == nil {
 					accountsEncountered[accountAccessToken] = true
-					log.Infof("account information for '%s'\n", accountName)
+					log.Infof("account information for '%s' github account\n", accountName)
 					accountInfo, getAccountError := github.GetAccount(accountAccessToken)
 					if getAccountError != nil {
 						log.Warnf("failed to retrieve account information for '%s': %s", accountName, getAccountError)
@@ -36,8 +36,8 @@ func GetCommand() *cobra.Command {
 					totalAccountsCount++
 				}
 			}
-			log.Infof("total listed accounts    : %v", len(config.Global.Platforms.Github.Accounts))
-			log.Infof("total accessible accounts: %v", totalAccountsCount)
+			log.Infof("total listed github accounts     : %v", len(config.Global.Platforms.Github.Accounts))
+			log.Infof("total accessible github accounts : %v", totalAccountsCount)
 		},
 	}
 	return &cmd
