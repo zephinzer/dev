@@ -17,6 +17,42 @@ A CLI tool for improving the developer experience.
 - Receive notifications on your desktop, or on Telegram
 - Open repository website using the default browser
 
+**Table of Contents**
+- [That Dev Tool](#that-dev-tool)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Software checks](#software-checks)
+    - [Setting up software checks](#setting-up-software-checks)
+    - [Using software checks](#using-software-checks)
+  - [Network checks](#network-checks)
+    - [Setting up network checks](#setting-up-network-checks)
+    - [Using network checks](#using-network-checks)
+  - [Link directory](#link-directory)
+    - [Setting up the link directory](#setting-up-the-link-directory)
+    - [Using the link directory](#using-the-link-directory)
+  - [Platform integrations](#platform-integrations)
+    - [Github](#github)
+      - [Setting up Github integration](#setting-up-github-integration)
+      - [Using the Github integration](#using-the-github-integration)
+    - [Gitlab](#gitlab)
+      - [Setting up Gitlab integration](#setting-up-gitlab-integration)
+      - [Using the Gitlab integration](#using-the-gitlab-integration)
+    - [Pivotal Tracker](#pivotal-tracker)
+      - [Setting up Pivotal Tracker integration](#setting-up-pivotal-tracker-integration)
+        - [Setting up Pivotal Tracker API keys](#setting-up-pivotal-tracker-api-keys)
+        - [Configuring specific Pivotal Tracker projects](#configuring-specific-pivotal-tracker-projects)
+      - [Using the Pivotal Tracker integration](#using-the-pivotal-tracker-integration)
+    - [Trello](#trello)
+      - [Setting up Trello integration](#setting-up-trello-integration)
+        - [Setting up Trello API credentials](#setting-up-trello-api-credentials)
+        - [Configuring boards](#configuring-boards)
+      - [Using the Trello integration](#using-the-trello-integration)
+  - [Notification integrations](#notification-integrations)
+    - [Telegram](#telegram)
+      - [Setting up Telegram notifications integration](#setting-up-telegram-notifications-integration)
+- [Contributing](#contributing)
+- [License](#license)
+
 # Installation
 
 Releases are available on Github at [https://github.com/zephinzer/dev/releases](https://github.com/zephinzer/dev/releases).
@@ -89,9 +125,6 @@ dev check networks;
 
 ```yaml
 links:
-- label: internal vpn endpoint
-  categories: ["vpn"]
-  url: https://openvpn.yourdomain.com
 - label: official source-of-truth release repository
   categories: ["scm"]
   url: https://gitlab.com/zephinzer/dev
