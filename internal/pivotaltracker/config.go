@@ -34,7 +34,7 @@ func (c *Config) MergeWith(o Config) {
 		seen[p.AccessToken] = true
 	}
 	for _, p := range o.Projects {
-		if seen[p.AccessToken] == true {
+		if value, ok := seen[p.AccessToken]; value && ok {
 			continue
 		}
 		c.Projects = append(c.Projects, p)

@@ -22,7 +22,7 @@ func (c *Config) MergeWith(o Config) {
 		seen[a.AccessToken] = true
 	}
 	for _, a := range o.Accounts {
-		if seen[a.AccessToken] == true {
+		if value, ok := seen[a.AccessToken]; value && ok {
 			continue
 		}
 		c.Accounts = append(c.Accounts, a)

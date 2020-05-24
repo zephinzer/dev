@@ -6,7 +6,8 @@ import (
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/pivotaltracker"
+	"github.com/zephinzer/dev/internal/pivotaltracker"
+	"github.com/zephinzer/dev/internal/types"
 )
 
 var conf = cf.Map{
@@ -26,8 +27,14 @@ func GetCommand() *cobra.Command {
 			defaultAccessToken := config.Global.Platforms.PivotalTracker.AccessToken
 			if len(config.Global.Platforms.PivotalTracker.Projects) == 0 && len(defaultAccessToken) > 0 {
 				accountsEncountered[defaultAccessToken] = true
-				printAccountInfo(defaultAccessToken, conf.GetString("format"))
-				totalAccountsCount++
+				log.Info("account information for root credentials")
+				account, err := pivotaltracker.GetAccount(defaultAccessToken)
+				if err != nil {
+					log.Warnf("failed to retrieve account information for pivotal tracker using the default access credentials")
+				} else {
+					log.Printf(types.PrintAccount(account))
+					totalAccountsCount++
+				}
 			}
 			for _, project := range config.Global.Platforms.PivotalTracker.Projects {
 				projectAccessToken := project.AccessToken
@@ -36,23 +43,20 @@ func GetCommand() *cobra.Command {
 				}
 				if accountsEncountered[projectAccessToken] == nil {
 					accountsEncountered[projectAccessToken] = true
-					log.Printf("\n# account information for project '%s' (id: %s)\n\n", project.Name, project.ProjectID)
-					printAccountInfo(projectAccessToken, conf.GetString("format"))
-					totalAccountsCount++
+					log.Infof("account information for project '%s' (id: %s)", project.Name, project.ProjectID)
+					account, err := pivotaltracker.GetAccount(projectAccessToken)
+					if err != nil {
+						log.Warnf("failed to retrieve account information for associated pivotal tracker project '%s'", project.Name)
+					} else {
+						log.Printf(types.PrintAccount(account))
+						totalAccountsCount++
+					}
 				}
 			}
-			log.Printf("> total listed projects: %v\n", len(config.Global.Platforms.PivotalTracker.Projects))
-			log.Printf("> total accounts: %v\n", totalAccountsCount)
+			log.Infof("total listed projects: %v\n", len(config.Global.Platforms.PivotalTracker.Projects))
+			log.Infof("total accounts: %v\n", totalAccountsCount)
 		},
 	}
 	conf.ApplyToFlagSet(cmd.Flags())
 	return &cmd
-}
-
-func printAccountInfo(accessToken string, format ...string) {
-	accountInfo, err := pivotaltracker.GetAccount(accessToken)
-	if err != nil {
-		panic(err)
-	}
-	log.Printf("%s\n", accountInfo.String(format...))
 }

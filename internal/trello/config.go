@@ -21,6 +21,26 @@ func (c Config) GetSanitized() Config {
 	}
 }
 
+func (c *Config) MergeWith(o Config) {
+	seen := map[string]bool{}
+	if len(c.AccessKey) == 0 && len(o.AccessKey) > 0 {
+		c.AccessKey = o.AccessKey
+	}
+	if len(c.AccessToken) == 0 && len(o.AccessToken) > 0 {
+		c.AccessToken = o.AccessToken
+	}
+	for _, b := range c.Boards {
+		seen[b.ID] = true
+	}
+	for _, b := range o.Boards {
+		if value, ok := seen[b.ID]; value && ok {
+			continue
+		}
+		c.Boards = append(c.Boards, b)
+		seen[b.ID] = true
+	}
+}
+
 // Boards is a slice of Board instances
 type Boards []Board
 

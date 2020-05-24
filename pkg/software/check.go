@@ -9,13 +9,13 @@ import (
 	"syscall"
 )
 
-// Software represents a software that should be installed
-// on the user's machine
-type Software struct {
-	Name  string `json:"name" yaml:"name"`
-	Check Check  `json:"check" yaml:"check"`
-}
-
+// Check represents a functional check on whether the software exists.
+// It works by running the command as specified in Command and comparing
+// the output with the provided ExitCode, Stdout, and Stderr.
+//
+// Usage:
+// 1. Use `.Run()` method to run the check, results will be stored in the `.observed` property
+// 1. Use `.Verify()` method to verify that the `.observed` property matches the provided parameters
 type Check struct {
 	// Command is the command to run including arguments
 	Command []string `json:"command" yaml:"command"`

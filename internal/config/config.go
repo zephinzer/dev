@@ -57,8 +57,6 @@ type Config struct {
 // a second provided :other Config configuration instance, intention for
 // this is to merge a local configuration with a global configuration
 func (f *Config) MergeWith(other *Config) {
-	seenMap := map[string]bool{}
-
 	// TODO: copy over dev configurations
 
 	// copy over links
@@ -78,46 +76,11 @@ func (f *Config) MergeWith(other *Config) {
 	f.Platforms.PivotalTracker.MergeWith(other.Platforms.PivotalTracker)
 
 	/// copy over trello configuration
-	if len(f.Platforms.Trello.AccessToken) == 0 && len(other.Platforms.Trello.AccessToken) > 0 {
-		f.Platforms.Trello.AccessToken = other.Platforms.Trello.AccessToken
-	}
-	if len(f.Platforms.Trello.AccessKey) == 0 && len(other.Platforms.Trello.AccessKey) > 0 {
-		f.Platforms.Trello.AccessKey = other.Platforms.Trello.AccessKey
-	}
-	for _, trelloBoard := range f.Platforms.Trello.Boards {
-		seenMap["trello"+trelloBoard.ID] = true
-	}
-	for _, trelloBoard := range other.Platforms.Trello.Boards {
-		if seenMap["trello"+trelloBoard.ID] == true {
-			continue
-		}
-		f.Platforms.Trello.Boards = append(f.Platforms.Trello.Boards, trelloBoard)
-		seenMap["trello"+trelloBoard.ID] = true
-	}
+	f.Platforms.Trello.MergeWith(other.Platforms.Trello)
 
 	// copy over softwares
-	for _, software := range f.Softwares {
-		seenMap["software"+software.Check.Command[0]] = true
-	}
-	for _, software := range other.Softwares {
-		if seenMap["software"+software.Check.Command[0]] == true {
-			continue
-		}
-		f.Softwares = append(f.Softwares, software)
-		seenMap["software"+software.Check.Command[0]] = true
-	}
+	f.Softwares.MergeWith(other.Softwares)
 
 	// copy over repositories
-	for _, repository := range f.Repositories {
-		repositoryPath, _ := repository.GetPath()
-		seenMap["repo"+repositoryPath] = true
-	}
-	for _, repository := range other.Repositories {
-		repositoryPath, _ := repository.GetPath()
-		if seenMap["repo"+repositoryPath] == true {
-			continue
-		}
-		f.Repositories = append(f.Repositories, repository)
-		seenMap["repo"+repositoryPath] = true
-	}
+	f.Repositories.MergeWith(other.Repositories)
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/zephinzer/dev/internal/github"
 	"github.com/zephinzer/dev/internal/gitlab"
 	"github.com/zephinzer/dev/internal/pivotaltracker"
-	"github.com/zephinzer/dev/pkg/trello"
+	"github.com/zephinzer/dev/internal/trello"
 )
 
 // Platforms specifies the configurations available
