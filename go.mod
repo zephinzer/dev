@@ -25,5 +25,6 @@ require (
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/usvc/go-config v0.2.2
 	github.com/usvc/go-logger v0.6.3
+	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073
 	gopkg.in/yaml.v2 v2.2.4
 )

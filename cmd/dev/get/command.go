@@ -6,6 +6,7 @@ import (
 	"github.com/zephinzer/dev/cmd/dev/get/configuration"
 	"github.com/zephinzer/dev/cmd/dev/get/github"
 	"github.com/zephinzer/dev/cmd/dev/get/gitlab"
+	"github.com/zephinzer/dev/cmd/dev/get/keys"
 	"github.com/zephinzer/dev/cmd/dev/get/notifications"
 	"github.com/zephinzer/dev/cmd/dev/get/pivotaltracker"
 	"github.com/zephinzer/dev/cmd/dev/get/sysinfo"
@@ -30,6 +31,7 @@ func GetCommand() *cobra.Command {
 	cmd.AddCommand(sysinfo.GetCommand())
 	cmd.AddCommand(work.GetCommand())
 	cmd.AddCommand(workspace.GetCommand())
+	cmd.AddCommand(keys.GetCommand())
 	// -- update to set account platform first
 	cmd.AddCommand(gitlab.GetCommand())
 	cmd.AddCommand(github.GetCommand())

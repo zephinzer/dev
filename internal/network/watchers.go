@@ -47,7 +47,7 @@ func WatchConnections(
 						delete(isOffline, nwName)
 						if !isInitialRun {
 							notificationsChannel <- notifications.New(
-								"✅ Network Online ✅",
+								"✅ Network Online",
 								fmt.Sprintf("[`%s`@`%s`] is now ONLINE", nwName, hostname),
 							)
 						}
@@ -58,7 +58,7 @@ func WatchConnections(
 						delete(isOnline, nwName)
 						if !isInitialRun {
 							notificationsChannel <- notifications.New(
-								"⛔️ Network Offline ⛔️",
+								"⛔️ Network Offline",
 								fmt.Sprintf("[`%s`@`%s`] is now OFFLINE", nwName, hostname),
 							)
 						}

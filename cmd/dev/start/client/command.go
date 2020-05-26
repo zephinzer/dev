@@ -91,6 +91,6 @@ func sendTelegramNotification(notification types.Notification) {
 		log.Warnf("failed to send telegram notification: %s", atoiError)
 	}
 	if len(token) > 0 && chatID > 0 {
-		notifications.TriggerTelegram(token, int64(chatID), notification.GetTitle()+"\n\nMessage: "+notification.GetMessage())
+		notifications.TriggerTelegram(token, int64(chatID), notification.GetTitle()+"\n\n"+notification.GetMessage())
 	}
 }
