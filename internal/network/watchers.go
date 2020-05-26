@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
@@ -27,9 +28,12 @@ func WatchConnections(
 	updateInterval time.Duration,
 	stop chan struct{},
 ) chan types.Notification {
+	hostname := "unknown-host"
+	hostname, _ = os.Hostname()
 	notificationsChannel := make(chan types.Notification, 16)
 	statusChannel := make(chan NetworkConnectionStatus, 8)
 	isInitialRun := true
+
 	go func(tick <-chan time.Time) {
 		for {
 			select {
@@ -43,8 +47,8 @@ func WatchConnections(
 						delete(isOffline, nwName)
 						if !isInitialRun {
 							notificationsChannel <- notifications.New(
-								"Network change detected",
-								fmt.Sprintf("Network [ %s ] is now ONLINE", nwName),
+								"✅ Network Online ✅",
+								fmt.Sprintf("[`%s`@`%s`] is now ONLINE", nwName, hostname),
 							)
 						}
 					}
@@ -54,8 +58,8 @@ func WatchConnections(
 						delete(isOnline, nwName)
 						if !isInitialRun {
 							notificationsChannel <- notifications.New(
-								"Network change detected",
-								fmt.Sprintf("Network [ %s ] is now OFFLINE", nwName),
+								"⛔️ Network Offline ⛔️",
+								fmt.Sprintf("[`%s`@`%s`] is now OFFLINE", nwName, hostname),
 							)
 						}
 					}
