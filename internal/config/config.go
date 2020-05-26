@@ -58,6 +58,7 @@ type Config struct {
 // this is to merge a local configuration with a global configuration
 func (f *Config) MergeWith(other *Config) {
 	// TODO: copy over dev configurations
+	f.Dev = other.Dev
 
 	// copy over links
 	f.Links.MergeWith(other.Links)
