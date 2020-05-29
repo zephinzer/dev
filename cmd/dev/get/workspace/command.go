@@ -54,17 +54,8 @@ func run(command *cobra.Command, args []string) {
 	targetWorkspaceName := strings.Join(args, ".")
 	if len(targetWorkspaceName) == 0 {
 		command.Help()
-		workspaces := map[string]bool{}
-		for _, repository := range c.Global.Repositories {
-			for _, workspaceName := range repository.Workspaces {
-				workspaces[workspaceName] = true
-			}
-		}
-		validWorkspaces := []string{}
-		for workspaceName := range workspaces {
-			validWorkspaces = append(validWorkspaces, workspaceName)
-		}
-		log.Errorf("no target workspace was defined, found workspaces [%v]", strings.Join(validWorkspaces, ", "))
+		workspaces := c.Global.Repositories.GetWorkspaces()
+		log.Errorf("no target workspace was defined, found workspaces [%v]", strings.Join(workspaces, ", "))
 		os.Exit(constants.ExitErrorInput)
 		return
 	}
