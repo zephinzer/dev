@@ -5,8 +5,6 @@ import (
 	"os"
 	"path"
 	"strings"
-
-	"github.com/zephinzer/dev/internal/constants"
 )
 
 func ResolvePath(relativePathFragments ...string) (string, error) {
@@ -17,7 +15,6 @@ func ResolvePath(relativePathFragments ...string) (string, error) {
 		userHomeDir, getUserHomeDirError := os.UserHomeDir()
 		if getUserHomeDirError != nil {
 			return "", fmt.Errorf("failed to resolve the home directory: %s", getUserHomeDirError)
-			os.Exit(constants.ExitErrorSystem | constants.ExitErrorUser)
 		}
 		fullPath = strings.Replace(fullPath, "~", userHomeDir, 1)
 	}

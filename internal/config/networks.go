@@ -14,7 +14,7 @@ func (n *Networks) MergeWith(o Networks) {
 		seen[nw.Check.URL] = true
 	}
 	for _, nw := range o {
-		if seen[nw.Check.URL] == true {
+		if val, ok := seen[nw.Check.URL]; val && ok {
 			continue
 		}
 		*n = append(*n, nw)

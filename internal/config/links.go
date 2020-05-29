@@ -14,7 +14,7 @@ func (l *Links) MergeWith(o Links) {
 		seen[link.URL] = true
 	}
 	for _, link := range o {
-		if seen[link.URL] == true {
+		if val, ok := seen[link.URL]; val && ok {
 			continue
 		}
 		*l = append(*l, link)

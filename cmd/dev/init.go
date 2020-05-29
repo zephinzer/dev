@@ -24,6 +24,7 @@ func loadConfiguration() {
 	loadGlobalConfiguration()
 	loadLocalConfiguration()
 
+	log.Tracef("%v includes detected in the configuration", len(config.Global.Includes))
 	if config.Global.Includes != nil && len(config.Global.Includes) > 0 {
 		for _, include := range config.Global.Includes {
 			includedConfig, getConfigError := include.GetConfig()

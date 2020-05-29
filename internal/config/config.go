@@ -60,6 +60,9 @@ func (f *Config) MergeWith(other *Config) {
 	// TODO: copy over dev configurations
 	f.Dev = other.Dev
 
+	// copy over includes
+	f.Includes.MergeWith(other.Includes)
+
 	// copy over links
 	f.Links.MergeWith(other.Links)
 
