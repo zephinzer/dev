@@ -11,7 +11,7 @@ import (
 
 // FindParentContainingChildDirectory continously ascends from the initial
 // directory path at `startingFrom` and checks for the existence of a child
-// directory named `name` for `levels[0]` levels.
+// directory named `targetDirectoryName` for `levels[0]` levels.
 //
 // On successfully finding such a child directory, it returns the path of the
 // parent directory as the first argument, on failing to find, it returns an
@@ -19,8 +19,8 @@ import (
 //
 // If the function failed to complete, the second `error`-typed argument will
 // be non-nil.
-func FindParentContainingChildDirectory(name, startingFrom string, levels ...int) (string, error) {
-	childDirectoryOfInterest := name
+func FindParentContainingChildDirectory(targetDirectoryName, startingFrom string, levels ...int) (string, error) {
+	childDirectoryOfInterest := targetDirectoryName
 
 	// resolve to absolute if not already
 	directoryPath := startingFrom

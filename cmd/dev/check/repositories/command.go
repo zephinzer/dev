@@ -57,7 +57,7 @@ func run(command *cobra.Command, args []string) {
 		repositoryExistsLocally := false
 
 		log.Debugf("repository '%s': %s", repository.Name, repository.Description)
-		log.Debugf("  url : %s", repository.CloneURL)
+		log.Debugf("  url : %s", repository.URL)
 		log.Debugf("  path: %s", localPath)
 		fileInfo, lstatError := os.Stat(path.Join(localPath, "/.git"))
 		if lstatError != nil {
@@ -83,7 +83,7 @@ func run(command *cobra.Command, args []string) {
 			}
 		}
 		log.Printf("\n  path      : %s", localPath)
-		log.Printf("\n  src       : %s", repository.CloneURL)
+		log.Printf("\n  src       : %s", repository.URL)
 		log.Printf("\n")
 	}
 	workspaces := []string{}

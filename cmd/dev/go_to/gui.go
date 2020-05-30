@@ -4,13 +4,19 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/jroimartin/gocui"
 	"github.com/sahilm/fuzzy"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/pkg/utils"
+)
+
+const (
+	finderTitleInactive = "Going somewhere? (hit enter to open link, ctrl+c to quit)"
+	finderTitleActive   = "Going somewhere? (type to filter items, ctrl+c to quit)"
+	noResultsTitle      = "All items"
+	resultsTitle        = "Search results"
 )
 
 var g *gocui.Gui
@@ -27,10 +33,110 @@ func bindSigintHandler() {
 	}
 }
 
+func handleFinderNavigateRight(g *gocui.Gui, view *gocui.View) error {
+	switch view.Name() {
+	case "finder":
+		curX, _ := view.Cursor()
+		if curX < len(view.ViewBuffer())-1 {
+			view.MoveCursor(1, 0, true)
+		}
+	}
+	return nil
+}
+
+func handleFinderNavigateLeft(g *gocui.Gui, view *gocui.View) error {
+	switch view.Name() {
+	case "finder":
+		curX, _ := view.Cursor()
+		if curX > 0 {
+			view.MoveCursor(-1, 0, true)
+		}
+	}
+	return nil
+}
+
+func handleFinderDone(g *gocui.Gui, v *gocui.View) error {
+	if selectionIndex == -1 {
+		selectionIndex = 0
+		if _, err := g.SetCurrentView("results"); err != nil {
+			return err
+		}
+		g.Cursor = false
+		resultsView, err := g.View("results")
+		if err != nil {
+			return err
+		}
+		g.Update(recalculateResults)
+		v.Title = finderTitleInactive
+		resultsView.SetCursor(0, 0)
+	}
+	return nil
+}
+
+func handleResultsNavigateDown(g *gocui.Gui, v *gocui.View) error {
+	selectionIndex++
+	if selectionIndex >= len(searchResults) {
+		selectionIndex--
+		return nil
+	}
+	g.Update(recalculateResults)
+	v.MoveCursor(0, 1, true)
+	return nil
+}
+
+func handleResultsNavigateUp(g *gocui.Gui, v *gocui.View) error {
+	selectionIndex--
+	if selectionIndex == -1 {
+		if _, err := g.SetCurrentView("finder"); err != nil {
+			return err
+		}
+		g.Cursor = true
+		finderView, err := g.View("finder")
+		if err != nil {
+			return err
+		}
+		finderView.Title = finderTitleActive
+	}
+	g.Update(recalculateResults)
+	v.MoveCursor(0, -1, true)
+	return nil
+}
+
+func handleResultsDone(g *gocui.Gui, v *gocui.View) error {
+	selectionIndex = -1
+	if _, err := g.SetCurrentView("finder"); err != nil {
+		return err
+	}
+	g.Cursor = true
+	finderView, err := g.View("finder")
+	if err != nil {
+	}
+	if len(finderView.ViewBuffer()) > 0 {
+		v.MoveCursor(len(finderView.ViewBuffer())-1, 0, true)
+	}
+	finderView.EditDelete(true)
+	g.Update(recalculateResults)
+	return nil
+}
+
+func handleResultsFound(g *gocui.Gui, v *gocui.View) error {
+	targetString := strings.Split(searchResults[selectionIndex].Str, " ")
+	targetURI := targetString[len(targetString)-1]
+	utils.OpenURIWithDefaultApplication(targetURI)
+	return gocui.ErrQuit
+}
+
 func startFuzzySearchInterface() {
 	links := config.Global.Links
+	repositories := config.Global.Repositories
 	for _, link := range links {
 		searchTerms = append(searchTerms, fmt.Sprintf("%s [%s] @ %s", link.Label, strings.Join(link.Categories, ", "), link.URL))
+	}
+	for _, repo := range repositories {
+		repoURL, getWebsiteError := repo.GetWebsiteURL()
+		if getWebsiteError == nil {
+			searchTerms = append(searchTerms, fmt.Sprintf("repo['%s'] (%s) - %s @ %s", repo.Name, strings.Join(repo.Workspaces, ", "), repo.Description, repoURL))
+		}
 	}
 	g, err = gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
@@ -45,104 +151,28 @@ func startFuzzySearchInterface() {
 	g.SetManagerFunc(layout)
 	bindSigintHandler()
 
-	if err := g.SetKeybinding("finder", gocui.KeyArrowRight, gocui.ModNone, func(g *gocui.Gui, view *gocui.View) error {
-		switch view.Name() {
-		case "finder":
-			curX, curY := view.Cursor()
-			if curX < len(view.ViewBuffer())-1 {
-				view.SetCursor(curX+1, curY)
-			}
-		}
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("finder", gocui.KeyArrowRight, gocui.ModNone, handleFinderNavigateRight); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("finder", gocui.KeyArrowLeft, gocui.ModNone, func(g *gocui.Gui, view *gocui.View) error {
-		switch view.Name() {
-		case "finder":
-			curX, curY := view.Cursor()
-			if curX > 0 {
-				view.SetCursor(curX-1, curY)
-			}
-		}
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("finder", gocui.KeyArrowLeft, gocui.ModNone, handleFinderNavigateLeft); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("finder", gocui.KeyArrowDown, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		if selectionIndex == -1 {
-			selectionIndex = 0
-			if _, err := g.SetCurrentView("results"); err != nil {
-				return err
-			}
-			resultsView, err := g.View("results")
-			if err != nil {
-
-			}
-			resultsView.SetCursor(0, 0)
-		}
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("finder", gocui.KeyArrowDown, gocui.ModNone, handleFinderDone); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("results", gocui.KeyArrowDown, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		selectionIndex++
-		if selectionIndex >= len(searchResults) {
-			selectionIndex--
-			return nil
-		}
-		v.SetCursor(0, selectionIndex)
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("finder", gocui.KeyEnter, gocui.ModNone, handleFinderDone); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("results", gocui.KeyArrowUp, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		selectionIndex--
-		if selectionIndex == -1 {
-			if _, err := g.SetCurrentView("finder"); err != nil {
-				return err
-			}
-		}
-		v.SetCursor(0, selectionIndex)
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("results", gocui.KeyArrowDown, gocui.ModNone, handleResultsNavigateDown); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("results", gocui.KeyBackspace2, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		selectionIndex = -1
-		if _, err := g.SetCurrentView("finder"); err != nil {
-			return err
-		}
-		finderView, err := g.View("finder")
-		if err != nil {
-		}
-		v.MoveCursor(len(finderView.ViewBuffer())-1, 0, true)
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("results", gocui.KeyArrowUp, gocui.ModNone, handleResultsNavigateUp); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("results", gocui.KeyEnter, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		targetString := strings.Split(searchResults[selectionIndex].Str, " ")
-		targetURI := targetString[len(targetString)-1]
-		utils.OpenURIWithDefaultApplication(targetURI)
-		return gocui.ErrQuit
-	}); err != nil {
+	if err := g.SetKeybinding("results", gocui.KeyBackspace2, gocui.ModNone, handleResultsDone); err != nil {
 		log.Error(err)
 	}
-
-	if err := g.SetKeybinding("finder", gocui.KeyEnter, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
-		selectionIndex = 0
-		if _, err := g.SetCurrentView("results"); err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
+	if err := g.SetKeybinding("results", gocui.KeyEnter, gocui.ModNone, handleResultsFound); err != nil {
 		log.Error(err)
 	}
 
@@ -150,7 +180,7 @@ func startFuzzySearchInterface() {
 		results, err := g.View("results")
 		if err != nil {
 		}
-		results.Title = fmt.Sprintf("Search results (selectionIndex: %v)", selectionIndex)
+		results.Title = fmt.Sprintf("%s (selectionIndex: %v)", resultsTitle, selectionIndex)
 		return nil
 	}); err != nil {
 		log.Error(err)
@@ -162,6 +192,7 @@ func startFuzzySearchInterface() {
 		log.Error(err)
 	}
 
+	g.Update(recalculateResults)
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Error(err)
 	}
@@ -176,7 +207,7 @@ func layout(terminalGUI *gocui.Gui) error {
 		finderView.Wrap = true
 		finderView.Editable = true
 		finderView.Frame = true
-		finderView.Title = "Going somewhere?"
+		finderView.Title = finderTitleActive
 		if _, setCurrentViewError := terminalGUI.SetCurrentView("finder"); setCurrentViewError != nil {
 			return setCurrentViewError
 		}
@@ -190,7 +221,6 @@ func layout(terminalGUI *gocui.Gui) error {
 		resultsView.Editable = false
 		resultsView.Wrap = true
 		resultsView.Frame = true
-		resultsView.Title = "Search results"
 	}
 	return nil
 }
@@ -205,20 +235,26 @@ func recalculateResults(terminalGUI *gocui.Gui) error {
 		return err
 	}
 	results.Clear()
-	startingSearchAt := time.Now()
 	searchResults = fuzzy.Find(strings.TrimSpace(finderView.ViewBuffer()), searchTerms)
-	elapsed := time.Since(startingSearchAt)
-	if len(searchResults) > 0 {
-		results.Title = fmt.Sprintf("Search results (%v matches in %v)", len(searchResults), elapsed)
-	} else {
-		results.Title = "Search results"
+	results.Title = fmt.Sprintf("%s (%v matches)", resultsTitle, len(searchResults))
+	if len(searchResults) == 0 {
+		results.Title = noResultsTitle
+		for _, searchTerm := range searchTerms {
+			searchResults = append(searchResults, fuzzy.Match{Str: searchTerm})
+		}
 	}
-	for _, match := range searchResults {
-		for i := 0; i < len(match.Str); i++ {
-			if utils.ContainsInt(i, match.MatchedIndexes) {
-				fmt.Fprintf(results, fmt.Sprintf("\033[1m%s\033[0m", string(match.Str[i])))
-			} else {
-				fmt.Fprintf(results, string(match.Str[i]))
+
+	for index, match := range searchResults {
+		if selectionIndex == index {
+			fmt.Fprintf(results, fmt.Sprintf("\033[1m> %s\033[0m", string(match.Str)))
+		} else {
+			fmt.Fprintf(results, "  ")
+			for i := 0; i < len(match.Str); i++ {
+				if utils.ContainsInt(i, match.MatchedIndexes) {
+					fmt.Fprintf(results, fmt.Sprintf("\033[1m%s\033[0m", string(match.Str[i])))
+				} else {
+					fmt.Fprintf(results, string(match.Str[i]))
+				}
 			}
 		}
 		fmt.Fprintln(results, "")

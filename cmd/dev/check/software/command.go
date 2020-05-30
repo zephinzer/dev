@@ -21,8 +21,14 @@ func GetCommand() *cobra.Command {
 				runError := software.Check.Run()
 				if runError != nil {
 					softwareCheckLog.WriteString(fmt.Sprintf("%s", runError))
+					if len(software.Install.Link) > 0 {
+						softwareCheckLog.WriteString(fmt.Sprintf("\n> see installation instructions at %s", software.Install.Link))
+					}
 				} else if verifyError := software.Check.Verify(); verifyError != nil {
 					softwareCheckLog.WriteString(fmt.Sprintf("%s", verifyError))
+					if len(software.Install.Link) > 0 {
+						softwareCheckLog.WriteString(fmt.Sprintf("\n> see installation instructions at %s", software.Install.Link))
+					}
 				}
 				if softwareCheckLog.Len() == 0 {
 					log.Printf(constants.CheckSuccessFormat, software.Name)

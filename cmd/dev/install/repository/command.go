@@ -60,7 +60,7 @@ func run(command *cobra.Command, args []string) {
 		repositoryExistsLocally := false
 
 		log.Tracef("processing repository '%s': %s", repositoryName, repository.Description)
-		log.Tracef("  url : %s", repository.CloneURL)
+		log.Tracef("  url : %s", repository.URL)
 		log.Tracef("  path: %s", localPath)
 		fileInfo, lstatError := os.Stat(path.Join(localPath, "/.git"))
 		if lstatError != nil {
@@ -78,15 +78,15 @@ func run(command *cobra.Command, args []string) {
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
 			_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{
-				URL: repository.CloneURL,
+				URL: repository.URL,
 			})
 			newCount++
 			if cloneError != nil {
-				log.Warnf("failed to clone repository from url '%s': %s", repository.CloneURL, cloneError)
+				log.Warnf("failed to clone repository from url '%s': %s", repository.URL, cloneError)
 				errorCount++
 				continue
 			}
-			log.Infof("repository '%s' successfully set up at '%s'", repository.CloneURL, localPath)
+			log.Infof("repository '%s' successfully set up at '%s'", repository.URL, localPath)
 		}
 		successCount++
 	}

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
+
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 const VSCodeFileExtension = ".code-workspace"
@@ -45,14 +46,9 @@ func (vsc VSCode) WriteTo(workspacePath string, overwrite ...bool) error {
 		isOverwritable = overwrite[0]
 	}
 
-	pathToWorkspace := workspacePath
-
-	if !path.IsAbs(pathToWorkspace) {
-		workingDirectory, getWorkingDirectoryError := os.Getwd()
-		if getWorkingDirectoryError != nil {
-			return fmt.Errorf("failed to convert path '%s' to an absolute path: %s", pathToWorkspace, getWorkingDirectoryError)
-		}
-		pathToWorkspace = path.Join(workingDirectory, pathToWorkspace)
+	pathToWorkspace, resolvePathError := utils.ResolvePath(workspacePath)
+	if resolvePathError != nil {
+		return fmt.Errorf("failed to resolve provided path '%s': %s", pathToWorkspace, resolvePathError)
 	}
 
 	workspaceInfo, getWorkspaceInfoError := os.Stat(workspacePath)

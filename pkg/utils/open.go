@@ -2,9 +2,9 @@ package utils
 
 import (
 	"fmt"
-	"path"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
 )
 
@@ -13,13 +13,11 @@ import (
 func OpenURIWithDefaultApplication(targetURI string) error {
 	switch runtime.GOOS {
 	case "linux":
-		exec.Command("xdg-open", targetURI).Start()
+		return exec.Command("xdg-open", targetURI).Start()
 	case "macos":
-		exec.Command("open", targetURI).Start()
+		return exec.Command("open", targetURI).Start()
 	case "windows":
-		exec.Command(path.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"), "url.dll,FileProtocolHandler", targetURI).Start()
-	default:
-		return fmt.Errorf("unsupported platform '%s'", runtime.GOOS)
+		return exec.Command(path.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"), "url.dll,FileProtocolHandler", targetURI).Start()
 	}
-	return nil
+	return fmt.Errorf("unsupported platform '%s'", runtime.GOOS)
 }
