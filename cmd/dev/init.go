@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/log"
@@ -51,7 +53,13 @@ func loadGlobalConfiguration() {
 	globalConfigurationFilePath := path.Join(homeDir, "./dev.yaml")
 	globalConfiguration, loadConfigurationError := config.NewFromFile(globalConfigurationFilePath)
 	if loadConfigurationError != nil {
-		log.Debugf("global configuration from %s could not be loaded: %s", globalConfigurationFilePath, loadConfigurationError)
+		errorString := fmt.Sprintf("global configuration from %s could not be loaded: %s", globalConfigurationFilePath, loadConfigurationError)
+		if strings.Contains(loadConfigurationError.Error(), "yaml: line") {
+			log.Errorf(errorString)
+			os.Exit(1)
+			return
+		}
+		log.Debugf(errorString)
 		return
 	}
 	config.Global.MergeWith(globalConfiguration)
@@ -62,7 +70,13 @@ func loadLocalConfiguration() {
 	log.Trace("loading configuration from ./dev.yaml...")
 	localConfiguration, loadConfigurationError := config.NewFromFile("./dev.yaml")
 	if loadConfigurationError != nil {
-		log.Debugf("local configuration from ./dev.yaml could not be loaded: %s", loadConfigurationError)
+		errorString := fmt.Sprintf("local configuration from ./dev.yaml could not be loaded: %s", loadConfigurationError)
+		if strings.Contains(loadConfigurationError.Error(), "yaml: line") {
+			log.Errorf(errorString)
+			os.Exit(1)
+			return
+		}
+		log.Debugf(errorString)
 		return
 	}
 	log.Debug("loaded local configuration from ./dev.yaml")

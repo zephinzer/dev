@@ -29,8 +29,9 @@ const (
 	ExitErrorValidation    = 16
 
 	// labels
-	CheckSuccessFormat = "\033[32m✅\033[0m \033[1m%s\033[0m "
-	CheckFailureFormat = "\033[31m❌ \033[1m%s\033[0m "
+	CheckSuccessFormat = "\033[32m✅\033[0m \033[32m%s\033[0m "
+	CheckFailureFormat = "\033[31m❌ \033[31m%s\033[0m "
+	CheckSkippedFormat = "\033[33m👀\033[0m \033[33m%s\033[0m "
 )
 
 var (
