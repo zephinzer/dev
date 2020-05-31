@@ -3,8 +3,11 @@ package validator
 import (
 	"fmt"
 	stdlibURL "net/url"
+	"path"
 	"regexp"
 	"strings"
+
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 const (
@@ -26,8 +29,8 @@ var (
 			`(?:\:(?P<%s>.*))?@)*`+ // password (optional)
 			`(?P<%s>[a-zA-Z0-9\.\-\_]+)`+ // hostname
 			`(?:\:(?P<%s>\d+?))?\/`+ // port (optional)
-			`(?P<%s>[a-zA-Z0-9\.\-\_]+)\/`+ // user
-			`(?P<%s>[a-zA-Z0-9\/\.\-\_]+)`+ // path
+			`(?P<%s>[a-zA-Z0-9\.\-\_]+)`+ // user
+			`(?P<%s>\/[a-zA-Z0-9\/\.\-\_]+)`+ // path
 			`\.git$`, // mandatory postfix
 		keySchema, keyUsername, keyPassword, keyHostname, keyPort, keyUser, keyPath,
 	)
@@ -38,8 +41,8 @@ var (
 		`^(?P<%s>[a-zA-Z0-9\-\_\.]+?)@`+ // username
 			`(?P<%s>[a-zA-Z0-9\-\_\.]+?):`+ // hostname
 			`(?:(?P<%s>\d*?)\/)?`+ // port (optional)
-			`(?P<%s>[a-zA-Z0-9\-\_\.]+)\/`+ // user
-			`(?P<%s>[a-zA-Z0-9\-\_\.\/]+?)`+
+			`(?P<%s>[a-zA-Z0-9\-\_\.]+)`+ // user
+			`(?P<%s>\/[a-zA-Z0-9\-\_\.\/]+?)`+
 			`\.git$`,
 		keyUsername, keyHostname, keyPort, keyUser, keyPath,
 	)
@@ -60,14 +63,29 @@ type URL struct {
 // String returns a string output of the URL instance
 func (u URL) String() string {
 	var builder strings.Builder
-	if u.Schema != "http" {
-		builder.WriteString("https://")
+	if !utils.IsEmptyString(u.Schema) {
+		builder.WriteString(fmt.Sprintf("%s://", u.Schema))
+	}
+	if !utils.IsEmptyString(u.Username) {
+		builder.WriteString(u.Username)
+		if !utils.IsEmptyString(u.Password) {
+			builder.WriteString(fmt.Sprintf(":%s", u.Password))
+		}
+		builder.WriteByte('@')
 	}
 	builder.WriteString(u.Hostname)
-	if u.Port != "" {
+	if !utils.IsEmptyString(u.Port) {
 		builder.WriteString(fmt.Sprintf(":%s", u.Port))
 	}
-	builder.WriteString(fmt.Sprintf("/%s/%s", u.User, u.Path))
+	urlPath := fmt.Sprintf("%s", path.Join("/", u.User, u.Path))
+	if utils.IsEmptyString(u.Schema) && utils.IsEmptyString(u.Port) {
+		builder.WriteByte(':')
+		urlPath = strings.Trim(urlPath, "/")
+	}
+	builder.WriteString(urlPath)
+	if !utils.IsEmptyString(u.Query) {
+		builder.WriteString(fmt.Sprintf("?%s", u.Query))
+	}
 	return builder.String()
 }
 
@@ -131,29 +149,29 @@ func parseRegexIntoFields(compiledRegex *regexp.Regexp, parse string) map[string
 	return fields
 }
 
-// serializeFieldsToURL is a utility function called by ParseURL to serialize a
-// map of strings into a *URL instance
+// serializeFieldsToURL is a utility function to serialize a
+// map of strings from regex capture groups into a *URL instance
 func serializeFieldsToURL(fields map[string]string) *URL {
 	url := URL{}
-	if len(fields[keySchema]) > 0 {
+	if !utils.IsEmptyString(fields[keySchema]) {
 		url.Schema = fields[keySchema]
 	}
-	if len(fields[keyUsername]) > 0 {
+	if !utils.IsEmptyString(fields[keyUsername]) {
 		url.Username = fields[keyUsername]
 	}
-	if len(fields[keyPassword]) > 0 {
+	if !utils.IsEmptyString(fields[keyPassword]) {
 		url.Password = fields[keyPassword]
 	}
-	if len(fields[keyHostname]) > 0 {
+	if !utils.IsEmptyString(fields[keyHostname]) {
 		url.Hostname = fields[keyHostname]
 	}
-	if len(fields[keyPort]) > 0 {
+	if !utils.IsEmptyString(fields[keyPort]) {
 		url.Port = fields[keyPort]
 	}
-	if len(fields[keyUser]) > 0 {
+	if !utils.IsEmptyString(fields[keyUser]) {
 		url.User = fields[keyUser]
 	}
-	if len(fields[keyPath]) > 0 {
+	if !utils.IsEmptyString(fields[keyPath]) {
 		url.Path = fields[keyPath]
 	}
 	return &url

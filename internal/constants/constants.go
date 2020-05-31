@@ -39,6 +39,8 @@ var (
 
 	AccountCanonicalNoun        = "account"
 	AccountAliases              = []string{"accounts", "acct", "accts", "acc", "accs", "a"}
+	AddCanonicalVerb            = "add"
+	AddAliases                  = []string{"+"}
 	CheckCanonicalVerb          = "check"
 	CheckAliases                = []string{"c", "verify"}
 	ClientCanonicalNoun         = "client"

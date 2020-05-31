@@ -20,8 +20,6 @@ import (
 // If the function failed to complete, the second `error`-typed argument will
 // be non-nil.
 func FindParentContainingChildDirectory(targetDirectoryName, startingFrom string, levels ...int) (string, error) {
-	childDirectoryOfInterest := targetDirectoryName
-
 	// resolve to absolute if not already
 	directoryPath := startingFrom
 	if !path.IsAbs(startingFrom) {
@@ -38,19 +36,24 @@ func FindParentContainingChildDirectory(targetDirectoryName, startingFrom string
 		searchDepth = levels[0]
 	}
 
+	// descend into the depths and search one by one
 	splitPath := strings.Split(directoryPath, string(filepath.Separator))
 	for len(splitPath) >= 2 && searchDepth != 0 {
+		fmt.Println(splitPath)
 		fileListing, readDirError := ioutil.ReadDir(directoryPath)
 		if readDirError != nil {
 			return "", fmt.Errorf("failed to read directory at '%s': %s", directoryPath, readDirError)
 		}
 		for _, file := range fileListing {
-			if file.IsDir() && file.Name() == childDirectoryOfInterest {
+			if file.IsDir() && file.Name() == targetDirectoryName {
 				return directoryPath, nil
 			}
 		}
 		directoryPath = path.Dir(directoryPath)
 		splitPath = strings.Split(directoryPath, string(filepath.Separator))
+		if directoryPath == "/" {
+			break
+		}
 		searchDepth--
 	}
 

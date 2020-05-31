@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	configuration "github.com/usvc/go-config"
+	"github.com/zephinzer/dev/cmd/dev/add"
 	"github.com/zephinzer/dev/cmd/dev/check"
 	"github.com/zephinzer/dev/cmd/dev/debug"
 	"github.com/zephinzer/dev/cmd/dev/get"
@@ -48,6 +49,7 @@ func GetCommand() *cobra.Command {
 			command.Help()
 		},
 	}
+	cmd.AddCommand(add.GetCommand())
 	cmd.AddCommand(check.GetCommand())
 	cmd.AddCommand(debug.GetCommand())
 	cmd.AddCommand(get.GetCommand())
