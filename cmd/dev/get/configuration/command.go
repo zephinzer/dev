@@ -6,6 +6,8 @@ import (
 	"github.com/usvc/go-config"
 	c "github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
+	"gopkg.in/yaml.v2"
 )
 
 var conf = config.Map{
@@ -21,8 +23,12 @@ var conf = config.Map{
 	"repositories": &config.Bool{
 		Usage: "retrieves the repositories configuration",
 	},
-	"software": &config.Bool{
+	"softwares": &config.Bool{
 		Usage: "retrieves the software configuration",
+	},
+	"format": &config.String{
+		Default: "yaml",
+		Usage:   "specify the format of the output, one of [raw, yaml]",
 	},
 }
 
@@ -32,19 +38,34 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.ConfigurationAliases,
 		Short:   "retrieves the consumed configuration",
 		Run: func(command *cobra.Command, args []string) {
+			format := conf.GetString("format")
+			var output interface{}
 			switch true {
 			case conf.GetBool("links"):
-				litter.Dump(c.Global.Links)
-			case conf.GetBool("network"):
-				litter.Dump(c.Global.Networks)
+				output = c.Global.Links
+			case conf.GetBool("networks"):
+				output = c.Global.Networks
 			case conf.GetBool("platforms"):
-				litter.Dump(c.Global.Platforms)
+				output = c.Global.Platforms
 			case conf.GetBool("repositories"):
-				litter.Dump(c.Global.Repositories)
-			case conf.GetBool("software"):
-				litter.Dump(c.Global.Softwares)
+				output = c.Global.Repositories
+			case conf.GetBool("softwares"):
+				output = c.Global.Softwares
 			default:
-				litter.Dump(c.Global)
+				output = c.Global
+			}
+			switch format {
+			case "raw":
+				litter.Dump(output)
+			case "yaml":
+				fallthrough
+			default:
+				yamlOutput, marshalError := yaml.Marshal(output)
+				if marshalError != nil {
+					log.Errorf("error marshalling configuration into yaml: %s", marshalError)
+				}
+				log.Print(string(yamlOutput))
+				log.Print("\n")
 			}
 		},
 	}
