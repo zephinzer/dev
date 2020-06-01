@@ -30,6 +30,12 @@ func (s *ValidatorTests) TestIsGitHTTPUrl() {
 		[]string{"http", "", "", "gitlab.com", "", "zephinzer", "/dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
+	givenURL = "https://gitlab.com/zephinzer/dev.dev.git"
+	s.True(IsGitHTTPUrl(givenURL))
+	s.Equal(
+		[]string{"https", "", "", "gitlab.com", "", "zephinzer", "/dev.dev"},
+		regex.FindStringSubmatch(givenURL)[1:],
+	)
 	givenURL = "https://gitlab.com/zephinzer/dev.git"
 	s.True(IsGitHTTPUrl(givenURL))
 	s.Equal(
@@ -62,6 +68,12 @@ func (s *ValidatorTests) TestIsGitSSHURL() {
 	s.True(IsGitSSHUrl(givenURL))
 	s.Equal(
 		[]string{"git", "gitlab.com", "", "zephinzer", "/dev"},
+		regex.FindStringSubmatch(givenURL)[1:],
+	)
+	givenURL = "git@gitlab.com:22/zephinzer/dev.dev.git"
+	s.True(IsGitSSHUrl(givenURL))
+	s.Equal(
+		[]string{"git", "gitlab.com", "22", "zephinzer", "/dev.dev"},
 		regex.FindStringSubmatch(givenURL)[1:],
 	)
 	givenURL = "git@gitlab.com:22/zephinzer/dev.git"

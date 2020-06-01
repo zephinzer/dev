@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
@@ -69,7 +70,6 @@ func run(command *cobra.Command, args []string) {
 				errorCount++
 				continue
 			}
-			repositoryExistsLocally = false
 		} else {
 			repositoryExistsLocally = fileInfo.IsDir()
 		}
@@ -77,9 +77,7 @@ func run(command *cobra.Command, args []string) {
 			log.Debugf("repository '%s' already exists, skipping...", repositoryName)
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
-			_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{
-				URL: repository.URL,
-			})
+			cloneError := gitClone(repository.URL, localPath)
 			newCount++
 			if cloneError != nil {
 				log.Warnf("failed to clone repository from url '%s': %s", repository.URL, cloneError)
@@ -103,4 +101,12 @@ func run(command *cobra.Command, args []string) {
 	log.Infof("failed to process      : %v", errorCount)
 
 	os.Exit(errorCount)
+}
+
+func gitClone(cloneURL, localPath string) error {
+	_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{URL: cloneURL})
+	if cloneError != nil {
+		return fmt.Errorf("failed to clone repository from url '%s': %s", cloneURL, cloneError)
+	}
+	return nil
 }
