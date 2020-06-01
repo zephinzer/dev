@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 // Check represents a network check
@@ -66,17 +67,22 @@ func (c *Check) Run() error {
 func (c Check) Verify() error {
 	defer func() {
 		if c.observed != nil {
-			c.observed.Body.Close()
+			if c.observed.Body != nil {
+				c.observed.Body.Close()
+			}
 		}
 	}()
 	switch true {
 	case c.observed == nil:
 		return fmt.Errorf("Run() has not be executed")
-	case c.StatusCode == 0 && c.observed.StatusCode > 399:
+	case c.StatusCode == *new(int) && c.observed.StatusCode > 399:
 		return fmt.Errorf("observed status code, %v, was a non-success response (if this is expected, set StatusCode to this value)", c.observed.StatusCode)
-	case c.StatusCode != 0 && c.StatusCode != c.observed.StatusCode:
+	case c.StatusCode != *new(int) && c.StatusCode != c.observed.StatusCode:
 		return fmt.Errorf("expected status code %v but response had status code %v", c.StatusCode, c.observed.StatusCode)
-	case !c.headersMatch():
+	case c.observed.Body != nil && !c.bodiesMatch():
+		observedBody, _ := ioutil.ReadAll(c.observed.Body)
+		return fmt.Errorf("expected body response '%s' to match '%s' but it did not", c.ResponseBody, string(observedBody))
+	case utils.GetNKeyValuePairsStringMap(c.Headers) > 0 && !c.headersMatch():
 		expectedHeaders, _ := json.Marshal(c.Headers)
 		responseHeaders := map[string]string{}
 		for key, value := range c.observed.Header {
@@ -84,9 +90,6 @@ func (c Check) Verify() error {
 		}
 		observedHeaders, _ := json.Marshal(responseHeaders)
 		return fmt.Errorf("expected headers '%s' but got '%s'", string(expectedHeaders), string(observedHeaders))
-	case !c.bodiesMatch():
-		observedBody, _ := ioutil.ReadAll(c.observed.Body)
-		return fmt.Errorf("expected body response '%s' to match '%s' but it did not", c.ResponseBody, string(observedBody))
 	}
 	return nil
 }
