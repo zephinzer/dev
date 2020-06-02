@@ -54,8 +54,8 @@ func GetCommand() *cobra.Command {
 				os.Exit(constants.ExitErrorApplication | constants.ExitErrorUser)
 			}
 
-			log.Tracef("opening url '%s' in the default browser application...", url.String())
-			utils.OpenURIWithDefaultApplication(url.String())
+			log.Infof("opening url '%s' in the default browser application...", url.GetHTTPSURL())
+			utils.OpenURIWithDefaultApplication(url.GetHTTPSURL())
 			os.Exit(constants.ExitOK)
 		},
 	}

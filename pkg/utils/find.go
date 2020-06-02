@@ -39,7 +39,6 @@ func FindParentContainingChildDirectory(targetDirectoryName, startingFrom string
 	// descend into the depths and search one by one
 	splitPath := strings.Split(directoryPath, string(filepath.Separator))
 	for len(splitPath) >= 2 && searchDepth != 0 {
-		fmt.Println(splitPath)
 		fileListing, readDirError := ioutil.ReadDir(directoryPath)
 		if readDirError != nil {
 			return "", fmt.Errorf("failed to read directory at '%s': %s", directoryPath, readDirError)

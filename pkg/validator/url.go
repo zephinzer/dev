@@ -60,6 +60,24 @@ type URL struct {
 	Query    string
 }
 
+func (u URL) GetHTTPSURL() string {
+	var builder strings.Builder
+	builder.WriteString("https://")
+	if !utils.IsEmptyString(u.Username) {
+		builder.WriteString(u.Username)
+		if !utils.IsEmptyString(u.Password) {
+			builder.WriteString(fmt.Sprintf(":%s", u.Password))
+		}
+		builder.WriteByte('@')
+	}
+	builder.WriteString(u.Hostname)
+	if !utils.IsEmptyString(u.Port) {
+		builder.WriteString(fmt.Sprintf(":%s", u.Port))
+	}
+	builder.WriteString(fmt.Sprintf("%s", path.Join("/", u.User, u.Path)))
+	return builder.String()
+}
+
 // String returns a string output of the URL instance
 func (u URL) String() string {
 	var builder strings.Builder
