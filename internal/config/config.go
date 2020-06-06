@@ -45,7 +45,6 @@ func NewFromFile(filePath string) (*Config, error) {
 
 type Config struct {
 	Dev          Dev          `json:"dev" yaml:"dev"`
-	Includes     Includes     `json:"includes" yaml:"includes"`
 	Links        Links        `json:"links" yaml:"links"`
 	Networks     Networks     `json:"networks" yaml:"networks"`
 	Platforms    Platforms    `json:"platforms" yaml:"platforms"`
@@ -59,9 +58,6 @@ type Config struct {
 func (f *Config) MergeWith(other *Config) {
 	// TODO: copy over dev configurations
 	f.Dev = other.Dev
-
-	// copy over includes
-	f.Includes.MergeWith(other.Includes)
 
 	// copy over links
 	f.Links.MergeWith(other.Links)

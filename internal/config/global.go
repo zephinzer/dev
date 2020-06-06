@@ -4,7 +4,6 @@ package config
 // all root properties are guaranteed to exist
 var Global = &Config{
 	Dev:          Dev{},
-	Includes:     Includes{},
 	Links:        Links{},
 	Networks:     Networks{},
 	Platforms:    Platforms{},

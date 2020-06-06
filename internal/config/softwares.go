@@ -1,6 +1,8 @@
 package config
 
-import "github.com/zephinzer/dev/pkg/software"
+import (
+	"github.com/zephinzer/dev/pkg/software"
+)
 
 // Softwares represents a list of software the user should have on
 // their machine

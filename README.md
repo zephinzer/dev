@@ -67,7 +67,12 @@ Test the installation works by running `dev -v`.
 
 # Usage
 
-`dev` loads its configuration from `~/dev.yaml` where `~` is your home directory. It also searches for a local `./dev.yaml` in your current working directory and if found, merges it with the global configuration.
+`dev` loads its configuration from the home directory and the current working directory from which `dev` is run. A file is considered a configuration file if it matches a pattern of `^.dev(.labels)+.yaml$`. Some examples of valid configuration file names are:
+
+1. `.dev.yaml`
+2. `.dev.github.yaml`
+3. `.dev.gitlab.yourdomain.com.yaml`
+4. `.dev.some1elses.yaml`
 
 ## Software checks
 

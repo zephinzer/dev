@@ -4,6 +4,8 @@ coverage
 c.out
 vendor
 # custom configuration file
+.dev.yaml
+.dev.yml
 dev.yaml
 # custom database file
 dev.db
