@@ -36,7 +36,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.ConfigurationCanonicalNoun,
 		Aliases: constants.ConfigurationAliases,
-		Short:   "retrieves the consumed configuration",
+		Short:   "Retrieves the consumed configuration",
 		Run: func(command *cobra.Command, args []string) {
 			format := conf.GetString("format")
 			var output interface{}

@@ -17,7 +17,7 @@ func GetCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:     constants.SystemInfoCanonicalNoun,
 		Aliases: constants.SystemInfoAliases,
-		Short:   "retrieves information about the current host system",
+		Short:   "Retrieves information about the current host system",
 		Run: func(command *cobra.Command, args []string) {
 			workingDirectory, getwdError := os.Getwd()
 			if getwdError != nil {

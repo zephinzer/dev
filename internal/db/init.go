@@ -13,13 +13,6 @@ import (
 // Init initialises a local disk sqlite3 database for storage of incoming data
 func Init(atPath string) error {
 	directory := filepath.Dir(atPath)
-	if !path.IsAbs(atPath) {
-		cwd, getWorkingDirectoryError := os.Getwd()
-		if getWorkingDirectoryError != nil {
-			return getWorkingDirectoryError
-		}
-		directory = path.Join(cwd, directory)
-	}
 	filename := filepath.Base(atPath)
 	fullPath := path.Join(directory, filename)
 	fullPathInfo, checkFileError := os.Lstat(fullPath)

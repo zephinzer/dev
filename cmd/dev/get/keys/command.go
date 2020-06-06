@@ -18,8 +18,9 @@ var conf = config.Map{
 
 func GetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "keys",
-		Run: run,
+		Use:   "keys",
+		Short: "Retrieves user keys available on this machine",
+		Run:   run,
 	}
 	conf.ApplyToFlagSet(cmd.Flags())
 	return cmd
