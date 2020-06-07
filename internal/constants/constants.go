@@ -71,8 +71,6 @@ const (
 )
 
 var (
-	DefaultSystrayIcon = SystrayIconLight
-
 	AccountCanonicalNoun        = "account"
 	AccountAliases              = []string{"accounts", "acct", "accts", "acc", "accs", "a"}
 	AddCanonicalVerb            = "add"

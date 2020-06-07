@@ -4,7 +4,6 @@
   - [Getting started](#getting-started)
   - [Directory structure](#directory-structure)
   - [Tools used for development](#tools-used-for-development)
-    - [Array2go](#array2go)
     - [`rsrc`](#rsrc)
     - [SQLite3 CLI](#sqlite3-cli)
       - [Common Commands](#common-commands)
@@ -28,16 +27,6 @@
 This project adheres to the [Go project layout as defined here](https://github.com/golang-standards/project-layout).
 
 ## Tools used for development
-
-### Array2go
-
-This tool is used to convert a PNG image to an array that Go can compile and use as the system tray icon. To install it:
-
-```sh
-go get github.com/cratonica/2goarray;
-```
-
-See the `prepare_icon` in [the `Makefile`](./Makefile) on usage.
 
 ### `rsrc`
 
@@ -74,8 +63,7 @@ As this is a desktop app meant for cross-platform distribution, this gets a litt
 ## General build notes
 
 1. Run `setup_build` to install the required:
-   1. `2goarray` for converting a PNG icon into Go code
-   2. `rsrc` for compiling Windows application manifests
+   1. `rsrc` for compiling Windows application manifests
 2. Run `setup_build_linux` if you're building from a linux environment. This installs (package names may vary across distros, these are for Ubuntu 18.04):
    1. `libgtk-3-dev`
    2. `libappindicator3-dev`

@@ -14,27 +14,14 @@ deps:
 	go mod vendor -v
 	go mod tidy -v
 setup_build:
-	# this is required to create icons for use in the system tray
-	go get github.com/cratonica/2goarray
 	# this is required to compile manifest resources for windows
 	go get github.com/akavel/rsrc
 	# these are required to compile dev without cgo
 	go install github.com/mattn/go-sqlite3
-setup_build_linux:
-	if ! apt-get --version >/dev/null; then \
-		sudo apt-get install libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev; \
-	fi
 run:
 	go run -v -mod=vendor ./cmd/$(CMD_ROOT) ${args}
 test:
 	go test -v -mod=vendor ./... -cover -coverprofile c.out
-prepare_icon:
-	@if ! 2goarray -h >/dev/null; then \
-		printf -- "\033[1m\033[31m⚠️ you need 2goarray in your path for this to work, ensure you've run 'make setup_build'\033[0m\n"; \
-		exit 1; \
-	fi
-	2goarray SystrayIconDark constants < ./assets/icon/512-dark.png > ./internal/constants/icon_dark.go
-	2goarray SystrayIconLight constants < ./assets/icon/512-light.png > ./internal/constants/icon_light.go
 install_local:
 	go install -v -mod=vendor ./cmd/$(CMD_ROOT)
 build:
