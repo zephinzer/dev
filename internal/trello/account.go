@@ -13,6 +13,7 @@ func GetAccount(accessKey, accessToken string) (types.Account, error) {
 	return Account(*account), nil
 }
 
+// Account implements types.Account
 type Account pkg.APIv1MemberResponse
 
 func (a Account) GetName() *string     { return &a.FullName }

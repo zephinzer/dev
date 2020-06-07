@@ -26,7 +26,11 @@ func GetCommand() *cobra.Command {
 			log.Info("starting dev client...")
 
 			log.Debug("initialising database connection...")
-			connection, newConnectionError := db.NewConnection("./dev.db")
+			pathToDatabase := config.Global.Dev.Client.Database.Path
+			if len(pathToDatabase) == 0 {
+				pathToDatabase = constants.DefaultPathToSQLite3DB
+			}
+			connection, newConnectionError := db.NewConnection(pathToDatabase)
 			if newConnectionError != nil {
 				log.Errorf("failed to open connection to database: %s", newConnectionError)
 				os.Exit(1)

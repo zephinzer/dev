@@ -1,12 +1,9 @@
 package go_to
 
 import (
-	"strings"
-
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/validator"
 )
 
 func GetCommand() *cobra.Command {
@@ -20,22 +17,10 @@ func GetCommand() *cobra.Command {
 }
 
 func Run(command *cobra.Command, args []string) {
-	if len(args) == 0 {
-		// links reference
-		log.Debug("no arguments received, opening links...")
-		startFuzzySearchInterface()
-		if selectionIndex >= 0 {
-			log.Infof("opening %s", searchResults[selectionIndex].Str)
-		}
-		return
-	}
-	argument := strings.Join(args, " ")
-	log.Infof("received argument: %s", argument)
-	switch true {
-	case validator.IsGitHTTPUrl(argument):
-		log.Debug("this should be a git http url")
-	case validator.IsGitSSHUrl(argument):
-		log.Debug("this should be a git ssh url")
+	log.Debug("no arguments received, opening links...")
+	startFuzzySearchInterface()
+	if selectionIndex >= 0 {
+		log.Infof("opening %s", searchResults[selectionIndex].Str)
 	}
 	command.Help()
 }
