@@ -83,7 +83,7 @@ func run(command *cobra.Command, args []string) {
 			}
 		}
 		log.Printf("\n  path      : %s", localPath)
-		log.Printf("\n  src       : %s", repository.URL)
+		log.Printf("\n  url       : %s", repository.URL)
 		log.Printf("\n")
 	}
 	workspaces := []string{}

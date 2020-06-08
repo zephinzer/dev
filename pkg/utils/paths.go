@@ -66,11 +66,14 @@ func ResolvePath(relativePathFragments ...string) (string, error) {
 	}
 
 	// resolve symlink if it is one
+	fmt.Println(fullPath)
 	fileInfo, lstatError := os.Lstat(fullPath)
-	if lstatError != nil && !os.IsNotExist(lstatError) {
-		return "", fmt.Errorf("failed to stat file at '%s': %s", fullPath, lstatError)
+	if lstatError != nil {
+		if !os.IsNotExist(lstatError) {
+			return "", fmt.Errorf("failed to stat file at '%s': %s", fullPath, lstatError)
+		}
 	}
-	if fileInfo.Mode()&os.ModeSymlink != 0 {
+	if fileInfo != nil && fileInfo.Mode()&os.ModeSymlink != 0 {
 		resolvedSymlinkPath, _ := os.Readlink(fullPath)
 		if len(resolvedSymlinkPath) > 0 {
 			return ResolvePath(resolvedSymlinkPath)

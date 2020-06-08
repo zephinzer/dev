@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -12,6 +13,20 @@ type LinksTest struct {
 
 func TestLinks(t *testing.T) {
 	suite.Run(t, &LinksTest{})
+}
+
+func (s *LinksTest) TestMarshal() {
+	c, newFromFileError := NewFromFile("../../tests/config/links.yaml")
+	s.Nil(newFromFileError)
+	if newFromFileError != nil {
+		return
+	}
+	s.Len(c.Links, 2)
+	for index, link := range c.Links {
+		s.Equal(fmt.Sprintf("__expected_label_%v", index+1), link.Label)
+		s.Equal(fmt.Sprintf("https://expected%v.url.com", index+1), link.URL)
+		s.Equal(fmt.Sprintf("__expected_category_%v", index+1), link.Categories[0])
+	}
 }
 
 func (s *LinksTest) TestMergeWith() {

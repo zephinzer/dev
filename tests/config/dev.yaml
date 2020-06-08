@@ -1,8 +1,8 @@
-repositories:
-  path: ~/
-  remotes:
-    - git@github.com:usvc/go-config.git
-    - git@github.com:usvc/go-db.git
-    - git@github.com:usvc/go-logger.git
-    - git@github.com:usvc/go-password.git
-    - git@github.com:usvc/go-semver.git
+dev:
+  client:
+    database:
+      path: __expected_database_path
+    notifications:
+      telegram:
+        token: __expected_telegram_token
+        id: __expected_telegram_chat_id

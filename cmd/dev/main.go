@@ -17,7 +17,7 @@ func main() {
 			if log.Trace != nil {
 				var memoryStatistics runtime.MemStats
 				runtime.ReadMemStats(&memoryStatistics)
-				log.Tracef("profile as of %s (uptime: %v)", time.Now().Format(constants.DevTimeFormat), humanize.Time(timeStarted))
+				log.Tracef("profile as of %s (started: %v)", time.Now().Format(constants.DevTimeFormat), humanize.Time(timeStarted))
 				log.Tracef("goroutines  : %v", runtime.NumGoroutine())
 				totalAlloc := humanize.Bytes(memoryStatistics.TotalAlloc)
 				totalFrees := humanize.Bytes(memoryStatistics.Frees)

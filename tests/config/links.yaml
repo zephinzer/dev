@@ -1,0 +1,8 @@
+links:
+- label: __expected_label_1
+  url: https://expected1.url.com
+  categories: ["__expected_category_1"]
+- label: __expected_label_2
+  url: https://expected2.url.com
+  categories: ["__expected_category_2"]
+    
