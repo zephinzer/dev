@@ -3,9 +3,8 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path"
 
+	"github.com/zephinzer/dev/pkg/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -18,14 +17,11 @@ var Loaded = map[string]Config{}
 func NewFromFile(filePath string) (*Config, error) {
 	var configuration Config
 
-	absoluteFilePath := filePath
-	if !path.IsAbs(absoluteFilePath) {
-		cwd, getWdError := os.Getwd()
-		if getWdError != nil {
-			return nil, fmt.Errorf("failed to get working directory: %s", getWdError)
-		}
-		absoluteFilePath = path.Join(cwd, absoluteFilePath)
+	absoluteFilePath, resolvePathError := utils.ResolvePath(filePath)
+	if resolvePathError != nil {
+		return nil, fmt.Errorf("failed to resolve path '%s': %s", filePath, resolvePathError)
 	}
+
 	if _, ok := Loaded[absoluteFilePath]; ok {
 		return nil, fmt.Errorf("skipped loading configuration at '%s' because it's already been loaded", absoluteFilePath)
 	}

@@ -1,6 +1,10 @@
 package config
 
-import "github.com/zephinzer/dev/pkg/repository"
+import (
+	"sort"
+
+	"github.com/zephinzer/dev/pkg/repository"
+)
 
 // Repositories represents a list of repositories a user should have
 // access to on their machines
@@ -38,4 +42,38 @@ func (r *Repositories) MergeWith(o Repositories) {
 		*r = append(*r, repository)
 		seen[repositoryPath] = true
 	}
+}
+
+// Len implements `sort.Interface`
+func (r Repositories) Len() int {
+	return len(r)
+}
+
+// Less implements `sort.Interface`
+func (r Repositories) Less(i, j int) bool {
+	if len(r[i].Name) > 0 && len(r[j].Name) > 0 {
+		return r[i].Name < r[j].Name
+	}
+	if len(r[i].URL) > 0 && len(r[j].URL) > 0 {
+		iPath, getPathError := r[i].GetPath()
+		if getPathError != nil {
+			return false
+		}
+		jPath, getPathError := r[j].GetPath()
+		if getPathError != nil {
+			return false
+		}
+		return iPath < jPath
+	}
+	return false
+}
+
+// Swap implements `sort.Interface`
+func (r Repositories) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
+}
+
+// Sort sorts the repositories in alphabetical order
+func (r *Repositories) Sort() {
+	sort.Sort(r)
 }

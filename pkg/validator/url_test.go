@@ -185,6 +185,9 @@ func (s *ValidatorTests) TestParseURL_HTTP_withUsernameCredentials() {
 
 func (s *ValidatorTests) TestParseURL_HTTP_withFullCredentials() {
 	given := "http://username:password@gitlab.com/zephinzer/dev"
+	expectedURL := "http://username:password@gitlab.com/zephinzer/dev"
+	expectedGitHTTPS := "https://username:password@gitlab.com/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
@@ -195,12 +198,16 @@ func (s *ValidatorTests) TestParseURL_HTTP_withFullCredentials() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(given, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_insecure() {
-	expectedString := "http://gitlab.com/zephinzer/dev"
-	given := expectedString + ".git"
+	given := "http://gitlab.com/zephinzer/dev.git"
+	expectedURL := "http://gitlab.com/zephinzer/dev"
+	expectedGitHTTPS := "https://gitlab.com/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "http",
 		Hostname: "gitlab.com",
@@ -210,12 +217,16 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_insecure() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(expectedString, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_withCredentials() {
-	expectedString := "https://username:password@gitlab.com/zephinzer/dev"
-	given := expectedString + ".git"
+	given := "https://username:password@gitlab.com/zephinzer/dev.git"
+	expectedURL := "https://username:password@gitlab.com/zephinzer/dev"
+	expectedGitHTTPS := "https://username:password@gitlab.com/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "https",
 		Username: "username",
@@ -227,12 +238,16 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_withCredentials() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(expectedString, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) TestParseURL_GitHTTP_withPorts() {
-	expectedString := "https://gitlab.com:443/zephinzer/dev"
-	given := expectedString + ".git"
+	given := "https://gitlab.com:443/zephinzer/dev.git"
+	expectedURL := "https://gitlab.com:443/zephinzer/dev"
+	expectedGitHTTPS := "https://gitlab.com:443/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:443/zephinzer/dev.git"
 	expected := &URL{
 		Schema:   "https",
 		Hostname: "gitlab.com",
@@ -243,12 +258,16 @@ func (s *ValidatorTests) TestParseURL_GitHTTP_withPorts() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(expectedString, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) TestParseURL_GitSSH() {
-	expectedString := "git@gitlab.com:zephinzer/dev"
-	given := expectedString + ".git"
+	given := "git@gitlab.com:zephinzer/dev.git"
+	expectedURL := "https://gitlab.com/zephinzer/dev"
+	expectedGitHTTPS := "https://gitlab.com/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:zephinzer/dev.git"
 	expected := &URL{
 		Username: "git",
 		Hostname: "gitlab.com",
@@ -258,12 +277,16 @@ func (s *ValidatorTests) TestParseURL_GitSSH() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(expectedString, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) TestParseURL_GitSSH_withPort() {
-	expectedString := "git@gitlab.com:8888/zephinzer/dev"
-	given := expectedString + ".git"
+	given := "git@gitlab.com:8888/zephinzer/dev.git"
+	expectedURL := "https://gitlab.com:8888/zephinzer/dev"
+	expectedGitHTTPS := "https://gitlab.com:8888/zephinzer/dev.git"
+	expectedGitSSH := "git@gitlab.com:8888/zephinzer/dev.git"
 	expected := &URL{
 		Username: "git",
 		Hostname: "gitlab.com",
@@ -274,7 +297,9 @@ func (s *ValidatorTests) TestParseURL_GitSSH_withPort() {
 	observed, err := ParseURL(given)
 	s.Nil(err)
 	s.EqualValues(expected, observed)
-	s.EqualValues(expectedString, observed.String())
+	s.EqualValues(expectedURL, observed.String())
+	s.EqualValues(expectedGitHTTPS, observed.GetHTTPSString())
+	s.EqualValues(expectedGitSSH, observed.GetSSHString())
 }
 
 func (s *ValidatorTests) Test_parseRegexIntoFields() {

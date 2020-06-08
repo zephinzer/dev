@@ -43,7 +43,7 @@ func (r Repository) GetPath(rootPath ...string) (string, error) {
 		}
 		return path.Join(storagePath, parsedURL.Hostname, parsedURL.User, parsedURL.Path), nil
 	} else if _, parseError := validator.ParseURL(r.URL); parseError != nil {
-		return "", fmt.Errorf("failed to parse url '%s'", r.URL)
+		return "", fmt.Errorf("failed to parse url '%s': %s", r.URL, parseError)
 	} else {
 		URL, getURLError := utils.GetSshCloneUrlFromHttpLinkUrl(r.URL)
 		if getURLError != nil {

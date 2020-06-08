@@ -65,7 +65,18 @@ func ResolvePath(relativePathFragments ...string) (string, error) {
 		fullPath = strings.Replace(fullPath, "~", userHomeDir, 1)
 	}
 
-	// resolve to absolute path
+	// resolve symlink if it is one
+	fileInfo, lstatError := os.Lstat(fullPath)
+	if lstatError != nil && !os.IsNotExist(lstatError) {
+		return "", fmt.Errorf("failed to stat file at '%s': %s", fullPath, lstatError)
+	}
+	if fileInfo.Mode()&os.ModeSymlink != 0 {
+		resolvedSymlinkPath, _ := os.Readlink(fullPath)
+		if len(resolvedSymlinkPath) > 0 {
+			return ResolvePath(resolvedSymlinkPath)
+		}
+	}
+
 	if path.IsAbs(fullPath) {
 		return fullPath, nil
 	}

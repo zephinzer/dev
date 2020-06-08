@@ -60,10 +60,10 @@ type URL struct {
 	Query    string
 }
 
-func (u URL) GetHTTPSURL() string {
+func (u URL) GetHTTPSString() string {
 	var builder strings.Builder
 	builder.WriteString("https://")
-	if !utils.IsEmptyString(u.Username) {
+	if !utils.IsEmptyString(u.Username) && u.Username != "git" {
 		builder.WriteString(u.Username)
 		if !utils.IsEmptyString(u.Password) {
 			builder.WriteString(fmt.Sprintf(":%s", u.Password))
@@ -74,7 +74,21 @@ func (u URL) GetHTTPSURL() string {
 	if !utils.IsEmptyString(u.Port) {
 		builder.WriteString(fmt.Sprintf(":%s", u.Port))
 	}
-	builder.WriteString(fmt.Sprintf("%s", path.Join("/", u.User, u.Path)))
+	urlPath := path.Join("/", u.User, u.Path)
+	builder.WriteString(fmt.Sprintf("%s.git", urlPath))
+	return builder.String()
+}
+
+func (u URL) GetSSHString() string {
+	var builder strings.Builder
+	builder.WriteString("git@")
+	builder.WriteString(u.Hostname)
+	builder.WriteByte(':')
+	if !utils.IsEmptyString(u.Port) {
+		builder.WriteString(fmt.Sprintf("%s/", u.Port))
+	}
+	urlPath := strings.Trim(path.Join(u.User, u.Path), "/")
+	builder.WriteString(fmt.Sprintf("%s.git", urlPath))
 	return builder.String()
 }
 
@@ -82,9 +96,12 @@ func (u URL) GetHTTPSURL() string {
 func (u URL) String() string {
 	var builder strings.Builder
 	if !utils.IsEmptyString(u.Schema) {
-		builder.WriteString(fmt.Sprintf("%s://", u.Schema))
+		builder.WriteString(u.Schema)
+	} else {
+		builder.WriteString("https")
 	}
-	if !utils.IsEmptyString(u.Username) {
+	builder.WriteString("://")
+	if !utils.IsEmptyString(u.Username) && u.Username != "git" {
 		builder.WriteString(u.Username)
 		if !utils.IsEmptyString(u.Password) {
 			builder.WriteString(fmt.Sprintf(":%s", u.Password))
@@ -96,10 +113,6 @@ func (u URL) String() string {
 		builder.WriteString(fmt.Sprintf(":%s", u.Port))
 	}
 	urlPath := fmt.Sprintf("%s", path.Join("/", u.User, u.Path))
-	if utils.IsEmptyString(u.Schema) && utils.IsEmptyString(u.Port) {
-		builder.WriteByte(':')
-		urlPath = strings.Trim(urlPath, "/")
-	}
 	builder.WriteString(urlPath)
 	if !utils.IsEmptyString(u.Query) {
 		builder.WriteString(fmt.Sprintf("?%s", u.Query))
