@@ -1,9 +1,11 @@
 package config
 
 import (
+	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/yaml.v2"
 )
 
 type RepositoriesTests struct {
@@ -62,4 +64,19 @@ func (s RepositoriesTests) TestMergeWith() {
 	s.Len(reposA, 2)
 	reposA.MergeWith(reposB)
 	s.Len(reposA, 4)
+}
+
+func (s RepositoriesTests) TestYAMLUnmarshal() {
+	repositoryYAML, readFileError := ioutil.ReadFile("../../tests/config/repositories.yaml")
+	s.Nil(readFileError)
+	if readFileError != nil {
+		return
+	}
+	c := Config{}
+	unmarshalError := yaml.Unmarshal(repositoryYAML, &c)
+	s.Nil(unmarshalError)
+	if unmarshalError != nil {
+		return
+	}
+	s.Len(c.Repositories, 4)
 }

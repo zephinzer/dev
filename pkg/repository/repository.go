@@ -10,20 +10,20 @@ import (
 
 // Repository represents a code repo
 type Repository struct {
-	// Name is a user-defined string to identify this repository
-	Name string `json:"name" yaml:"name"`
-	// Workspaces is a list of strings that represent the name of the
-	// logical workspace this repository belongs to
-	Workspaces []string `json:"workspaces" yaml:"workspaces"`
 	// Description is a user-defined block of text about what this repository
 	// is for in their context
-	Description string `json:"description" yaml:"description"`
+	Description string `json:"description" yaml:"description,omitempty"`
+	// Name is a user-defined string to identify this repository
+	Name string `json:"name" yaml:"name,omitempty"`
+	// Path is the user-defined location to store this repository
+	Path string `json:"path" yaml:"path,omitempty"`
 	// URL is the URL to use to clone the repository; if the provided
 	// URL does not terminate with `.git`, a best-guess should be made to
 	// convert this to a proper git clone URL
-	URL string `json:"url" yaml:"url"`
-	// Path is the user-defined location to store this repository
-	Path string `json:"path" yaml:"path"`
+	URL string `json:"url" yaml:"url,omitempty"`
+	// Workspaces is a list of strings that represent the name of the
+	// logical workspace this repository belongs to
+	Workspaces []string `json:"workspaces" yaml:"workspaces,omitempty"`
 }
 
 // GetPath returns the path where the repository should be stored;

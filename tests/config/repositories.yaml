@@ -1,0 +1,19 @@
+repositories:
+- name: test-case-001
+  url: https://gitlab.com/zephinzer/dev?case=001
+- name: test-case-002
+  description: description 002
+  url: https://gitlab.com/zephinzer/dev?case=002
+- name: test-case-003
+  description: description 003
+  workspaces:
+  - workspace-1
+  - workspace-2
+  url: https://gitlab.com/zephinzer/dev?case=003
+- name: test-case-004
+  description: description 004
+  workspaces:
+  - workspace-1
+  - workspace-2
+  url: https://gitlab.com/zephinzer/dev?case=004
+  path: /root/dev
