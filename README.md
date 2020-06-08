@@ -51,6 +51,7 @@ A CLI tool for improving the developer experience.
     - [Telegram](#telegram)
       - [Setting up Telegram notifications integration](#setting-up-telegram-notifications-integration)
 - [Contributing](#contributing)
+- [Changelog](#changelog)
 - [License](#license)
 
 # Installation
@@ -305,6 +306,11 @@ dev:
 ```
 
 # Contributing
+
+# Changelog
+
+| Version | Breaking | Description |
+| 0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |
 
 # License
 
