@@ -81,6 +81,8 @@ Test the installation works by running `dev -v`.
 
 ### Setting up software checks
 
+Add a root level `softwares` property. A working example looks like:
+
 ```yaml
 softwares:
 - name: golang
@@ -103,6 +105,8 @@ softwares:
 
 ### Using software checks
 
+To run checks on the software available locally:
+
 ```sh
 dev check software;
 ```
@@ -110,6 +114,8 @@ dev check software;
 ## Network checks
 
 ### Setting up network checks
+
+Add a root level `networks` property. A working example looks like:
 
 ```yaml
 networks:
@@ -123,6 +129,8 @@ networks:
 
 ### Using network checks
 
+To run a check on your network connectivity:
+
 ```sh
 dev check networks;
 ```
@@ -130,6 +138,8 @@ dev check networks;
 ## Link directory
 
 ### Setting up the link directory
+
+Add a root level `links` property. A working example looks like:
 
 ```yaml
 links:
@@ -151,6 +161,8 @@ links:
 ```
 
 ### Using the link directory
+
+To activate the link directory from the terminal, run:
 
 ```sh
 dev goto;
@@ -331,9 +343,12 @@ Two global flags are made available to improve debuggability by increasing the a
 
 # Contributing
 
+Coming soon!
+
 # Changelog
 
 | Version | Breaking | Description |
+| --- | --- | --- |
 | v0.1.4 | NO | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
 | v0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |
 
