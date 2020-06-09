@@ -40,7 +40,11 @@ func loadConfiguration() {
 			log.Warn(errorString)
 			continue
 		}
-		config.Global.MergeWith(configuration)
-		log.Debugf("processed configuration at %s", file)
+		if mergeWarnings := config.Global.MergeWith(configuration); mergeWarnings != nil && len(mergeWarnings) > 0 {
+			for _, warning := range mergeWarnings {
+				log.Warnf("encountered warning: %s", warning)
+			}
+		}
+		log.Debugf("done processing configuration at %s", file)
 	}
 }

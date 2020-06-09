@@ -61,6 +61,9 @@ func (r *Repository) PromptForWorkspaces() error {
 	if scanError := scanner.Err(); scanError != nil {
 		return fmt.Errorf("an unexpected error occurred: %s", scanError)
 	}
+	if len(answer) == 0 {
+		return nil
+	}
 	workspaces := strings.Split(answer, ",")
 	for i := 0; i < len(workspaces); i++ {
 		workspaces[i] = strings.TrimSpace(workspaces[i])

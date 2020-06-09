@@ -3,46 +3,13 @@ package repository
 import (
 	"fmt"
 	"os"
-	"path"
 	"strconv"
 	"strings"
 
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
-	pkgrepository "github.com/zephinzer/dev/pkg/repository"
-	"github.com/zephinzer/dev/pkg/utils"
 )
-
-func askRepositoryDescription(repo pkgrepository.Repository) (string, error) {
-	log.Printf("\n\033[1menter a description for '%s': \033[0m", repo.URL)
-	var answer string
-	_, scanlnError := fmt.Scanln(&answer)
-	if scanlnError != nil && !strings.Contains(scanlnError.Error(), "unexpected newline") {
-		log.Errorf("an unexpected error occurred: %s", scanlnError)
-		os.Exit(constants.ExitErrorSystem)
-	}
-	return answer, nil
-}
-
-func askRepositoryName(repo pkgrepository.Repository) (string, error) {
-	repoPath, getPathError := repo.GetPath()
-	if getPathError != nil {
-		return "", fmt.Errorf("failed to get repository path: %s", getPathError)
-	}
-	defaultName := path.Base(repoPath)
-	log.Printf("\n\033[1menter a repository name for '%s' (default: '%s'): \033[0m", repo.URL, defaultName)
-	var answer string
-	_, scanlnError := fmt.Scanln(&answer)
-	if scanlnError != nil && !strings.Contains(scanlnError.Error(), "unexpected newline") {
-		log.Errorf("an unexpected error occurred: %s", scanlnError)
-		os.Exit(constants.ExitErrorSystem)
-	}
-	if utils.IsEmptyString(answer) {
-		return defaultName, nil
-	}
-	return answer, nil
-}
 
 func askWhichConfigurationToAddTo(repoURL string) string {
 	log.Printf("\n\033[1mwhich configuration file should we add '%s' to?\033[0m\n", repoURL)

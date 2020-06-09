@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/spf13/cobra"
-	configuration "github.com/usvc/go-config"
+
 	"github.com/zephinzer/dev/cmd/dev/add"
 	"github.com/zephinzer/dev/cmd/dev/check"
 	"github.com/zephinzer/dev/cmd/dev/debug"
@@ -15,25 +14,6 @@ import (
 	"github.com/zephinzer/dev/cmd/dev/install"
 	"github.com/zephinzer/dev/cmd/dev/open"
 	"github.com/zephinzer/dev/cmd/dev/start"
-	"github.com/zephinzer/dev/internal/constants"
-)
-
-var (
-	// Commit will be set to the commit hash during build time
-	Commit = "<commit-hash>"
-	// Version will be set to the semantic version during build time
-	Version = "<semver-version>"
-	// Timestamp will be set to the timestamp of the build during build time
-	Timestamp = time.Now().Format(constants.DevTimeFormat)
-	// conf is the local configuration for the root command
-	conf = configuration.Map{
-		"debug": &configuration.Bool{
-			Usage: "display up to debug level logs (verbose logging mode)",
-		},
-		"trace": &configuration.Bool{
-			Usage: "display up to trace level logs (very-verbose logging mode)",
-		},
-	}
 )
 
 func GetCommand() *cobra.Command {

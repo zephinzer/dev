@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/internal/notifications"
 	"github.com/zephinzer/dev/internal/types"
 	pkgpivotaltracker "github.com/zephinzer/dev/pkg/pivotaltracker"
 )
@@ -60,10 +59,7 @@ func WatchNotifications(
 									return
 								}
 								log.Debugf("sending pivotal tracker notification with id '%v' to the notifications channel", notif.ID)
-								notificationsChannel <- notifications.New(
-									"Pivotal Tracker ["+notif.Project.Name+"]",
-									notif.Message+" on \""+notif.Story.Name+"\"",
-								)
+								notificationsChannel <- Notification(notif)
 								return
 							}
 							log.Debugf("skipped pivotal tracker notification with id '%v' because it already exists in the database", notif.ID)

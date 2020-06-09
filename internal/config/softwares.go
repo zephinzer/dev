@@ -1,6 +1,8 @@
 package config
 
 import (
+	"strings"
+
 	"github.com/zephinzer/dev/pkg/software"
 )
 
@@ -13,13 +15,13 @@ type Softwares []software.Software
 func (s *Softwares) MergeWith(o Softwares) {
 	seen := map[string]bool{}
 	for _, sw := range *s {
-		seen[sw.Check.Command[0]] = true
+		seen[strings.Join(sw.Check.Command, "-")] = true
 	}
 	for _, sw := range o {
-		if value, ok := seen[sw.Check.Command[0]]; ok && value {
+		if value, ok := seen[strings.Join(sw.Check.Command, "-")]; ok && value {
 			continue
 		}
 		*s = append(*s, sw)
-		seen[sw.Check.Command[0]] = true
+		seen[strings.Join(sw.Check.Command, "-")] = true
 	}
 }

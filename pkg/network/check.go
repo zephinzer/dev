@@ -15,17 +15,17 @@ import (
 
 // Check represents a network check
 type Check struct {
-	Method string `json:"method" yaml:"method"`
+	Method string `json:"method" yaml:"method,omitempty"`
 	URL    string `json:"url" yaml:"url"`
 	// StatusCode should contain the expected http status code, if not defined,
 	// status codes starting with 1xx, 2xx, and 3xx will be considered successful,
 	// and 4xx, and 5xx codes will be considered failures
-	StatusCode int `json:"statusCode" yaml:"statusCode"`
+	StatusCode int `json:"statusCode" yaml:"statusCode,omitempty"`
 	// Headers contains headers key-value pairs that should be present in the
 	// HTTP headers of the response
-	Headers map[string]string `json:"headers" yaml:"headers"`
+	Headers map[string]string `json:"headers" yaml:"headers,omitempty"`
 	// ResponseBody is a regex-supported match with the response body
-	ResponseBody string `json:"responseBody" yaml:"responseBody"`
+	ResponseBody string `json:"responseBody" yaml:"responseBody,omitempty"`
 	observed     *http.Response
 }
 

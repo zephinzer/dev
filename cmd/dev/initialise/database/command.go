@@ -24,7 +24,8 @@ func GetCommand() *cobra.Command {
 }
 
 func run(command *cobra.Command, args []string) {
-	databasePath := constants.DefaultPathToSQLite3DB
+	var databasePath string
+	databasePath, _ = command.Flags().GetString("db-path")
 	if len(config.Global.Dev.Client.Database.Path) > 0 {
 		databasePath = config.Global.Dev.Client.Database.Path
 	}

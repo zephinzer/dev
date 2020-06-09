@@ -40,20 +40,23 @@ func NewFromFile(filePath string) (*Config, error) {
 }
 
 type Config struct {
-	Dev          Dev          `json:"dev" yaml:"dev"`
-	Links        Links        `json:"links" yaml:"links"`
-	Networks     Networks     `json:"networks" yaml:"networks"`
-	Platforms    Platforms    `json:"platforms" yaml:"platforms"`
-	Softwares    Softwares    `json:"softwares" yaml:"softwares"`
-	Repositories Repositories `json:"repositories" yaml:"repositories"`
+	Dev          Dev          `json:"dev" yaml:"dev,omitempty"`
+	Links        Links        `json:"links" yaml:"links,omitempty"`
+	Networks     Networks     `json:"networks" yaml:"networks,omitempty"`
+	Platforms    Platforms    `json:"platforms" yaml:"platforms,omitempty"`
+	Softwares    Softwares    `json:"softwares" yaml:"softwares,omitempty"`
+	Repositories Repositories `json:"repositories" yaml:"repositories,omitempty"`
 }
 
 // MergeWith merges the current Config configuration instance with
 // a second provided :other Config configuration instance, intention for
 // this is to merge a local configuration with a global configuration
-func (f *Config) MergeWith(other *Config) {
+func (f *Config) MergeWith(other *Config) []error {
+	mergeWarnings := []error{}
 	// TODO: copy over dev configurations
-	f.Dev = other.Dev
+	if warnings := f.Dev.MergeWith(other.Dev); warnings != nil && len(warnings) > 0 {
+		mergeWarnings = append(mergeWarnings, warnings...)
+	}
 
 	// copy over links
 	f.Links.MergeWith(other.Links)
@@ -79,4 +82,6 @@ func (f *Config) MergeWith(other *Config) {
 
 	// copy over repositories
 	f.Repositories.MergeWith(other.Repositories)
+
+	return mergeWarnings
 }

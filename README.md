@@ -50,6 +50,8 @@ A CLI tool for improving the developer experience.
   - [Notification integrations](#notification-integrations)
     - [Telegram](#telegram)
       - [Setting up Telegram notifications integration](#setting-up-telegram-notifications-integration)
+  - [Exit Codes](#exit-codes)
+  - [Debugging](#debugging)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
 - [License](#license)
@@ -305,12 +307,35 @@ dev:
 # ... other properties ...
 ```
 
+## Exit Codes
+
+Exit codes are bitmasks of error types which are docuemnted at [`./internal/constants/exit_codes.go`](./internal/constants/exit_codes.go).
+
+| Type | Value | Indication |
+| --- | --- | --- |
+| OK | `0` | Success |
+| System | `1` | An error occurred at the system level |
+| User | `2` | An error occurred because of user actions |
+| Input | `4` | An error occurred because of user input |
+| Configuration | `8` | An error occurred because of the consumed configuration |
+| Application | `16` | There's likely a bug |
+| Validation | `32` | Some expected values seem off |
+
+## Debugging
+
+Two global flags are made available to improve debuggability by increasing the amount of logs.
+
+- `--debug`: display DEBUG level logs (this prints start and end messages, and input/output values)
+- `--trace`: display TRACE level logs (this prints all sorts of nonsense but could be useful sometimes)
+
+
 # Contributing
 
 # Changelog
 
 | Version | Breaking | Description |
-| 0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |
+| v0.1.4 | NO | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
+| v0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |
 
 # License
 

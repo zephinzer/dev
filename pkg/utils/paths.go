@@ -66,7 +66,6 @@ func ResolvePath(relativePathFragments ...string) (string, error) {
 	}
 
 	// resolve symlink if it is one
-	fmt.Println(fullPath)
 	fileInfo, lstatError := os.Lstat(fullPath)
 	if lstatError != nil {
 		if !os.IsNotExist(lstatError) {

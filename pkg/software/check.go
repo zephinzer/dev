@@ -18,13 +18,13 @@ import (
 // 1. Use `.Verify()` method to verify that the `.observed` property matches the provided parameters
 type Check struct {
 	// Command is the command to run including arguments
-	Command []string `json:"command" yaml:"command"`
+	Command []string `json:"command" yaml:"command,omitempty"`
 	// ExitCode is the expected exit code we can expect from the command running if defined
-	ExitCode int `json:"exitCode" yaml:"exitCode"`
+	ExitCode int `json:"exitCode" yaml:"exitCode,omitempty"`
 	// Stdout is the expected output on stdout if defined
-	Stdout *string `json:"stdout" yaml:"stdout"`
+	Stdout *string `json:"stdout" yaml:"stdout,omitempty"`
 	// Stderr is the expected output on stderr if defined
-	Stderr *string `json:"stderr" yaml:"stderr"`
+	Stderr *string `json:"stderr" yaml:"stderr,omitempty"`
 	// observed contains the observed value after Run is executed
 	observed *Check
 }

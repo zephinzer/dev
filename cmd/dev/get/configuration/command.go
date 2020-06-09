@@ -11,6 +11,9 @@ import (
 )
 
 var conf = config.Map{
+	"dev": &config.Bool{
+		Usage: "retrieves the dev configuration",
+	},
 	"links": &config.Bool{
 		Usage: "retrieves the links configuration",
 	},
@@ -41,6 +44,8 @@ func GetCommand() *cobra.Command {
 			format := conf.GetString("format")
 			var output interface{}
 			switch true {
+			case conf.GetBool("dev"):
+				output = c.Global.Dev
 			case conf.GetBool("links"):
 				output = c.Global.Links
 			case conf.GetBool("networks"):

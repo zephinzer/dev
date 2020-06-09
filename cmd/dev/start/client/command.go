@@ -26,14 +26,16 @@ func GetCommand() *cobra.Command {
 			log.Info("starting dev client...")
 
 			log.Debug("initialising database connection...")
-			pathToDatabase := config.Global.Dev.Client.Database.Path
-			if len(pathToDatabase) == 0 {
-				pathToDatabase = constants.DefaultPathToSQLite3DB
+			var databasePath string
+			databasePath, _ = command.Flags().GetString("db-path")
+			if len(config.Global.Dev.Client.Database.Path) > 0 {
+				databasePath = config.Global.Dev.Client.Database.Path
 			}
-			connection, newConnectionError := db.NewConnection(pathToDatabase)
+			log.Debugf("path to database: %s", databasePath)
+			connection, newConnectionError := db.NewConnection(databasePath)
 			if newConnectionError != nil {
 				log.Errorf("failed to open connection to database: %s", newConnectionError)
-				os.Exit(1)
+				os.Exit(constants.ExitErrorSystem | constants.ExitErrorConfiguration)
 			}
 
 			networkConnectionWatcherInterval := time.Second * 10
@@ -70,10 +72,10 @@ func GetCommand() *cobra.Command {
 			go func() {
 				for {
 					select {
-					case notification := <-pivotalWatcher:
+					case notification := <-networkConnectionWatcher:
 						notifications.TriggerDesktop(notification.GetTitle(), notification.GetMessage())
 						go sendTelegramNotification(notification)
-					case notification := <-networkConnectionWatcher:
+					case notification := <-pivotalWatcher:
 						notifications.TriggerDesktop(notification.GetTitle(), notification.GetMessage())
 						go sendTelegramNotification(notification)
 					case notification := <-gitlabWatcher:
