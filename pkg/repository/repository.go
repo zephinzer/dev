@@ -23,7 +23,7 @@ type Repository struct {
 	URL string `json:"url" yaml:"url,omitempty"`
 	// Workspaces is a list of strings that represent the name of the
 	// logical workspace this repository belongs to
-	Workspaces []string `json:"workspaces" yaml:"workspaces,omitempty"`
+	Workspaces []string `json:"workspaces" yaml:"workspaces,omitempty,flow"`
 }
 
 // GetPath returns the path where the repository should be stored;
