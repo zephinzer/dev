@@ -22,16 +22,28 @@ type Platform string
 
 func (p Platform) String() string {
 	switch strings.ToLower(string(p)) {
+	case "bill":
+		fallthrough
+	case "gates":
+		fallthrough
 	case "win":
 		fallthrough
-	case "windows":
+	case PlatformWindows:
 		return PlatformWindows
+	case "steve":
+		fallthrough
+	case "jobs":
+		fallthrough
 	case "mac":
 		fallthrough
 	case "macos":
 		fallthrough
-	case "darwin":
+	case PlatformMac:
 		return PlatformMac
+	case "linus":
+		fallthrough
+	case "torvalds":
+		fallthrough
 	case "arch":
 		fallthrough
 	case "centos":
@@ -41,6 +53,8 @@ func (p Platform) String() string {
 	case "rhel":
 		fallthrough
 	case "ubuntu":
+		fallthrough
+	case PlatformLinux:
 		return PlatformLinux
 	}
 	return "unknown"

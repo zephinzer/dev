@@ -349,6 +349,7 @@ Coming soon!
 
 | Version | Breaking | Description |
 | --- | --- | --- |
+| v0.1.7 | NO | Added descriptions for `dev check software` |
 | v0.1.6 | NO | Made repository selection deterministic when using `dev add repo` |
 | v0.1.4 | NO | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
 | v0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |

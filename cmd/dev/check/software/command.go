@@ -2,6 +2,7 @@ package software
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 
@@ -34,7 +35,11 @@ func GetCommand() *cobra.Command {
 					}
 					if !isTargetedPlatform {
 						log.Printf(constants.CheckSkippedFormat, software.Name)
-						log.Printf("(skipping: %s is not one of [%s])\n", currentOS, strings.Join(targetedPlatforms, ", "))
+						log.Printf("(\033[1mskipped\033[0m: this system (%s) is not one of [%s])", currentOS, strings.Join(targetedPlatforms, ", "))
+						if len(software.Description) > 0 {
+							log.Printf(" \033[2m(%s)\033[0m ", software.Description)
+						}
+						log.Printf("\n")
 						skippedCount++
 						continue
 					}
@@ -54,15 +59,22 @@ func GetCommand() *cobra.Command {
 				}
 				if softwareCheckLog.Len() == 0 {
 					log.Printf(constants.CheckSuccessFormat, software.Name)
+					if len(software.Description) > 0 {
+						log.Printf("\033[2m(%s)\033[0m", software.Description)
+					}
 				} else {
 					log.Printf(constants.CheckFailureFormat, software.Name)
-					log.Printf(softwareCheckLog.String())
+					if len(software.Description) > 0 {
+						log.Printf("\033[2m(%s)\033[0m", software.Description)
+					}
+					log.Printf("\n%s", softwareCheckLog.String())
 					failCount++
 				}
 				log.Print("\n")
 				softwareCheckLog.Reset()
 			}
 			log.Printf("\ntotal/processed/skipped/failed: %v/%v/%v/%v\n", len(config.Global.Softwares), processedCount, skippedCount, failCount)
+			os.Exit(-1 * failCount)
 		},
 	}
 	return &cmd
