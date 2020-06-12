@@ -75,7 +75,7 @@ func (s *RepositoryTests) TestYAMLMarshal_workspaces() {
 	if len(repoYAML) == 0 {
 		return
 	}
-	s.Equal("workspaces:\n- __test_workspaces\n", repoYAML)
+	s.Equal("workspaces: [__test_workspaces]\n", repoYAML)
 }
 
 func (s *RepositoryTests) TestGetPath() {
