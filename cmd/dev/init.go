@@ -31,7 +31,7 @@ func loadConfiguration() {
 		log.Debugf("processing configuration at %s...", file)
 		configuration, newFromFileError := config.NewFromFile(file)
 		if newFromFileError != nil {
-			errorString := fmt.Sprintf("global configuration from %s could not be loaded: %s", file, newFromFileError)
+			errorString := fmt.Sprintf("failed to load configuration '%s': %s", file, newFromFileError)
 			if strings.Contains(newFromFileError.Error(), "yaml: line") {
 				log.Errorf(errorString)
 				os.Exit(1)
@@ -41,10 +41,17 @@ func loadConfiguration() {
 			continue
 		}
 		if mergeWarnings := config.Global.MergeWith(configuration); mergeWarnings != nil && len(mergeWarnings) > 0 {
-			for _, warning := range mergeWarnings {
-				log.Warnf("encountered warning: %s", warning)
+			log.Warnf("encountered %v issues merging '%s'", len(mergeWarnings), file)
+			for index, warning := range mergeWarnings {
+				log.Warnf("'%s'#%v: %s", file, index+1, warning)
 			}
 		}
 		log.Debugf("done processing configuration at %s", file)
 	}
+	loadedConfigurationCount := 0
+	for configPath := range config.Loaded {
+		log.Debugf("%v. %s", loadedConfigurationCount+1, configPath)
+		loadedConfigurationCount++
+	}
+	log.Debugf("loaded %v distinct configuration files", loadedConfigurationCount)
 }

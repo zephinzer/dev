@@ -69,7 +69,9 @@ func run(command *cobra.Command, args []string) {
 
 	// let's do dis
 	for _, repoURL := range filteredRepoURLs {
-		configurationPath := askWhichConfigurationToAddTo(repoURL)
+		configurationPath := config.PromptSelectLoadedConfiguration(
+			fmt.Sprintf("which configuration file should we add '%s' to?", repoURL),
+		)
 		if utils.IsEmptyString(configurationPath) {
 			log.Infof("skipping adding of repo '%s'", repoURL)
 			continue

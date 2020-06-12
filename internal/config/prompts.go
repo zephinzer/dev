@@ -1,24 +1,29 @@
-package repository
+package config
 
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
-	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
 )
 
-func askWhichConfigurationToAddTo(repoURL string) string {
-	log.Printf("\n\033[1mwhich configuration file should we add '%s' to?\033[0m\n", repoURL)
+// PromptSelectLoadedConfiguration does a cli prompt to ask the user
+// to select a loaded configuration for changes to be made
+func PromptSelectLoadedConfiguration(promptMessage string) string {
+	log.Printf("\n\033[1m%s\033[0m\n", promptMessage)
 	loadedIndex := 0
 	loadedConfigs := []string{}
-	for configPath := range config.Loaded {
-		log.Printf("%v. %s\n", loadedIndex+1, configPath)
+	for configPath := range Loaded {
 		loadedConfigs = append(loadedConfigs, configPath)
 		loadedIndex++
+	}
+	sort.Strings(loadedConfigs)
+	for index, configPath := range loadedConfigs {
+		log.Printf("%v. %s\n", index+1, configPath)
 	}
 	log.Print("\033[1myour response (use 0 to skip):\033[0m ")
 	answer := "0"
@@ -30,13 +35,13 @@ func askWhichConfigurationToAddTo(repoURL string) string {
 	indexToUse, atoiError := strconv.Atoi(answer)
 	if atoiError != nil {
 		log.Warnf("that wasn't a valid option: %s", atoiError)
-		askWhichConfigurationToAddTo(repoURL)
+		PromptSelectLoadedConfiguration(promptMessage)
 	} else if indexToUse > loadedIndex {
 		log.Warnf("that wasn't a valid option: %v is an unknown configuration", indexToUse)
-		askWhichConfigurationToAddTo(repoURL)
+		PromptSelectLoadedConfiguration(promptMessage)
 	} else if indexToUse < 0 {
 		log.Warn("that wasn't a valid option: use 0 to skip adding this repository")
-		askWhichConfigurationToAddTo(repoURL)
+		PromptSelectLoadedConfiguration(promptMessage)
 	}
 	if indexToUse == 0 {
 		return ""
