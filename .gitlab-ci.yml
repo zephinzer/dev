@@ -83,12 +83,12 @@ version bump:
   image: usvc/ci:version-bump-gitlab
   script: ["entrypoint"]
 
-# coverage report:
-#   allow_failure: true
-#   stage: release
-#   dependencies: ["unit test"]
-#   image: usvc/ci:go-coverage-code-climate
-#   script: ["entrypoint"]
+coverage report:
+  allow_failure: true
+  stage: release
+  dependencies: ["unit test"]
+  image: usvc/ci:go-coverage-code-climate
+  script: ["entrypoint"]
 
 compress:
   stage: package
@@ -109,6 +109,8 @@ compress:
 
 dockerize:
   stage: package
+  # would be nice but it's okay if it fails, fix someday when server is up!
+  allow_failure: true
   only: ["tags"]
   services: ["docker:19.03.1-dind"]
   image: usvc/ci:docker-build
@@ -120,6 +122,8 @@ dockerize:
 
 dockerhub:
   stage: publish
+  # would be nice but it's okay if it fails, fix someday when server is up!
+  allow_failure: true
   only: ["tags"]
   services: ["docker:19.03.1-dind"]
   image: usvc/ci:docker-publish

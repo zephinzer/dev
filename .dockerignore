@@ -1,0 +1,8 @@
+deploy
+dev.db
+.dev.yaml
+.dev.yml
+*dev.yaml
+*dev.yml
+*yaml
+*yml
