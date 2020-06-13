@@ -48,6 +48,7 @@ func run(command *cobra.Command, args []string) {
 		if len(repository.Name) > 0 {
 			repositoryName = repository.Name
 		}
+		repositoryDescription := repository.Description
 		localPath, getPathError := repository.GetPath(homeDir)
 		if getPathError != nil {
 			log.Warnf("failed to process local path '%s': %s", repositoryName, getPathError)
@@ -75,6 +76,9 @@ func run(command *cobra.Command, args []string) {
 			log.Printf(constants.CheckSuccessFormat, repositoryName)
 		} else {
 			log.Printf(constants.CheckFailureFormat, repositoryName)
+		}
+		if len(repositoryDescription) > 0 {
+			log.Printf("\033[2m(%s)\033[0m", repositoryDescription)
 		}
 		if len(repository.Workspaces) > 0 {
 			log.Printf("\n  workspaces: %s", strings.Join(repository.Workspaces, ","))

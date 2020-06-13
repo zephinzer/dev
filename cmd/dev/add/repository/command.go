@@ -69,6 +69,13 @@ func run(command *cobra.Command, args []string) {
 
 	// let's do dis
 	for _, repoURL := range filteredRepoURLs {
+		parsedURL, parseURLError := validator.ParseURL(repoURL)
+		if parseURLError != nil {
+			log.Warnf("skipping '%s', failed to get ssh git clone url: %s", repoURL, parseURLError)
+			continue
+		}
+
+		// set configuration file
 		configurationPath := config.PromptSelectLoadedConfiguration(
 			fmt.Sprintf("which configuration file should we add '%s' to?", repoURL),
 		)
@@ -76,18 +83,11 @@ func run(command *cobra.Command, args []string) {
 			log.Infof("skipping adding of repo '%s'", repoURL)
 			continue
 		}
+		log.Infof("adding repo '%s' to configuration at '%s'...", repoURL, configurationPath)
 
 		targetConfiguration := config.Loaded[configurationPath]
-		availableWorkspaces := targetConfiguration.Repositories.GetWorkspaces()
 		targetRepository := Repository{}
-		targetRepository.SetURL(repoURL)
-		parsedURL, parseURLError := validator.ParseURL(repoURL)
-		if parseURLError != nil {
-			log.Warnf("failed to get ssh git clone url for '%s': %s", repoURL, parseURLError)
-		} else {
-			targetRepository.SetURL(parsedURL.GetSSHString())
-		}
-		log.Infof("adding repo '%s' to configuration at '%s'...", targetRepository.URL, configurationPath)
+		targetRepository.SetURL(parsedURL.GetSSHString())
 
 		// set name
 		fmt.Println("")
@@ -108,6 +108,7 @@ func run(command *cobra.Command, args []string) {
 		log.Infof("using '%s' as the repository description", targetRepository.Description)
 
 		// set workspaces
+		availableWorkspaces := targetConfiguration.Repositories.GetWorkspaces()
 		fmt.Println("")
 		log.Infof("existing workspaces: %s", strings.Join(availableWorkspaces, ", "))
 		workspacePromptError := targetRepository.PromptForWorkspaces()
@@ -117,7 +118,8 @@ func run(command *cobra.Command, args []string) {
 		}
 		log.Infof("using [%s] as the repository workspaces", strings.Join(targetRepository.Workspaces, ", "))
 
-		targetConfiguration.Repositories = append(targetConfiguration.Repositories, targetRepository.ToRepository())
+		repo := targetRepository.ToRepository()
+		targetConfiguration.Repositories = append(targetConfiguration.Repositories, repo)
 		targetConfiguration.Repositories.Sort()
 
 		configuration, marshalError := yaml.Marshal(targetConfiguration)
@@ -130,6 +132,16 @@ func run(command *cobra.Command, args []string) {
 		if writeFileError != nil {
 			log.Errorf("failed to write the new configuration to file at '%s': %s", configurationPath, writeFileError)
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorSystem)
+		}
+
+		repoPath, getPathError := repo.GetPath()
+		if getPathError != nil {
+			log.Errorf("failed to get path of repository: %s", getPathError)
+			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)
+		}
+		if gitCloneError := utils.GitClone(parsedURL.GetSSHString(), repoPath); gitCloneError != nil {
+			log.Errorf("failed to clone new repository: %s", gitCloneError)
+			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)
 		}
 	}
 }

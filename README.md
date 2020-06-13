@@ -21,14 +21,21 @@ A CLI tool for improving the developer experience.
 - [That Dev Tool](#that-dev-tool)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Software checks](#software-checks)
-    - [Setting up software checks](#setting-up-software-checks)
-    - [Using software checks](#using-software-checks)
-  - [Network checks](#network-checks)
-    - [Setting up network checks](#setting-up-network-checks)
-    - [Using network checks](#using-network-checks)
-  - [Link directory](#link-directory)
-    - [Setting up the link directory](#setting-up-the-link-directory)
+  - [Repository Management](#repository-management)
+    - [Configuring repositories](#configuring-repositories)
+    - [Checking repositories setup](#checking-repositories-setup)
+    - [Cloning all listed repositories](#cloning-all-listed-repositories)
+    - [Exporting workspaces from repositories](#exporting-workspaces-from-repositories)
+      - [Exporting workspace directly to a file](#exporting-workspace-directly-to-a-file)
+      - [Exporting workspace in a different format](#exporting-workspace-in-a-different-format)
+  - [Software Management](#software-management)
+    - [Configuring softwares](#configuring-softwares)
+    - [Checking software setup](#checking-software-setup)
+  - [Network Management](#network-management)
+    - [Configuring networks](#configuring-networks)
+    - [Checking network setup](#checking-network-setup)
+  - [Link Directory](#link-directory)
+    - [Configuring links](#configuring-links)
     - [Using the link directory](#using-the-link-directory)
   - [Platform integrations](#platform-integrations)
     - [Github](#github)
@@ -39,20 +46,23 @@ A CLI tool for improving the developer experience.
       - [Using the Gitlab integration](#using-the-gitlab-integration)
     - [Pivotal Tracker](#pivotal-tracker)
       - [Setting up Pivotal Tracker integration](#setting-up-pivotal-tracker-integration)
-        - [Setting up Pivotal Tracker API keys](#setting-up-pivotal-tracker-api-keys)
-        - [Configuring specific Pivotal Tracker projects](#configuring-specific-pivotal-tracker-projects)
+      - [Configuring specific Pivotal Tracker projects](#configuring-specific-pivotal-tracker-projects)
       - [Using the Pivotal Tracker integration](#using-the-pivotal-tracker-integration)
     - [Trello](#trello)
       - [Setting up Trello integration](#setting-up-trello-integration)
-        - [Setting up Trello API credentials](#setting-up-trello-api-credentials)
-        - [Configuring boards](#configuring-boards)
+      - [Configuring Trello boards](#configuring-trello-boards)
       - [Using the Trello integration](#using-the-trello-integration)
   - [Notification integrations](#notification-integrations)
     - [Telegram](#telegram)
       - [Setting up Telegram notifications integration](#setting-up-telegram-notifications-integration)
-  - [Exit Codes](#exit-codes)
-  - [Debugging](#debugging)
+  - [Other Notes](#other-notes)
+    - [On output](#on-output)
+    - [On exit codes](#on-exit-codes)
+    - [On debugging](#on-debugging)
 - [Contributing](#contributing)
+  - [Development Flow](#development-flow)
+  - [Using the Makefile](#using-the-makefile)
+  - [Other resources](#other-resources)
 - [Changelog](#changelog)
 - [License](#license)
 
@@ -77,33 +87,160 @@ Test the installation works by running `dev -v`.
 3. `.dev.gitlab.yourdomain.com.yaml`
 4. `.dev.some1elses.yaml`
 
-## Software checks
+## Repository Management
 
-### Setting up software checks
+To automate this with some degree of sanity, some strongly-opinionated assumptions are made:
 
-Add a root level `softwares` property. A working example looks like:
+1. Your repositories shall be stored in your home directory using the path `<hostname>/<username>/<path-to-repo>`. For example, this repo will be stored at `/home/${USER}/github.com/zephinzer/dev`
+2. You operate your IDE using workspaces to reference the repositories so that the exact repository location on your hard drive does not matter
+3. You use SSH keys to authenticate with your source control management platform
+
+### Configuring repositories
+
+Repositories are configured using the `repositories` root level property in the configuration file as such:
 
 ```yaml
+# ...
+repositories:
+- description: working repository for the dev tool
+  name: dev (do work here)
+  url: git@gitlab.com/zephinzer/dev.git
+  workspaces: [productivity, development]
+- description: public repository for the dev tool
+  name: dev (install from here)
+  url: git@github.com/zephinzer/dev.git
+  workspaces: [productivity, production]
+# ...
+```
+
+The structure for each repository item can be found at [`./pkg/repository/repository.go`](./pkg/repository/repository.go). In summary the fields are:
+
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `description` | No | `""` | An arbitrary description displayed in `dev` metadata only |
+| `name` | No | `""` | An arbitrary name displayed in `dev` metadata only |
+| `path` | No | `~/${HOSTNAME}/${REPO_PATH}` | The path on your local machine to put this repository |
+| `url` | Yes | `-` | The URL to this repository. `dev` will always convert this to an SSH clone URL |
+| `workspaces` | No | `[]` | A list of workspace names that this repository should belong to |
+
+### Checking repositories setup
+
+To verify that all repositories have been installed locally, use:
+
+```sh
+dev check repositories;
+```
+
+### Cloning all listed repositories
+
+If a repository is listed in the configuration but is not available locally, it's possible to clone it using this tool using:
+
+```sh
+dev install repos;
+```
+
+> Known issue #1: You won't be able to clone a bare repository.
+
+> Known issue #2: If you have a long list of repositories, some might fail because too many requests are being made to the server.
+
+### Exporting workspaces from repositories
+
+If you've defined the `workspaces` property for your repositories, you can export repositories related to a workspace by using:
+
+```sh
+# get the workspace ${WORKSPACE_NAME}
+dev get workspace ${WORKSPACE_NAME};
+```
+
+#### Exporting workspace directly to a file
+
+Use the `--output-directory`/`-o` flag to export it directly to the current directory (a file at `./${WORKSPACE_NAME}.code-workspace` will be created):
+
+```sh
+# export to the current directory
+dev get workspace ${WORKSPACE_NAME} --output-directory .;
+```
+
+To export it directly to `/some/path/at` (a file at `/some/path/at/${WORKSPACE_NAME}.code-workspace` will be created):
+
+```sh
+# export to the directory at /some/path/at
+dev get workspace ${WORKSPACE_NAME} -o /some/path/at;
+```
+
+If the file already exists, `dev` will complain. Use the `--overwrite`/`-O` flag to tell it to overwrite the file:
+
+```sh
+# export to the directory at /some/path/at, overwriting it if the target file exists
+dev get workspace ${WORKSPACE_NAME} -o /some/path/at --overwrite;
+```
+
+#### Exporting workspace in a different format
+
+To change the formatting of the workspace, use the `--format`/`-f` flag:
+
+```sh
+dev get workspace ${WORKSPACE_NAME} -f vscode;
+```
+
+The following workspace formats are supported:
+
+1. Visual Studio Code/Codium (format name: `vscode`)
+
+
+
+## Software Management
+
+The software management feature allows developers to check whether required software have been installed and if not, to install them.
+
+### Configuring softwares
+
+Software is configured using the root level `softwares` property in the configuration file as such:
+
+```yaml
+# ...
 softwares:
-- name: golang
+- name: brew
+  description: used for system dependency installations
+  platforms: [macos]
   check:
-    command: ["go", "version"]
-    stdout: ^go version go\d\.\d+(\.\d+)? [a-zA-Z0-9]+\/[a-zA-Z0-9]+$
+    command: [brew, --version]
+    stdout: ^Homebrew
+  install:
+    link: https://brew.sh/
 - name: node
+  description: used for the primary projects
   check:
     command: ["node", "-v"]
     stdout: ^v\d+\.\d+\.\d+$
+  install:
+    link: https://github.com/nvm-sh/nvm#installing-and-updating
 - name: terraform
+  description: used for bringing up our infrastructure
   check:
     command: ["terraform", "version"]
     stdout: ^Terraform v\d+\.\d+\.\d+$
-- name: terragrunt
-  check:
-    command: ["terragrunt", "-v"]
-    stdout: ^terragrunt version v\d+\.\d+\.\d+$
+  install:
+    link: https://www.terraform.io/downloads.html
+# ...
 ```
 
-### Using software checks
+The structure for each software item is detailed in the [`./pkg/software` directory](./pkg/software) and a summary follows:
+
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `name` | No | `""` | An arbitrary name displayed in `dev` outputs when metadata is required |
+| `check` | Yes | - | Declarative instructions describing how to check for the software's presence |
+| `check.command` | Yes | - | A list of strings that form the command to check for the software. For example, if you run `go version` in your CLI to check for Go, the list will look like `["go", "version"]` |
+| `check.stdout` | No | `""` | A regex-compatible string to match with the command's output on `stdout` |
+| `check.stderr` | No | `""` | A regex-compatible string to match with the command's output on `stderr` |
+| `check.exitCode` | No | `0` | An integer exit code to match with the command's exit code |
+| `description` | No | `""` | An arbitrary description of how the software is used/why it's needed displayed in `dev` outputs when metadata is required |
+| `install` | No | - | Declarative instructions describing how to install the software if it's not found | 
+| `install.link` | No | `""` | A link to direct users to if the software is not found installed on the current machine |
+| `platforms` | No | - | A list of platform strings that define which operating systems this check is valid for. Valid lists are subsets of `{linux, windows, macos}`. When not specified, does not check for platform compatibility. |
+
+### Checking software setup
 
 To run checks on the software available locally:
 
@@ -111,54 +248,82 @@ To run checks on the software available locally:
 dev check software;
 ```
 
-## Network checks
+## Network Management
 
-### Setting up network checks
+Traditionally, teams/organisations typically have internal networks (intranets) for developers to access where privately owned code is pulled from/pushed to. This feature assists the developer to see what networks exist and to verify they have access to the networks they should have access to.
 
-Add a root level `networks` property. A working example looks like:
+### Configuring networks
+
+Networks are configured using the root level `networks` property in the configuration file as such:
 
 ```yaml
+# ...
 networks:
 - name: internet
   check:
     url: https://google.com
 - name: internal-vpn
+  registrationUrl: https://openvpn.internal.com
   check:
     url: https://gitlab.internal.com
+# ...
 ```
 
-### Using network checks
+The structure of each network can be found in the [`./pkg/network` directory](./pkg/network), a summary is as follows:
 
-To run a check on your network connectivity:
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `name` | No | `""` | An arbitrary name for the network to be displayed in `dev` metadata when required |
+| `registrationUrl` | No | `""` | A URL for users to request access to this network if applicable |
+| `check` | Yes | - | Declarative instructions on what to check for |
+| `check.url` | Yes | - | A URL to ping that should be accessible if network connectivity to this network has been established |
+| `check.method` | No | `"GET"` | The HTTP method to use to ping the provided `check.url` |
+| `check.statusCode` | No | `^2\d\d$` | The expected HTTP status code of the response to the ping |
+| `check.headers` | No | `{}` | A dictionary of expected headers |
+| `check.responseBody` | No | `""` | A regex-compatible string that the response body should be expected to match with. Does not apply if not specified/an empty string is provided |
+
+### Checking network setup
+
+To run a check on your required network connectivity:
 
 ```sh
 dev check networks;
 ```
 
-## Link directory
+## Link Directory
 
-### Setting up the link directory
+This feature assists with awareness of team resources by providing a list of resources that a developer can use to explore the team's resources.
 
-Add a root level `links` property. A working example looks like:
+### Configuring links
+
+The link directory is configured using the root level `links` property in the configuration file as such:
 
 ```yaml
 links:
 - label: official source-of-truth release repository
-  categories: ["scm"]
+  categories: [scm]
   url: https://gitlab.com/zephinzer/dev
 - label: dev tool build pipeline
-  categories: ["cicd"]
+  categories: [cicd]
   url: https://gitlab.com/zephinzer/dev/pipelines
 - label: dev tool release pipeline
-  categories: ["cicd", "release"]
+  categories: [cicd, release]
   url: https://travis-ci.org/github/zephinzer/dev/
 - label: dev tool code quality checks
-  categories: ["cicd"]
+  categories: [cicd]
   url: https://codeclimate.com/github/zephinzer/dev
 - label: dev tool releases
-  categories: ["cicd", "release]
+  categories: [cicd, release]
   url: https://github.com/zephinzer/dev/releases
 ```
+
+The structure for each link object can be found in the [`./internal/link` directory](./internal/link) and a summary follows.
+
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `label` | No | `""` | An arbitrary label for this link to be included in link metadata |
+| `categories` | No | `[]` | A hashtag-based way of searching to be included in link metadata |
+| `url` | Yes | - | The URL to open if this link is selected |
 
 ### Using the link directory
 
@@ -172,7 +337,25 @@ dev goto;
 
 ### Github
 
+The Github integration is not refined for use yet, try it at your own risk!
+
 #### Setting up Github integration
+
+Retrieve your `accessToken` by generating a new personal access token from [https://github.com/settings/tokens](https://github.com/settings/tokens). You'll need the following scopes:
+
+- repo:status
+- repo_deployment
+- public_repo
+- repo:invite
+- read:packages
+- read:org
+- read:public_key
+- read:repo_hook
+- notifications
+- read:user
+- read:discussion
+- read:enterprise
+- read:gpg_key
 
 #### Using the Github integration
 
@@ -183,7 +366,17 @@ dev get github notifs;
 
 ### Gitlab
 
+The Gitlab integration is not refined for use yet, try it at your own risk!
+
 #### Setting up Gitlab integration
+
+Retrieve your `accessToken` by generating a new personal access token from [https://gitlab.com/profile/personal_access_tokens](https://gitlab.com/profile/personal_access_tokens). You'll need the following scopes:
+
+- api
+- read_api
+
+> If you're using an on-premise Gitlab, change `gitlab.com` to your Gitlab's hostname
+
 
 #### Using the Gitlab integration
 
@@ -196,10 +389,7 @@ dev get gitlab notifs;
 
 #### Setting up Pivotal Tracker integration
 
-##### Setting up Pivotal Tracker API keys
-
-1. Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https://www.pivotaltracker.com/profile).
-2. Enter the `accessToken` as a property at `platforms.pivotaltracker`
+Retrieve your `accessToken` from [https://www.pivotaltracker.com/profile](https://www.pivotaltracker.com/profile) and enter it as the `accessToken` as a property at `platforms.pivotaltracker`
 
 Example:
 
@@ -212,7 +402,7 @@ platforms:
 # ...
 ```
 
-##### Configuring specific Pivotal Tracker projects
+#### Configuring specific Pivotal Tracker projects
 
 1. Navigate to the project you want to receive work/notifications from
 2. From the URL, extract the project ID (assuming a URL like `https://www.pivotaltracker.com/n/projects/1234567`, the project ID is `1234567`)
@@ -244,9 +434,9 @@ dev get pivotal notifs;
 
 ### Trello
 
-#### Setting up Trello integration
+The Trello integration is not refined for use yet, try it at your own risk!
 
-##### Setting up Trello API credentials
+#### Setting up Trello integration
 
 1. Retrieve your `accessKey` from [https://trello.com/app-key](https://trello.com/app-key).
 2. Generate your `accessToken` from the link to **Token** from the above link
@@ -264,7 +454,7 @@ platforms:
 # ...
 ```
 
-##### Configuring boards
+#### Configuring Trello boards
 
 The `boards` property at `platforms.trello.boards` takes in an array of board shortlinks. You can retrieve a board's shortlink by visiting the board in your browser and extracting it from the URL.
 
@@ -319,7 +509,19 @@ dev:
 # ... other properties ...
 ```
 
-## Exit Codes
+## Other Notes
+
+### On output
+
+**All output that's prefixed with a log level is being sent to `stderr`.**
+
+To display just `stderr` output, append `2>/dev/null` to your command.
+
+**All output that appears as-is without a log level is being sent to `stdout`**
+
+To display just `stdout` output, append `1>/dev/null` to your command.
+
+### On exit codes
 
 Exit codes are bitmasks of error types which are docuemnted at [`./internal/constants/exit_codes.go`](./internal/constants/exit_codes.go).
 
@@ -332,8 +534,9 @@ Exit codes are bitmasks of error types which are docuemnted at [`./internal/cons
 | Configuration | `8` | An error occurred because of the consumed configuration |
 | Application | `16` | There's likely a bug |
 | Validation | `32` | Some expected values seem off |
+| Number of errors | `128-255` | When such an exit code is encountered it's a count of failed iterations from a requested operation, take `$((256 - $?))` to get the number of errors from the operation |
 
-## Debugging
+### On debugging
 
 Two global flags are made available to improve debuggability by increasing the amount of logs.
 
@@ -343,7 +546,31 @@ Two global flags are made available to improve debuggability by increasing the a
 
 # Contributing
 
-Coming soon!
+## Development Flow
+
+1. Clone the repository at [https://gitlab.com/zephinzer/dev](https://gitlab.com/zephinzer/dev) (NOTE: not Github, use Gitlab).
+2. Make a fork of it
+3. Raise an issue at [https://gitlab.com/zephinzer/dev/-/issues](https://gitlab.com/zephinzer/dev/-/issues)
+4. Link to the relevant issue in [Github issues](https://github.com/zephinzer/dev/issues) if there's a linked issue
+5. Make your changes and raise a Merge Request
+6. Once tests pass and the MR is merged to `master`, the repository will be synced to Github and will be automatically released
+
+## Using the Makefile
+
+5. Run `make deps` to retrieve Go dependencies
+6. Run `make setup_build` to retrieve system dependencies
+7. Run `make build` to run a test build with caching
+8. Run `make build_production` to run a full non-cached build
+9.  Run `make test` to run Go test suites
+10. Run `make compress` to test whether compression works
+11. Run `make image` to test the Docker image build
+
+## Other resources
+
+- [The Dockerhub page](https://hub.docker.com/r/zephinzer/dev)
+- [The Github page](https://github.com/zephinzer/dev)
+- [The Gitlab page](https://gitlab.com/zephinzer/dev)
+- [The webpage](https://getthat.dev)
 
 # Changelog
 
@@ -356,5 +583,5 @@ Coming soon!
 
 # License
 
-Code is licensed under the MIT license. [Click here to view the full text](./LICENSE).
+Code is licensed under the [MIT license (click to view the full text)](./LICENSE).
 

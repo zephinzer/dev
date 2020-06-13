@@ -126,7 +126,7 @@ dockerhub:
   allow_failure: true
   only: ["tags"]
   services: ["docker:19.03.1-dind"]
-  image: usvc/ci:docker-publish
+  image: usvc/ci:docker-build-1ad4294f
   dependencies: ["dockerize"]
   variables:
     DOCKER_IMAGE_URL: zephinzer/dev

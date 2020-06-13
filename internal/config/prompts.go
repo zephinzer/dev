@@ -14,14 +14,17 @@ import (
 // PromptSelectLoadedConfiguration does a cli prompt to ask the user
 // to select a loaded configuration for changes to be made
 func PromptSelectLoadedConfiguration(promptMessage string) string {
-	log.Printf("\n\033[1m%s\033[0m\n", promptMessage)
 	loadedIndex := 0
 	loadedConfigs := []string{}
 	for configPath := range Loaded {
 		loadedConfigs = append(loadedConfigs, configPath)
 		loadedIndex++
 	}
+	if len(loadedConfigs) == 1 {
+		return loadedConfigs[0]
+	}
 	sort.Strings(loadedConfigs)
+	log.Printf("\n\033[1m%s\033[0m\n", promptMessage)
 	for index, configPath := range loadedConfigs {
 		log.Printf("%v. %s\n", index+1, configPath)
 	}
