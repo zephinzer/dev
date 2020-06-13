@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+
+	"github.com/go-git/go-git"
 )
 
 func GetSshCloneUrlFromHttpLinkUrl(httpLinkUrl string) (string, error) {
@@ -63,4 +65,13 @@ func GetHttpLinkFromSshCloneUrl(sshCloneUrl string) (string, error) {
 		Scheme: "https",
 	}
 	return u.String(), nil
+}
+
+func GitClone(cloneURL, localPath string) error {
+	_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{URL: cloneURL})
+	if cloneError != nil {
+		return fmt.Errorf("failed to clone repository from url '%s': %s", cloneURL, cloneError)
+	}
+	return nil
+
 }

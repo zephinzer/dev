@@ -1,16 +1,15 @@
 package repository
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"strings"
 
-	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetCommand() *cobra.Command {
@@ -77,7 +76,7 @@ func run(command *cobra.Command, args []string) {
 			log.Debugf("repository '%s' already exists, skipping...", repositoryName)
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
-			cloneError := gitClone(repository.URL, localPath)
+			cloneError := utils.GitClone(repository.URL, localPath)
 			newCount++
 			if cloneError != nil {
 				log.Warnf("failed to clone repository from url '%s': %s", repository.URL, cloneError)
@@ -101,12 +100,4 @@ func run(command *cobra.Command, args []string) {
 	log.Infof("failed to process      : %v", errorCount)
 
 	os.Exit(errorCount)
-}
-
-func gitClone(cloneURL, localPath string) error {
-	_, cloneError := git.PlainClone(localPath, false, &git.CloneOptions{URL: cloneURL})
-	if cloneError != nil {
-		return fmt.Errorf("failed to clone repository from url '%s': %s", cloneURL, cloneError)
-	}
-	return nil
 }
