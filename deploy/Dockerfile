@@ -11,4 +11,5 @@ RUN make compress
 
 FROM gcr.io/distroless/base-debian10 AS executable
 COPY --from=builder /go/gitlab.com/zephinzer/dev/bin/dev_linux_amd64 /bin/dev
+WORKDIR /
 ENTRYPOINT ["/bin/dev"]

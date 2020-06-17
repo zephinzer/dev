@@ -1,5 +1,5 @@
 CMD_ROOT=dev
-DOCKER_NAMESPACE=zephinzer
+DOCKER_IMAGE_NAMESPACE=zephinzer
 DOCKER_IMAGE_NAME=dev
 PROJECT_NAME=dev
 GIT_COMMIT=$$(git rev-parse --verify HEAD)
@@ -61,23 +61,41 @@ image:
 		--build-arg GIT_TAG=$(GIT_TAG) \
 		--build-arg BUILD_TIMESTAMP=$(TIMESTAMP) \
 		--file ./deploy/Dockerfile \
-		--tag $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest \
+		--tag $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest \
 		.
 test_image:
 	container-structure-test test \
 		--config ./deploy/Dockerfile.yaml \
-		--image $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
+		--image $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
 save:
 	mkdir -p ./build
-	docker save --output ./build/$(PROJECT_NAME).tar.gz $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
+	docker save --output ./build/$(PROJECT_NAME).tar.gz $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
 load:
 	docker load --input ./build/$(PROJECT_NAME).tar.gz
+start_docker:
+	docker-compose --file ./deploy/docker/docker-compose.yml up --build -V
+stop_docker:
+	docker-compose --file ./deploy/docker/docker-compose.yml down --rm
+init_k8s:
+	if ! kind get clusters | grep $(PROJECT_NAME); then \
+		kind create cluster \
+			--config ./deploy/kind.config.yaml \
+			--name $(PROJECT_NAME); \
+	fi
+start_k8s: image
+	kubectl config use-context kind-$(DOCKER_IMAGE_NAME)
+	kind load docker-image --name $(DOCKER_IMAGE_NAME) $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
+
+denit_k8s:
+	if kind get clusters | grep $(PROJECT_NAME); then \
+		kind delete cluster --name $(PROJECT_NAME); \
+	fi
 dockerhub:
-	docker push $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
+	docker push $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
 	git fetch
-	docker tag $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest \
-		$(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
-	docker push $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
+	docker tag $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest \
+		$(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
+	docker push $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
 
 see_ci:
 	xdg-open https://gitlab.com/zephinzer/dev/pipelines

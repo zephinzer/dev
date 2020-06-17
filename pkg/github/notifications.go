@@ -43,7 +43,7 @@ func GetNotifications(accessToken string, since ...time.Time) (*APIv3Notificatio
 	var response APIv3Notifications
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		return nil, unmarshalError
+		return nil, fmt.Errorf("failed to unmarshal '%s' into json: %s", string(responseBody), unmarshalError)
 	}
 	return &response, nil
 }

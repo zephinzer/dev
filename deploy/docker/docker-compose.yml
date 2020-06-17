@@ -1,0 +1,20 @@
+version: "3.5"
+services:
+  dev:
+    build:
+      context: ../..
+      dockerfile: ./deploy/Dockerfile
+    image: zephinzer/dev:latest
+    entrypoint: ["/bin/dev", "start", "server", "--trace"]
+    environment:
+      ADDR: 0.0.0.0
+      PORT: "33835"
+      # this is the client ID for the That Dev Tool application on Github,
+      # change it to your own and add the secret if you would like to use
+      # your own Github OAuth application
+      GITHUB_CLIENT_ID: cfd66cdb0d6593dc586c
+      GITHUB_CLIENT_SECRET: 
+    volumes:
+      - ../../.dev.yaml:/.dev.yaml
+    ports:
+      - 33835:33835

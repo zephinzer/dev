@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev
+  labels: &labels # ensure same as deployment.yaml
+    app: dev
+  namespace: internal
+spec:
+  selector:
+    <<: *labels
+  ports:
+  - port: 33835
+    targetPort: 33835

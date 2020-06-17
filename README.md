@@ -1,3 +1,7 @@
+<center>
+  <img src="./assets/icon/512-dark.png">
+</center>
+
 # That Dev Tool
 
 [![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)

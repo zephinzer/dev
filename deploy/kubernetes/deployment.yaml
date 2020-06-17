@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev
+  labels: &labels
+    app: dev
+  namespace: internal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      <<: *labels
+  template:
+    metadata:
+      labels:
+        <<: *labels
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "33835"
+        prometheus.io/scrape: "true"
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+      - name: dev
+        image: zephinzer/dev:latest
+        command: ["/bin/dev", "start", "server", "trace"]
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: dev
+        - secretRef:
+            name: dev-github
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 33835
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /readyz
+            port: 33835
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        ports:
+        - containerPort: 33835
+        resources:
+          requests:
+            memory: 150Mi
+            cpu: 100m
+          limits:
+            memory: 200Mi
+            cpu: 150m

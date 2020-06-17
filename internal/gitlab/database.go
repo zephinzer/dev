@@ -53,11 +53,11 @@ func QueryNotification(todo pkggitlab.APIv4Todo, hostname string, connection *sq
 		notificationID,
 		hostname,
 	)
-	var remoteNotificationID string
-	if scanError := row.Scan(&remoteNotificationID); scanError != nil && scanError != sql.ErrNoRows {
+	var remoteNotificationID, remoteHostname string
+	if scanError := row.Scan(&remoteNotificationID, &remoteHostname); scanError != nil && scanError != sql.ErrNoRows {
 		return false, scanError
 	}
-	if remoteNotificationID == notificationID {
+	if remoteNotificationID == notificationID && remoteHostname == hostname {
 		return true, nil
 	}
 	return false, nil
