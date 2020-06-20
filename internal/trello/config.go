@@ -3,13 +3,13 @@ package trello
 // Config defines the structure of the configuration for the Trello integration
 type Config struct {
 	// Boards is the list of boards to monitor
-	Boards Boards `json:"boards" yaml:"boards"`
+	Boards Boards `json:"boards" yaml:"boards,omitempty"`
 	// AccessKey to be used for all listed boards if their own access token is not defined.
 	// This value can be retrieved from the page at https://trello.com/app-key
-	AccessKey string `json:"accessKey" yaml:"accessKey"`
+	AccessKey string `json:"accessKey" yaml:"accessKey,omitempty"`
 	// AccessToken to be used for all listed boards if their own access token is not defined.
 	// This value can be retrieved by clicking on Token on the page at https://trello.com/app-key
-	AccessToken string `json:"accessToken" yaml:"accessToken"`
+	AccessToken string `json:"accessToken" yaml:"accessToken,omitempty"`
 }
 
 // GetSanitized returns a sanitised copy of the Config instance
@@ -59,9 +59,9 @@ func (b Boards) GetSanitized() Boards {
 type Board struct {
 	ID          string `json:"id" yaml:"id"`
 	Name        string `json:"name" yaml:"name"`
-	AccessKey   string `json:"accessKey" yaml:"accessKey"`
-	AccessToken string `json:"accessToken" yaml:"accessToken"`
-	Public      bool   `json:"public" yaml:"public"`
+	AccessKey   string `json:"accessKey" yaml:"accessKey,omitempty"`
+	AccessToken string `json:"accessToken" yaml:"accessToken,omitempty"`
+	Public      bool   `json:"public" yaml:"public,omitempty"`
 }
 
 // GetSanitized returns a sanitised copy of the Board instance

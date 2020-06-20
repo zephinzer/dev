@@ -3,7 +3,7 @@ package github
 // Config defines the structure of the configuration
 // for the github platform
 type Config struct {
-	Accounts AccountConfigs `json:"accounts" yaml:"accounts"`
+	Accounts AccountConfigs `json:"accounts" yaml:"accounts,omitempty"`
 }
 
 // GetSanitized returns a clone of the current Config instance
@@ -49,9 +49,9 @@ func (a AccountConfigs) GetSanitized() AccountConfigs {
 // logical Github account in the configuration
 type AccountConfig struct {
 	// Name is the user-defined label for this github account
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name,omitempty"`
 	// Description is a user-defined description of what this account is for
-	Description string `json:"description" yaml:"description"`
+	Description string `json:"description" yaml:"description,omitempty"`
 	// AccessToken is the token that can be generated for use as a Personal Access Token,
 	// this can be created at https://github.com/settings/tokens
 	//
@@ -73,7 +73,7 @@ type AccountConfig struct {
 	// Public indicates whether this account should be public, if so, the /platforms
 	// endpoint on the dev server will expose this account; this is done to accomodate
 	// using both personal and work accounts
-	Public bool `json:"public" yaml:"public"`
+	Public bool `json:"public" yaml:"public,omitempty"`
 }
 
 // GetSanitized returns a copy of the current Account instance with

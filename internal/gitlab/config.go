@@ -3,7 +3,7 @@ package gitlab
 // Config defines the structure of the configuration for the
 // Gitlab integration
 type Config struct {
-	Accounts AccountConfigs `json:"accounts" yaml:"accounts"`
+	Accounts AccountConfigs `json:"accounts" yaml:"accounts,omitempty"`
 }
 
 // GetSanitized returns a copy of this Config instance without

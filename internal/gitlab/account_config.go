@@ -20,12 +20,12 @@ func (a AccountConfigs) GetSanitized() []AccountConfig {
 // account to be consumed
 type AccountConfig struct {
 	// Name is the user-defined label for this account
-	Name string `json:"name" yaml:"name"`
+	Name string `json:"name" yaml:"name,omitempty"`
 	// Description is a user-defined description of what this account is for
-	Description string `json:"description" yaml:"description"`
+	Description string `json:"description" yaml:"description,omitempty"`
 	// Hostname is the hostname of the Gitlab installation. If this is not provided
 	// this should default to "gitlab.com"
-	Hostname string `json:"hostname" yaml:"hostname"`
+	Hostname string `json:"hostname" yaml:"hostname,omitempty"`
 	// AccessToken is your Gitlab Personal Access Token which can be generated
 	// from this page at https://gitlab.com/profile/personal_access_tokens
 	//
@@ -39,7 +39,7 @@ type AccountConfig struct {
 	// endpoint on the dev server will expose this account; this is done to accomodate
 	// using both personal and work accounts, note that even if this is set to true,
 	// the AccessToken should not be exposed
-	Public bool `json:"public" yaml:"public"`
+	Public bool `json:"public" yaml:"public,omitempty"`
 }
 
 // GetSanitized returns a copy of this Account instance without
