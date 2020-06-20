@@ -24,6 +24,9 @@ A CLI tool for improving the developer experience.
 **Table of Contents**
 - [That Dev Tool](#that-dev-tool)
 - [Installation](#installation)
+  - [Install via Binary](#install-via-binary)
+  - [Install via Go](#install-via-go)
+  - [Install via Make](#install-via-make)
 - [Usage](#usage)
   - [Repository Management](#repository-management)
     - [Configuring repositories](#configuring-repositories)
@@ -72,12 +75,26 @@ A CLI tool for improving the developer experience.
 
 # Installation
 
+## Install via Binary
+
 Releases are available on Github at [https://github.com/zephinzer/dev/releases](https://github.com/zephinzer/dev/releases).
+
+## Install via Go
 
 You can also install it via `go install`:
 
 ```sh
 go install github.com/zephinzer/dev
+```
+
+## Install via Make
+
+Clone this repository and run `make install`:
+
+```sh
+git clone git@gitlab.com:zephinzer/dev.git;
+cd dev;
+make install;
 ```
 
 Test the installation works by running `dev -v`.
@@ -565,9 +582,12 @@ Two global flags are made available to improve debuggability by increasing the a
 6. Run `make setup_build` to retrieve system dependencies
 7. Run `make build` to run a test build with caching
 8. Run `make build_production` to run a full non-cached build
+7. Run `make build_static` to run a test build with static linking and caching
+8. Run `make build_static_production` to run a full non-cached build with static linking
 9.  Run `make test` to run Go test suites
 10. Run `make compress` to test whether compression works
 11. Run `make image` to test the Docker image build
+12. Run `make test_image` to run tests on the built Docker image
 
 ## Other resources
 

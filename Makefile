@@ -22,39 +22,68 @@ run:
 	go run -v -mod=vendor ./cmd/$(CMD_ROOT) ${args}
 test:
 	go test -v -mod=vendor ./... -cover -coverprofile c.out
-install_local:
+install:
 	go install -v -mod=vendor ./cmd/$(CMD_ROOT)
 build:
-	go build -mod=vendor \
+	go build -mod=vendor -v -x \
+		-ldflags "\
+			-X main.Commit=$(GIT_COMMIT) \
+			-X main.Version=$(GIT_TAG) \
+			-X main.Timestamp=$(TIMESTAMP) \
+		" \
 		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_ROOT)
-	rm -rf ./bin/$(CMD_ROOT)
-	cd ./bin \
-		&& ln -s ./$(BIN_PATH) ./$(CMD_ROOT)
+		./cmd/$(CMD_NAME)
+	$(MAKE) build_checksum
 build_production:
+	go build -mod=vendor -a -v -x \
+		-ldflags "\
+			-X main.Commit=$(GIT_COMMIT) \
+			-X main.Version=$(GIT_TAG) \
+			-X main.Timestamp=$(TIMESTAMP) \
+			-s -w \
+		" \
+		-o ./bin/$(BIN_PATH) \
+		./cmd/$(CMD_NAME)
+	$(MAKE) build_checksum
+build_static:
 	CGO_ENABLED=0 \
-	go build -a -v \
-		-ldflags "-X main.Commit=$(GIT_COMMIT) \
+	go build -mod=vendor -v -x \
+		-ldflags "\
+			-X main.Commit=$(GIT_COMMIT) \
 			-X main.Version=$(GIT_TAG) \
 			-X main.Timestamp=$(TIMESTAMP) \
 			-extldflags '-static' \
-			-s -w" \
+		" \
 		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_ROOT)
-	sha256sum -b ./bin/$(BIN_PATH) \
-		| cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
+		./cmd/$(CMD_NAME)
+	$(MAKE) build_checksum
+build_static_production:
+	CGO_ENABLED=0 \
+	go build -mod=vendor -a -v -x \
+		-ldflags "\
+			-X main.Commit=$(GIT_COMMIT) \
+			-X main.Version=$(GIT_TAG) \
+			-X main.Timestamp=$(TIMESTAMP) \
+			-extldflags '-static' \
+			-s -w \
+		" \
+		-o ./bin/$(BIN_PATH) \
+		./cmd/$(CMD_NAME)
+	$(MAKE) build_checksum
+checksum:
+	sha256sum -b ./bin/$(BIN_PATH) | cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
+	rm -rf ./bin/$(CMD_NAME)
+	cd ./bin \
+		&& ln -s ./$(BIN_PATH) ./$(CMD_NAME) \
+		&& ln -s ./$(BIN_PATH).sha256 ./$(CMD_NAME).sha256
 compress:
 	ls -lah ./bin/$(BIN_PATH)
-	upx -9 -v -o ./bin/.$(BIN_PATH) \
-		./bin/$(BIN_PATH)
+	upx -9 -v -o ./bin/.$(BIN_PATH) ./bin/$(BIN_PATH)
 	upx -t ./bin/.$(BIN_PATH)
 	rm -rf ./bin/$(BIN_PATH)
-	mv ./bin/.$(BIN_PATH) \
-		./bin/$(BIN_PATH)
-	sha256sum -b ./bin/$(BIN_PATH) \
-		| cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
+	mv ./bin/.$(BIN_PATH) ./bin/$(BIN_PATH)
+	sha256sum -b ./bin/$(BIN_PATH) | cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
 	ls -lah ./bin/$(BIN_PATH)
-
 image:
 	docker build \
 		--build-arg GIT_COMMIT_ID=$(GIT_COMMIT) \
@@ -67,11 +96,6 @@ test_image:
 	container-structure-test test \
 		--config ./deploy/Dockerfile.yaml \
 		--image $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
-save:
-	mkdir -p ./build
-	docker save --output ./build/$(PROJECT_NAME).tar.gz $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest
-load:
-	docker load --input ./build/$(PROJECT_NAME).tar.gz
 start_docker:
 	docker-compose --file ./deploy/docker/docker-compose.yml up --build -V
 stop_docker:
@@ -96,10 +120,8 @@ dockerhub:
 	docker tag $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):latest \
 		$(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
 	docker push $(DOCKER_IMAGE_NAMESPACE)/$(DOCKER_IMAGE_NAME):$$(git describe --tag $$(git rev-list --tags --max-count=1))
-
 see_ci:
 	xdg-open https://gitlab.com/zephinzer/dev/pipelines
-
 .ssh:
 	mkdir -p ./.ssh
 	ssh-keygen -t rsa -b 8192 -f ./.ssh/id_rsa -q -N ""
