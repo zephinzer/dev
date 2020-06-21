@@ -24,7 +24,7 @@ stages:
 init:
   stage: init
   image: usvc/ci:go-dependencies
-  extends: .default_script
+  extends: [.default_script]
   cache:
     key: ${CI_COMMIT_REF_NAME}
     paths: ["./vendor"]
@@ -34,7 +34,7 @@ init:
 unit test:
   stage: test & build
   image: usvc/ci:go-test
-  extends: .default_script
+  extends: [.default_script]
   dependencies: ["init"]
   artifacts:
     paths: ["./c.out"]
@@ -42,7 +42,7 @@ unit test:
 .build:
   stage: test & build
   image: usvc/ci:go-build-production
-  extends: .default_script
+  extends: [.default_script]
   dependencies: ["init"]
   artifacts:
     paths: ["./bin/*"]
@@ -53,50 +53,44 @@ unit test:
     - git fetch
 build linux (test):
   extends: [.build, .go_linux]
-  only: ["master"]
+  only: [master]
 build linux:
   extends: [.build, .go_linux]
-  only: ["tags"]
+  only: [tags]
 build macos (test):
   extends: [.build, .go_macos]
-  only: ["master"]
+  only: [master]
 build macos:
   extends: [.build, .go_macos]
-  only: ["tags"]
+  only: [tags]
 build windows (test):
   extends: [.build, .go_windows]
-  only: ["master"]
+  only: [master]
 build windows:
   extends: [.build, .go_windows]
-  only: ["tags"]
+  only: [tags]
 
 coverage report:
-  allow_failure: true
   stage: release
-  dependencies: ["unit test"]
   image: usvc/ci:go-coverage-code-climate
-  script: ["entrypoint"]
+  extends: [.default_script]
+  dependencies: ["unit test"]
+  allow_failure: true
 
 version bump:
   stage: release
-  only: ["master"]
   image: usvc/ci:version-bump-gitlab
-  script: ["entrypoint"]
-
-coverage report:
-  allow_failure: true
-  stage: release
-  dependencies: ["unit test"]
-  image: usvc/ci:go-coverage-code-climate
-  script: ["entrypoint"]
+  extends: [.default_script]
+  only: [master]
 
 .compress:
   stage: package
-  only: ["tags"]
-  extends: .default_script
-  allow_failure: true
+  image: usvc/ci:compress
+  extends: [.default_script]
+  only: [tags]
   artifacts:
     paths: ["./bin/*"]
+  allow_failure: true
 compress linux:
   extends: [.compress, .go_linux]
   dependencies: ["build linux"]
@@ -110,18 +104,22 @@ compress windows:
 dockerize:
   stage: package
   image: usvc/ci:docker-build
-  extends: .default_script
-  allow_failure: true
-  only: ["tags"]
+  extends: [.default_script]
+  only: [tags]
   services: ["docker:19.03.1-dind"]
   artifacts:
     paths: ["./build/*"]
+  variables:
+    DOCKER_IMAGE_URL: zephinzer/dev
+  allow_failure: true
 
 dockerhub:
   stage: publish
   image: usvc/ci:docker-publish-1ad4294f
-  extends: .default_script
-  allow_failure: true
-  only: ["tags"]
+  extends: [.default_script]
+  only: [tags]
   services: ["docker:19.03.1-dind"]
   dependencies: ["dockerize"]
+  variables:
+    DOCKER_IMAGE_URL: zephinzer/dev
+  allow_failure: true
