@@ -11,13 +11,13 @@ type Links []link.Link
 func (l *Links) MergeWith(o Links) {
 	seen := map[string]bool{}
 	for _, link := range *l {
-		seen[link.URL] = true
+		seen[link.GetKey()] = true
 	}
 	for _, link := range o {
-		if val, ok := seen[link.URL]; val && ok {
+		if val, ok := seen[link.GetKey()]; val && ok {
 			continue
 		}
 		*l = append(*l, link)
-		seen[link.URL] = true
+		seen[link.GetKey()] = true
 	}
 }

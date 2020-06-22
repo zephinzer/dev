@@ -42,3 +42,17 @@ func (s *PathsTests) Test_ResolvePath() {
 		s.Equalf(output, observed, "expected ResolvePath(\"%s\") to resolve to \"%s\", but it did not", input, output)
 	}
 }
+
+func (s *PathsTests) Test_ResolvePath_emptyInput() {
+	wd, err := os.Getwd()
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	resolvedPath, resolvePathError := ResolvePath("")
+	s.Nil(resolvePathError)
+	if resolvePathError != nil {
+		return
+	}
+	s.Equal(wd, resolvedPath)
+}

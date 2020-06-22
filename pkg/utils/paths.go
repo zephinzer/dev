@@ -55,6 +55,9 @@ func PathExists(asType PathType, pathFragments ...string) (bool, error) {
 
 func ResolvePath(relativePathFragments ...string) (string, error) {
 	fullPath := path.Join(relativePathFragments...)
+	if len(fullPath) == 0 {
+		fullPath = "."
+	}
 
 	// do home path resolution
 	if fullPath[0] == '~' {

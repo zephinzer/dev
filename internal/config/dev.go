@@ -2,17 +2,22 @@ package config
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/zephinzer/dev/pkg/utils"
 )
 
 // Dev specifies the configurations available for the CLI tool itself
 type Dev struct {
-	Client DevClient `json:"client" yaml:"client,omitempty"`
+	Repository DevRepository `json:"repository" yaml:"repository,omitempty"`
+	Client     DevClient     `json:"client" yaml:"client,omitempty"`
 }
 
 func (d *Dev) MergeWith(o Dev) []error {
-	return d.Client.MergeWith(o.Client)
+	warnings := []error{}
+	warnings = append(warnings, d.Client.MergeWith(o.Client)...)
+	warnings = append(warnings, d.Repository.MergeWith(o.Repository)...)
+	return warnings
 }
 
 // DevClient holds configurations related to the CLI tool
@@ -106,4 +111,40 @@ func (dcpgh *DevClientPlatformsGithub) MergeWith(o DevClientPlatformsGithub) []e
 	dcpgh.ClientSecret = o.ClientSecret
 	dcpgh.RedirectURI = o.RedirectURI
 	return nil
+}
+
+// DevRepository holds client configuration for operations related to repositories
+type DevRepository struct {
+	Templates []DevRepositoryTemplate `json:"templates" yaml:"templates,omitempty"`
+}
+
+func (dr *DevRepository) MergeWith(o DevRepository) []error {
+	warnings := []error{}
+	seen := map[string]bool{}
+	for _, t := range dr.Templates {
+		seen[t.GetKey()] = true
+	}
+	for _, T := range o.Templates {
+		if exists, ok := seen[T.GetKey()]; exists && ok {
+			warnings = append(warnings, fmt.Errorf("template repository with key '%s' already exists", T.GetKey()))
+			continue
+		}
+		dr.Templates = append(dr.Templates, T)
+		seen[T.GetKey()] = true
+	}
+	return warnings
+}
+
+// DevRepositoryTemplate holds configurations related to repository templates
+// that a user can use to initialise repositories on their machine
+type DevRepositoryTemplate struct {
+	Name string `json:"name" yaml:"name,omitempty"`
+	URL  string `json:"url" yaml:"url,omitempty"`
+	Path string `json:"path" yaml:"path,omitempty"`
+}
+
+// GetKey returns a (hopefully) unique identifer to use for de-duplicating
+// multiple instances of DevRepositoryTemplates
+func (drt DevRepositoryTemplate) GetKey() string {
+	return fmt.Sprintf("%s-%s", drt.URL, drt.Path)
 }
