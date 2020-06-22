@@ -5,6 +5,8 @@ stages:
   - release
   - package
   - publish
+variables:
+  BIN_NAME: dev
 
 .default_script:
   script: ["entrypoint"]
@@ -46,8 +48,6 @@ unit test:
   dependencies: ["init"]
   artifacts:
     paths: ["./bin/*"]
-  variables:
-    BIN_NAME: dev
   before_script:
     - make setup_build
     - git fetch
