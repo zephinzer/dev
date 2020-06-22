@@ -1,4 +1,4 @@
-CMD_ROOT=dev
+CMD_NAME=dev
 DOCKER_IMAGE_NAMESPACE=zephinzer
 DOCKER_IMAGE_NAME=dev
 PROJECT_NAME=dev
@@ -8,7 +8,7 @@ TIMESTAMP=$(shell date +'%Y%m%d%H%M%S')
 
 -include ./Makefile.properties
 
-BIN_PATH=$(CMD_ROOT)_$$(go env GOOS)_$$(go env GOARCH)${BIN_EXT}
+BIN_PATH=$(CMD_NAME)_$$(go env GOOS)_$$(go env GOARCH)${BIN_EXT}
 
 deps:
 	go mod vendor -v
@@ -19,11 +19,11 @@ setup_build:
 	# these are required to compile dev without cgo
 	go install github.com/mattn/go-sqlite3
 run:
-	go run -v -mod=vendor ./cmd/$(CMD_ROOT) ${args}
+	go run -v -mod=vendor ./cmd/$(CMD_NAME) ${args}
 test:
 	go test -v -mod=vendor ./... -cover -coverprofile c.out
 install:
-	go install -v -mod=vendor ./cmd/$(CMD_ROOT)
+	go install -v -mod=vendor ./cmd/$(CMD_NAME)
 build:
 	go build -mod=vendor -v -x \
 		-ldflags "\

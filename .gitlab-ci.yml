@@ -20,6 +20,7 @@ variables:
     GOARCH: amd64
 .go_windows:
   variables:
+    BIN_EXT: .exe
     GOOS: windows
     GOARCH: "386"
 
