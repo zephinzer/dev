@@ -95,12 +95,18 @@ version bump:
 compress linux:
   extends: [.compress, .go_linux]
   dependencies: ["build linux"]
+  variables:
+    BIN_NAME: dev_linux_amd64
 compress macos:
   extends: [.compress, .go_macos]
   dependencies: ["build macos"]
+  variables:
+    BIN_NAME: dev_darwin_amd64
 compress windows:
   extends: [.compress, .go_windows]
   dependencies: ["build windows"]
+  variables:
+    BIN_NAME: dev_windows_386
 
 dockerize:
   stage: package

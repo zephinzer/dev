@@ -33,7 +33,7 @@ build:
 		" \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_NAME)
-	$(MAKE) build_checksum
+	$(MAKE) checksum
 build_production:
 	go build -mod=vendor -a -v -x \
 		-ldflags "\
@@ -44,7 +44,7 @@ build_production:
 		" \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_NAME)
-	$(MAKE) build_checksum
+	$(MAKE) checksum
 build_static:
 	CGO_ENABLED=0 \
 	go build -mod=vendor -v -x \
@@ -56,7 +56,7 @@ build_static:
 		" \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_NAME)
-	$(MAKE) build_checksum
+	$(MAKE) checksum
 build_static_production:
 	CGO_ENABLED=0 \
 	go build -mod=vendor -a -v -x \
@@ -69,7 +69,7 @@ build_static_production:
 		" \
 		-o ./bin/$(BIN_PATH) \
 		./cmd/$(CMD_NAME)
-	$(MAKE) build_checksum
+	$(MAKE) checksum
 checksum:
 	sha256sum -b ./bin/$(BIN_PATH) | cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
 	rm -rf ./bin/$(CMD_NAME)
