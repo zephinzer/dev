@@ -19,10 +19,16 @@ import (
 
 const (
 	Example string = `
-  Adding a single repository:
+1. Adding a single repository using URL:
     dev add repository https://github.com/zephinzer/dev
 
-  Adding multiple repositories:
+2. Adding a single repository using HTTPS clone URL:
+    dev add repository https://github.com/zephinzer/dev.git
+
+3. Adding a single repository using SSH clone URL:
+    dev add repository git@github.com/zephinzer/dev.git
+
+4. Adding multiple repositories:
     dev add repository https://github.com/zephinzer/dev https://github.com/zephinzer/godev
 `
 )
@@ -33,6 +39,7 @@ func GetCommand() *cobra.Command {
 		Aliases: constants.RepositoryAliases,
 		Example: strings.Trim(Example, "\n\r\t"),
 		Short:   "add a repository to your configuration",
+		Long:    "add a repository to your configuration (use `dev add this repo` to add the current repository you're on)",
 		Run:     run,
 	}
 	return &cmd

@@ -47,6 +47,8 @@ var (
 	SystemInfoAliases           = []string{"system-info", "system", "si"}
 	TelegramCanonicalNoun       = "telegram"
 	TelegramAliases             = []string{"tg", "t.me"}
+	ThisCanonicalNoun           = "this"
+	ThisAliases                 = []string{"t"}
 	TrelloCanonicalNoun         = "trello"
 	TrelloAliases               = []string{"tr"}
 	WorkCanonicalNoun           = "work"

@@ -11,13 +11,21 @@ import (
 // OpenURIWithDefaultApplication runs xdg-open on linux, open on macos, and rundll32.exe on windows
 // with the provided :targetURI as an argument
 func OpenURIWithDefaultApplication(targetURI string) error {
-	switch runtime.GOOS {
-	case "linux":
-		return exec.Command("xdg-open", targetURI).Start()
-	case "macos":
-		return exec.Command("open", targetURI).Start()
-	case "windows":
-		return exec.Command(path.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"), "url.dll,FileProtocolHandler", targetURI).Start()
+	commandString, err := getDefaultOpenURICommand(runtime.GOOS, targetURI)
+	if err != nil {
+		return err
 	}
-	return fmt.Errorf("unsupported platform '%s'", runtime.GOOS)
+	return exec.Command(commandString[0], commandString[1:]...).Start()
+}
+
+func getDefaultOpenURICommand(goos, targetURI string) ([]string, error) {
+	switch goos {
+	case "linux":
+		return []string{"xdg-open", targetURI}, nil
+	case "macos":
+		return []string{"open", targetURI}, nil
+	case "windows":
+		return []string{path.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"), "url.dll,FileProtocolHandler", targetURI}, nil
+	}
+	return nil, fmt.Errorf("unsupported platform '%s'", goos)
 }

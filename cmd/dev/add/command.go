@@ -3,6 +3,7 @@ package add
 import (
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/cmd/dev/add/repository"
+	"github.com/zephinzer/dev/cmd/dev/add/this"
 	"github.com/zephinzer/dev/internal/constants"
 )
 
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(repository.GetCommand())
+	cmd.AddCommand(this.GetCommand())
 	return &cmd
 }

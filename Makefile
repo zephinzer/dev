@@ -2,6 +2,7 @@ CMD_NAME=dev
 DOCKER_IMAGE_NAMESPACE=zephinzer
 DOCKER_IMAGE_NAME=dev
 PROJECT_NAME=dev
+GO_PACKAGE=$(shell cat go.mod | head -n 1 | cut -f 2 -d ' ')
 GIT_COMMIT=$$(git rev-parse --verify HEAD)
 GIT_TAG=$$(git describe --tag $$(git rev-list --tags --max-count=1))
 TIMESTAMP=$(shell date +'%Y%m%d%H%M%S')
@@ -25,51 +26,38 @@ test:
 install:
 	go install -v -mod=vendor ./cmd/$(CMD_NAME)
 build:
-	go build -mod=vendor -v -x \
-		-ldflags "\
-			-X main.Commit=$(GIT_COMMIT) \
-			-X main.Version=$(GIT_TAG) \
-			-X main.Timestamp=$(TIMESTAMP) \
-		" \
-		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_NAME)
-	$(MAKE) checksum
-build_production:
-	go build -mod=vendor -a -v -x \
-		-ldflags "\
-			-X main.Commit=$(GIT_COMMIT) \
-			-X main.Version=$(GIT_TAG) \
-			-X main.Timestamp=$(TIMESTAMP) \
-			-s -w \
-		" \
-		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_NAME)
-	$(MAKE) checksum
+	docker run -it \
+		--env BIN_NAME=$(CMD_NAME) \
+		--user $$(id -u) \
+		--volume $$(pwd):/go/$(GO_PACKAGE) \
+		--workdir /go/$(GO_PACKAGE) \
+		usvc/ci:go-build entrypoint
 build_static:
-	CGO_ENABLED=0 \
-	go build -mod=vendor -v -x \
-		-ldflags "\
-			-X main.Commit=$(GIT_COMMIT) \
-			-X main.Version=$(GIT_TAG) \
-			-X main.Timestamp=$(TIMESTAMP) \
-			-extldflags '-static' \
-		" \
-		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_NAME)
-	$(MAKE) checksum
+	docker run -it \
+		--env BIN_NAME=$(CMD_NAME) \
+		--env CGO_ENABLED=0 \
+		--env STATIC=1 \
+		--user $$(id -u) \
+		--volume $$(pwd):/go/$(GO_PACKAGE) \
+		--workdir /go/$(GO_PACKAGE) \
+		usvc/ci:go-build entrypoint
+build_production:
+	docker run -it \
+		--env BIN_NAME=$(CMD_NAME) \
+		--env USE_CACHE=0 \
+		--user $$(id -u) \
+		--volume $$(pwd):/go/$(GO_PACKAGE) \
+		--workdir /go/$(GO_PACKAGE) \
+		usvc/ci:go-build-production entrypoint
 build_static_production:
-	CGO_ENABLED=0 \
-	go build -mod=vendor -a -v -x \
-		-ldflags "\
-			-X main.Commit=$(GIT_COMMIT) \
-			-X main.Version=$(GIT_TAG) \
-			-X main.Timestamp=$(TIMESTAMP) \
-			-extldflags '-static' \
-			-s -w \
-		" \
-		-o ./bin/$(BIN_PATH) \
-		./cmd/$(CMD_NAME)
-	$(MAKE) checksum
+	docker run -it \
+		--env BIN_NAME=$(CMD_NAME) \
+		--env CGO_ENABLED=0 \
+		--env STATIC=1 \
+		--user $$(id -u) \
+		--volume $$(pwd):/go/$(GO_PACKAGE) \
+		--workdir /go/$(GO_PACKAGE) \
+		usvc/ci:go-build-production entrypoint
 checksum:
 	sha256sum -b ./bin/$(BIN_PATH) | cut -f 1 -d ' ' > ./bin/$(BIN_PATH).sha256
 	rm -rf ./bin/$(CMD_NAME)

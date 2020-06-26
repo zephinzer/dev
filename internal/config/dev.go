@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/zephinzer/dev/pkg/utils"
 )
@@ -147,4 +148,15 @@ type DevRepositoryTemplate struct {
 // multiple instances of DevRepositoryTemplates
 func (drt DevRepositoryTemplate) GetKey() string {
 	return fmt.Sprintf("%s-%s", drt.URL, drt.Path)
+}
+
+func (drt DevRepositoryTemplate) String() string {
+	var templateString strings.Builder
+	templateString.WriteString(drt.Name)
+	templateString.WriteString(fmt.Sprintf(" (from %s", drt.URL))
+	if len(drt.Path) > 0 {
+		templateString.WriteString(fmt.Sprintf(" at %s", drt.Path))
+	}
+	templateString.WriteByte(')')
+	return templateString.String()
 }
