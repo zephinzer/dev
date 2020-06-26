@@ -17,6 +17,7 @@ A CLI tool for improving the developer experience.
 - Link directory to quickly access project-related URLs
 
 **Development**
+- Initialise repositories based on a defined template repository
 - Receive notifications on todos/work from common developer platforms (Gitlab, Pivotal Tracker)
 - Receive notifications on your desktop, or on Telegram
 - Open repository website using the default browser
@@ -44,6 +45,9 @@ A CLI tool for improving the developer experience.
   - [Link Directory](#link-directory)
     - [Configuring links](#configuring-links)
     - [Using the link directory](#using-the-link-directory)
+  - [Template Repositories](#template-repositories)
+    - [Configuring repository templates](#configuring-repository-templates)
+    - [Creating a repository from a template](#creating-a-repository-from-a-template)
   - [Platform integrations](#platform-integrations)
     - [Github](#github)
       - [Setting up Github integration](#setting-up-github-integration)
@@ -354,6 +358,50 @@ To activate the link directory from the terminal, run:
 dev goto;
 ```
 
+## Template Repositories
+
+Being able to create new repositories based on a pre-defined list of templates makes it easy to do the right thing for developers by providing an easy way to kickstart a new service in a organisation/team-approved manner.
+
+### Configuring repository templates
+
+Repository templates can be configured using the configuration key at `dev.repository/.templates` which should be an array of template objects as such:
+
+```yaml
+# ...
+dev:
+  # ...
+  repository:
+    templates:
+    - name: test for bare repository
+      url: https://github.com/zephinzer/template-bare
+    - name: golang repository
+      url: https://gitlab.com/zephinzer/template-go-package
+    # ...
+  # ...
+# ...
+```
+
+The structure for each template object can be found at [`./internal/config/dev.go`](./internal/config/dev.go) and a summary follows.
+
+| Field | Required | Default | Description |
+| --- | --- | --- | --- |
+| `name` | NO | `""` | An arbitrary label used to identify this repository template |
+| `url` | YES | - | One of the template repository's HTTP URL, HTTPS clone URL, or SSH clone URL |
+
+
+### Creating a repository from a template
+
+```sh
+dev init repo ./path/to/new/repo;
+
+## output:
+## > choose a repository template to use
+## > 1. ...
+## > 2. ...
+##
+## > your selection (enter 0 to skip):
+```
+
 ## Platform integrations
 
 ### Github
@@ -600,6 +648,7 @@ Two global flags are made available to improve debuggability by increasing the a
 
 | Version | Breaking | Description |
 | --- | --- | --- |
+| v0.1.18 | NO | Added command to initialising a repository using a template (`dev init repo <path>`) |
 | v0.1.7 | NO | Added descriptions for `dev check software` |
 | v0.1.6 | NO | Made repository selection deterministic when using `dev add repo` |
 | v0.1.4 | NO | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
