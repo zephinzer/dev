@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
 	. "github.com/zephinzer/dev/internal/repository"
-	"github.com/zephinzer/dev/pkg/repository"
 	"github.com/zephinzer/dev/pkg/utils"
 	"github.com/zephinzer/dev/pkg/validator"
 	"gopkg.in/yaml.v2"
@@ -58,7 +58,7 @@ func run(command *cobra.Command, args []string) {
 	log.Infof("requested to add the repositories: %v", strings.Join(targetRepoURLs, ", "))
 
 	// parse loaded configurations into a map of set repositories
-	loadedReposMap := getLoadedRepositories()
+	loadedReposMap := cmdutils.GetLoadedRepositories()
 	loadedReposMapCount := 1
 	log.Debug("repositories already present:")
 	for repoPath, configPath := range loadedReposMap {
@@ -67,7 +67,7 @@ func run(command *cobra.Command, args []string) {
 	}
 
 	// filter out repositories that are already in the configuration
-	filteredRepoURLs := filterOutLoadedRepositories(targetRepoURLs, loadedReposMap)
+	filteredRepoURLs := cmdutils.FilterOutLoadedRepositories(targetRepoURLs, loadedReposMap)
 	if len(filteredRepoURLs) == 0 {
 		log.Info("no repositories to work on, exiting with status 0 now")
 		os.Exit(constants.ExitOK)
@@ -151,53 +151,6 @@ func run(command *cobra.Command, args []string) {
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)
 		}
 	}
-}
-
-func filterOutLoadedRepositories(toAdd []string, alreadyPresent map[string]string) []string {
-	finalRepositoryURLsToAdd := []string{}
-	for _, repoURL := range toAdd {
-		repo := repository.Repository{URL: repoURL}
-		repoPath, getPathError := repo.GetPath()
-		if getPathError != nil {
-			log.Warnf("failed to get repository path for '%s': %s", repo.URL, getPathError)
-			continue
-		}
-		if value, ok := alreadyPresent[repoPath]; ok && len(value) > 0 {
-			log.Warnf("repository '%s' already configured from '%s'", repoURL, value)
-			continue
-		}
-		finalRepositoryURLsToAdd = append(finalRepositoryURLsToAdd, repoURL)
-	}
-	return finalRepositoryURLsToAdd
-}
-
-// getLoadedRepositories retrieves repositories that
-// have already been loaded and returns a `map[string]string` where the
-// key value equals the local path of the repository and the value equals
-// the full absolute path of the configuration file
-func getLoadedRepositories() map[string]string {
-	alreadyPresentRepositories := map[string]string{}
-	loadedConfigurationPaths := getLoadedConfigFilePaths(config.Loaded)
-	for _, loadedConfigurationPath := range loadedConfigurationPaths {
-		repos := config.Loaded[loadedConfigurationPath].Repositories
-		for _, repo := range repos {
-			repoPath, getPathError := repo.GetPath()
-			if getPathError != nil {
-				log.Warnf("failed to get repository path for '%s': %s", repo.URL, getPathError)
-				continue
-			}
-			alreadyPresentRepositories[repoPath] = loadedConfigurationPath
-		}
-	}
-	return alreadyPresentRepositories
-}
-
-func getLoadedConfigFilePaths(theMap map[string]config.Config) []string {
-	output := []string{}
-	for key := range theMap {
-		output = append(output, key)
-	}
-	return output
 }
 
 func getRepoURLsFromArguments(args []string) []string {
