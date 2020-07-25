@@ -2,7 +2,9 @@ package repository
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/log"
 )
 
 func GetCommand() *cobra.Command {
@@ -16,5 +18,7 @@ func GetCommand() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	cmd.Help()
+	gitRepoRoot := cmdutils.GetGitRepoRootFromWorkingDirectory()
+	log.Info(gitRepoRoot)
+	cmdutils.ExitWithStackTrace("hi")
 }
