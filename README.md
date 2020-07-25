@@ -4,10 +4,7 @@
 
 # That Dev Tool
 
-[![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master)
-![github tag (latest semver)](https://img.shields.io/github/v/tag/zephinzer/dev)
-[![maintainability](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/maintainability)](https://codeclimate.com/github/zephinzer/dev/maintainability)
-[![test coverage](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/test_coverage)](https://codeclimate.com/github/zephinzer/dev/test_coverage)
+[![build status](https://travis-ci.org/zephinzer/dev.svg?branch=master)](https://travis-ci.org/zephinzer/dev) [![pipeline status](https://gitlab.com/zephinzer/dev/badges/master/pipeline.svg)](https://gitlab.com/zephinzer/dev/-/commits/master) ![github tag (latest semver)](https://img.shields.io/github/v/tag/zephinzer/dev) [![maintainability](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/maintainability)](https://codeclimate.com/github/zephinzer/dev/maintainability) [![test coverage](https://api.codeclimate.com/v1/badges/c679891cbe62072a9447/test_coverage)](https://codeclimate.com/github/zephinzer/dev/test_coverage)
 
 A CLI tool for improving the developer experience.
 
@@ -140,13 +137,13 @@ repositories:
 
 The structure for each repository item can be found at [`./pkg/repository/repository.go`](./pkg/repository/repository.go). In summary the fields are:
 
-| Field | Required | Default | Description |
-| --- | --- | --- | --- |
-| `description` | No | `""` | An arbitrary description displayed in `dev` metadata only |
-| `name` | No | `""` | An arbitrary name displayed in `dev` metadata only |
-| `path` | No | `~/${HOSTNAME}/${REPO_PATH}` | The path on your local machine to put this repository |
-| `url` | Yes | `-` | The URL to this repository. `dev` will always convert this to an SSH clone URL |
-| `workspaces` | No | `[]` | A list of workspace names that this repository should belong to |
+| Field         | Required | Default                      | Description                                                                    |
+| ------------- | -------- | ---------------------------- | ------------------------------------------------------------------------------ |
+| `description` | No       | `""`                         | An arbitrary description displayed in `dev` metadata only                      |
+| `name`        | No       | `""`                         | An arbitrary name displayed in `dev` metadata only                             |
+| `path`        | No       | `~/${HOSTNAME}/${REPO_PATH}` | The path on your local machine to put this repository                          |
+| `url`         | Yes      | `-`                          | The URL to this repository. `dev` will always convert this to an SSH clone URL |
+| `workspaces`  | No       | `[]`                         | A list of workspace names that this repository should belong to                |
 
 ### Checking repositories setup
 
@@ -252,18 +249,18 @@ softwares:
 
 The structure for each software item is detailed in the [`./pkg/software` directory](./pkg/software) and a summary follows:
 
-| Field | Required | Default | Description |
-| --- | --- | --- | --- |
-| `name` | No | `""` | An arbitrary name displayed in `dev` outputs when metadata is required |
-| `check` | Yes | - | Declarative instructions describing how to check for the software's presence |
-| `check.command` | Yes | - | A list of strings that form the command to check for the software. For example, if you run `go version` in your CLI to check for Go, the list will look like `["go", "version"]` |
-| `check.stdout` | No | `""` | A regex-compatible string to match with the command's output on `stdout` |
-| `check.stderr` | No | `""` | A regex-compatible string to match with the command's output on `stderr` |
-| `check.exitCode` | No | `0` | An integer exit code to match with the command's exit code |
-| `description` | No | `""` | An arbitrary description of how the software is used/why it's needed displayed in `dev` outputs when metadata is required |
-| `install` | No | - | Declarative instructions describing how to install the software if it's not found | 
-| `install.link` | No | `""` | A link to direct users to if the software is not found installed on the current machine |
-| `platforms` | No | - | A list of platform strings that define which operating systems this check is valid for. Valid lists are subsets of `{linux, windows, macos}`. When not specified, does not check for platform compatibility. |
+| Field            | Required | Default | Description                                                                                                                                                                                                  |
+| ---------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`           | No       | `""`    | An arbitrary name displayed in `dev` outputs when metadata is required                                                                                                                                       |
+| `check`          | Yes      | -       | Declarative instructions describing how to check for the software's presence                                                                                                                                 |
+| `check.command`  | Yes      | -       | A list of strings that form the command to check for the software. For example, if you run `go version` in your CLI to check for Go, the list will look like `["go", "version"]`                             |
+| `check.stdout`   | No       | `""`    | A regex-compatible string to match with the command's output on `stdout`                                                                                                                                     |
+| `check.stderr`   | No       | `""`    | A regex-compatible string to match with the command's output on `stderr`                                                                                                                                     |
+| `check.exitCode` | No       | `0`     | An integer exit code to match with the command's exit code                                                                                                                                                   |
+| `description`    | No       | `""`    | An arbitrary description of how the software is used/why it's needed displayed in `dev` outputs when metadata is required                                                                                    |
+| `install`        | No       | -       | Declarative instructions describing how to install the software if it's not found                                                                                                                            |
+| `install.link`   | No       | `""`    | A link to direct users to if the software is not found installed on the current machine                                                                                                                      |
+| `platforms`      | No       | -       | A list of platform strings that define which operating systems this check is valid for. Valid lists are subsets of `{linux, windows, macos}`. When not specified, does not check for platform compatibility. |
 
 ### Checking software setup
 
@@ -296,16 +293,16 @@ networks:
 
 The structure of each network can be found in the [`./pkg/network` directory](./pkg/network), a summary is as follows:
 
-| Field | Required | Default | Description |
-| --- | --- | --- | --- |
-| `name` | No | `""` | An arbitrary name for the network to be displayed in `dev` metadata when required |
-| `registrationUrl` | No | `""` | A URL for users to request access to this network if applicable |
-| `check` | Yes | - | Declarative instructions on what to check for |
-| `check.url` | Yes | - | A URL to ping that should be accessible if network connectivity to this network has been established |
-| `check.method` | No | `"GET"` | The HTTP method to use to ping the provided `check.url` |
-| `check.statusCode` | No | `^2\d\d$` | The expected HTTP status code of the response to the ping |
-| `check.headers` | No | `{}` | A dictionary of expected headers |
-| `check.responseBody` | No | `""` | A regex-compatible string that the response body should be expected to match with. Does not apply if not specified/an empty string is provided |
+| Field                | Required | Default   | Description                                                                                                                                    |
+| -------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`               | No       | `""`      | An arbitrary name for the network to be displayed in `dev` metadata when required                                                              |
+| `registrationUrl`    | No       | `""`      | A URL for users to request access to this network if applicable                                                                                |
+| `check`              | Yes      | -         | Declarative instructions on what to check for                                                                                                  |
+| `check.url`          | Yes      | -         | A URL to ping that should be accessible if network connectivity to this network has been established                                           |
+| `check.method`       | No       | `"GET"`   | The HTTP method to use to ping the provided `check.url`                                                                                        |
+| `check.statusCode`   | No       | `^2\d\d$` | The expected HTTP status code of the response to the ping                                                                                      |
+| `check.headers`      | No       | `{}`      | A dictionary of expected headers                                                                                                               |
+| `check.responseBody` | No       | `""`      | A regex-compatible string that the response body should be expected to match with. Does not apply if not specified/an empty string is provided |
 
 ### Checking network setup
 
@@ -344,11 +341,11 @@ links:
 
 The structure for each link object can be found in the [`./internal/link` directory](./internal/link) and a summary follows.
 
-| Field | Required | Default | Description |
-| --- | --- | --- | --- |
-| `label` | No | `""` | An arbitrary label for this link to be included in link metadata |
-| `categories` | No | `[]` | A hashtag-based way of searching to be included in link metadata |
-| `url` | Yes | - | The URL to open if this link is selected |
+| Field        | Required | Default | Description                                                      |
+| ------------ | -------- | ------- | ---------------------------------------------------------------- |
+| `label`      | No       | `""`    | An arbitrary label for this link to be included in link metadata |
+| `categories` | No       | `[]`    | A hashtag-based way of searching to be included in link metadata |
+| `url`        | Yes      | -       | The URL to open if this link is selected                         |
 
 ### Using the link directory
 
@@ -383,10 +380,10 @@ dev:
 
 The structure for each template object can be found at [`./internal/config/dev.go`](./internal/config/dev.go) and a summary follows.
 
-| Field | Required | Default | Description |
-| --- | --- | --- | --- |
-| `name` | NO | `""` | An arbitrary label used to identify this repository template |
-| `url` | YES | - | One of the template repository's HTTP URL, HTTPS clone URL, or SSH clone URL |
+| Field  | Required | Default | Description                                                                  |
+| ------ | -------- | ------- | ---------------------------------------------------------------------------- |
+| `name` | NO       | `""`    | An arbitrary label used to identify this repository template                 |
+| `url`  | YES      | -       | One of the template repository's HTTP URL, HTTPS clone URL, or SSH clone URL |
 
 
 ### Creating a repository from a template
@@ -594,15 +591,15 @@ To display just `stdout` output, append `1>/dev/null` to your command.
 
 Exit codes are bitmasks of error types which are docuemnted at [`./internal/constants/exit_codes.go`](./internal/constants/exit_codes.go).
 
-| Type | Value | Indication |
-| --- | --- | --- |
-| OK | `0` | Success |
-| System | `1` | An error occurred at the system level |
-| User | `2` | An error occurred because of user actions |
-| Input | `4` | An error occurred because of user input |
-| Configuration | `8` | An error occurred because of the consumed configuration |
-| Application | `16` | There's likely a bug |
-| Validation | `32` | Some expected values seem off |
+| Type             | Value     | Indication                                                                                                                                                              |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OK               | `0`       | Success                                                                                                                                                                 |
+| System           | `1`       | An error occurred at the system level                                                                                                                                   |
+| User             | `2`       | An error occurred because of user actions                                                                                                                               |
+| Input            | `4`       | An error occurred because of user input                                                                                                                                 |
+| Configuration    | `8`       | An error occurred because of the consumed configuration                                                                                                                 |
+| Application      | `16`      | There's likely a bug                                                                                                                                                    |
+| Validation       | `32`      | Some expected values seem off                                                                                                                                           |
 | Number of errors | `128-255` | When such an exit code is encountered it's a count of failed iterations from a requested operation, take `$((256 - $?))` to get the number of errors from the operation |
 
 ### On debugging
@@ -646,13 +643,13 @@ Two global flags are made available to improve debuggability by increasing the a
 
 # Changelog
 
-| Version | Breaking | Description |
-| --- | --- | --- |
-| v0.1.18 | NO | Added command to initialising a repository using a template (`dev init repo <path>`) |
-| v0.1.7 | NO | Added descriptions for `dev check software` |
-| v0.1.6 | NO | Made repository selection deterministic when using `dev add repo` |
-| v0.1.4 | NO | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
-| v0.1.0 | YES | Changing of configuration filename from `dev.yaml` to `.dev.yaml` |
+| Version | Breaking | Description                                                                                                                                                                                                                      |
+| ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v0.1.18 | NO       | Added command to initialising a repository using a template (`dev init repo <path>`)                                                                                                                                             |
+| v0.1.7  | NO       | Added descriptions for `dev check software`                                                                                                                                                                                      |
+| v0.1.6  | NO       | Made repository selection deterministic when using `dev add repo`                                                                                                                                                                |
+| v0.1.4  | NO       | Removal of unused fields using the `omitempty` struct tag for networks, softwares, links, and repositories, fixed bug where the `dev` configuration wasn't being correctly merged, refined Pivotal Tracker notification messages |
+| v0.1.0  | YES      | Changing of configuration filename from `dev.yaml` to `.dev.yaml`                                                                                                                                                                |
 
 # License
 
