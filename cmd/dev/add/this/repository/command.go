@@ -50,4 +50,6 @@ func run(cmd *cobra.Command, args []string) {
 
 	// add it
 	log.Infof("adding repository with url '%v'", targetRepo.URL)
+
+	cmdutils.AddRepositoryToConfig(targetRepo.URL)
 }

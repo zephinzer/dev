@@ -40,9 +40,21 @@ func GetCommand() *cobra.Command {
 		Example: strings.Trim(Example, "\n\r\t"),
 		Short:   "add a repository to your configuration",
 		Long:    "add a repository to your configuration (use `dev add this repo` to add the current repository you're on)",
+		PreRun:  preRun,
 		Run:     run,
 	}
 	return &cmd
+}
+
+func preRun(command *cobra.Command, args []string) {
+	configCount := 0
+	for w := range config.Loaded {
+		log.Info(w)
+		configCount++
+	}
+	if configCount == 0 {
+		cmdutils.ExitWithProblem("this command requires an existing configuration file. create a default one by running `touch ~/.dev.yaml` before trying again", constants.ExitErrorUser)
+	}
 }
 
 func run(command *cobra.Command, args []string) {
@@ -141,6 +153,7 @@ func run(command *cobra.Command, args []string) {
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorSystem)
 		}
 
+		// clone it!
 		repoPath, getPathError := repo.GetPath()
 		if getPathError != nil {
 			log.Errorf("failed to get path of repository: %s", getPathError)

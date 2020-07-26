@@ -645,6 +645,7 @@ Two global flags are made available to improve debuggability by increasing the a
 
 | Version | Breaking | Description                                                                                                                                                                                                                      |
 | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v0.1.24 | NO | Added error handling for triggering of `dev add -` commands without an existing configuration file |
 | v0.1.18 | NO       | Added command to initialising a repository using a template (`dev init repo <path>`)                                                                                                                                             |
 | v0.1.7  | NO       | Added descriptions for `dev check software`                                                                                                                                                                                      |
 | v0.1.6  | NO       | Made repository selection deterministic when using `dev add repo`                                                                                                                                                                |
