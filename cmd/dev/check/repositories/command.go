@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"

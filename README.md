@@ -11,7 +11,7 @@ A CLI tool for improving the developer experience.
 > Codebase: [https://gitlab.com/zephinzer/dev](https://gitlab.com/zephinzer/dev)  
 > Mirror: [https://github.com/zephinzer/dev](https://github.com/zephinzer/dev)
 > 
-> Please **file bugs/issues/etc on the Gitlab repository** at [https://gitlab.com/zephinzer/dev/-/issues](https://gitlab.com/zephinzer/dev/-/issues)
+> Please **file bugs/issues/etc on the GITLAB repository** at [https://gitlab.com/zephinzer/dev/-/issues](https://gitlab.com/zephinzer/dev/-/issues)
 
 **Onboarding**
 - Software checks to verify required software is installed

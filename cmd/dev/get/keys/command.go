@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/usvc/go-config"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/pkg/utils"
 )

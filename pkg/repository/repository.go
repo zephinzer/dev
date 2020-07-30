@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 	"github.com/zephinzer/dev/pkg/validator"
 )
 
@@ -45,7 +45,7 @@ func (r Repository) GetPath(rootPath ...string) (string, error) {
 	} else if _, parseError := validator.ParseURL(r.URL); parseError != nil {
 		return "", fmt.Errorf("failed to parse url '%s': %s", r.URL, parseError)
 	} else {
-		URL, getURLError := utils.GetSshCloneUrlFromHttpLinkUrl(r.URL)
+		URL, getURLError := str.GetSshCloneUrlFromHttpLinkUrl(r.URL)
 		if getURLError != nil {
 			return "", fmt.Errorf("failed to convert '%s' to a git SSH clone URL", r.URL)
 		}
@@ -60,13 +60,13 @@ func (r Repository) GetPath(rootPath ...string) (string, error) {
 func (r Repository) GetWebsiteURL() (string, error) {
 	switch true {
 	case validator.IsGitHTTPUrl(r.URL):
-		link, err := utils.GetHttpLinkFromHttpCloneUrl(r.URL)
+		link, err := str.GetHttpLinkFromHttpCloneUrl(r.URL)
 		if err != nil {
 			return "", err
 		}
 		return link, nil
 	case validator.IsGitSSHUrl(r.URL):
-		link, err := utils.GetHttpLinkFromSshCloneUrl(r.URL)
+		link, err := str.GetHttpLinkFromSshCloneUrl(r.URL)
 		if err != nil {
 			return "", err
 		}

@@ -5,7 +5,7 @@ import (
 
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 	"github.com/zephinzer/dev/pkg/validator"
 )
 
@@ -18,7 +18,7 @@ func AddRepositoryToConfig(repoURL string) error {
 	configurationPath := config.PromptSelectLoadedConfiguration(
 		fmt.Sprintf("which configuration file should we add '%s' to?", repoURL),
 	)
-	if utils.IsEmptyString(configurationPath) {
+	if str.IsEmpty(configurationPath) {
 		return fmt.Errorf("configuration was skipped for repo '%s'", repoURL)
 	}
 	log.Infof("adding repo '%s' to configuration at '%s'...", repoURL, configurationPath)
