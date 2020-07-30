@@ -12,6 +12,7 @@ import (
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/internal/prompt"
 	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/filesystem"
 	"github.com/zephinzer/dev/pkg/validator"
 )
 
@@ -45,13 +46,13 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	log.Debugf("ensuring path leads to a directory...")
-	if ensureDirectoryExistsError := utils.EnsureDirectoryExists(pathToInitialiseAt); ensureDirectoryExistsError != nil {
+	if ensureDirectoryExistsError := filesystem.EnsureDirectoryExists(pathToInitialiseAt); ensureDirectoryExistsError != nil {
 		log.Errorf("failed to ensure directory exists at '%s': %s", pathToInitialiseAt, ensureDirectoryExistsError)
 		os.Exit(constants.ExitErrorSystem | constants.ExitErrorInput)
 	}
 
 	log.Debugf("ensuring selected directory is free of objects...")
-	isDirectoryEmpty, isDirectoryEmptyError := utils.IsDirectoryEmpty(pathToInitialiseAt)
+	isDirectoryEmpty, isDirectoryEmptyError := filesystem.IsDirectoryEmpty(pathToInitialiseAt)
 	if isDirectoryEmptyError != nil {
 		log.Errorf("failed to use selected directory at '%s': %s", pathToInitialiseAt, isDirectoryEmptyError)
 		os.Exit(constants.ExitErrorInput | constants.ExitErrorSystem)

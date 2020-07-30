@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 )
 
 const (
@@ -63,15 +63,15 @@ type URL struct {
 func (u URL) GetHTTPSString() string {
 	var builder strings.Builder
 	builder.WriteString("https://")
-	if !utils.IsEmptyString(u.Username) && u.Username != "git" {
+	if !str.IsEmpty(u.Username) && u.Username != "git" {
 		builder.WriteString(u.Username)
-		if !utils.IsEmptyString(u.Password) {
+		if !str.IsEmpty(u.Password) {
 			builder.WriteString(fmt.Sprintf(":%s", u.Password))
 		}
 		builder.WriteByte('@')
 	}
 	builder.WriteString(u.Hostname)
-	if !utils.IsEmptyString(u.Port) {
+	if !str.IsEmpty(u.Port) {
 		builder.WriteString(fmt.Sprintf(":%s", u.Port))
 	}
 	urlPath := path.Join("/", u.User, u.Path)
@@ -84,7 +84,7 @@ func (u URL) GetSSHString() string {
 	builder.WriteString("git@")
 	builder.WriteString(u.Hostname)
 	builder.WriteByte(':')
-	if !utils.IsEmptyString(u.Port) {
+	if !str.IsEmpty(u.Port) {
 		builder.WriteString(fmt.Sprintf("%s/", u.Port))
 	}
 	urlPath := strings.Trim(path.Join(u.User, u.Path), "/")
@@ -95,26 +95,26 @@ func (u URL) GetSSHString() string {
 // String returns a string output of the URL instance
 func (u URL) String() string {
 	var builder strings.Builder
-	if !utils.IsEmptyString(u.Schema) {
+	if !str.IsEmpty(u.Schema) {
 		builder.WriteString(u.Schema)
 	} else {
 		builder.WriteString("https")
 	}
 	builder.WriteString("://")
-	if !utils.IsEmptyString(u.Username) && u.Username != "git" {
+	if !str.IsEmpty(u.Username) && u.Username != "git" {
 		builder.WriteString(u.Username)
-		if !utils.IsEmptyString(u.Password) {
+		if !str.IsEmpty(u.Password) {
 			builder.WriteString(fmt.Sprintf(":%s", u.Password))
 		}
 		builder.WriteByte('@')
 	}
 	builder.WriteString(u.Hostname)
-	if !utils.IsEmptyString(u.Port) {
+	if !str.IsEmpty(u.Port) {
 		builder.WriteString(fmt.Sprintf(":%s", u.Port))
 	}
 	urlPath := fmt.Sprintf("%s", path.Join("/", u.User, u.Path))
 	builder.WriteString(urlPath)
-	if !utils.IsEmptyString(u.Query) {
+	if !str.IsEmpty(u.Query) {
 		builder.WriteString(fmt.Sprintf("?%s", u.Query))
 	}
 	return builder.String()
@@ -184,25 +184,25 @@ func parseRegexIntoFields(compiledRegex *regexp.Regexp, parse string) map[string
 // map of strings from regex capture groups into a *URL instance
 func serializeFieldsToURL(fields map[string]string) *URL {
 	url := URL{}
-	if !utils.IsEmptyString(fields[keySchema]) {
+	if !str.IsEmpty(fields[keySchema]) {
 		url.Schema = fields[keySchema]
 	}
-	if !utils.IsEmptyString(fields[keyUsername]) {
+	if !str.IsEmpty(fields[keyUsername]) {
 		url.Username = fields[keyUsername]
 	}
-	if !utils.IsEmptyString(fields[keyPassword]) {
+	if !str.IsEmpty(fields[keyPassword]) {
 		url.Password = fields[keyPassword]
 	}
-	if !utils.IsEmptyString(fields[keyHostname]) {
+	if !str.IsEmpty(fields[keyHostname]) {
 		url.Hostname = fields[keyHostname]
 	}
-	if !utils.IsEmptyString(fields[keyPort]) {
+	if !str.IsEmpty(fields[keyPort]) {
 		url.Port = fields[keyPort]
 	}
-	if !utils.IsEmptyString(fields[keyUser]) {
+	if !str.IsEmpty(fields[keyUser]) {
 		url.User = fields[keyUser]
 	}
-	if !utils.IsEmptyString(fields[keyPath]) {
+	if !str.IsEmpty(fields[keyPath]) {
 		url.Path = fields[keyPath]
 	}
 	return &url

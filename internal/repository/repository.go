@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	pkgrepository "github.com/zephinzer/dev/pkg/repository"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 )
 
 type Repository struct {
@@ -45,7 +45,7 @@ func (r *Repository) PromptForName() error {
 		return fmt.Errorf("an unexpected error occurred: %s", scanError)
 	}
 	r.Name = answer
-	if utils.IsEmptyString(r.Name) {
+	if str.IsEmpty(r.Name) {
 		r.Name = defaultName
 	}
 	return nil

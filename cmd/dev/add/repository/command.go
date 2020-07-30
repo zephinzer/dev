@@ -13,6 +13,7 @@ import (
 	"github.com/zephinzer/dev/internal/log"
 	. "github.com/zephinzer/dev/internal/repository"
 	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 	"github.com/zephinzer/dev/pkg/validator"
 	"gopkg.in/yaml.v2"
 )
@@ -98,7 +99,7 @@ func run(command *cobra.Command, args []string) {
 		configurationPath := config.PromptSelectLoadedConfiguration(
 			fmt.Sprintf("which configuration file should we add '%s' to?", repoURL),
 		)
-		if utils.IsEmptyString(configurationPath) {
+		if str.IsEmpty(configurationPath) {
 			log.Infof("skipping adding of repo '%s'", repoURL)
 			continue
 		}
@@ -177,6 +178,6 @@ func getRepoURLsFromArguments(args []string) []string {
 		}
 		repositoryURLs = append(repositoryURLs, repositoryURL.String())
 	}
-	repositoryURLs = utils.DedupeStrings(repositoryURLs)
+	repositoryURLs = str.Dedupe(repositoryURLs)
 	return repositoryURLs
 }

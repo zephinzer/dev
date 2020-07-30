@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/str"
 )
 
 // Dev specifies the configurations available for the CLI tool itself
@@ -96,13 +96,13 @@ type DevClientPlatformsGithub struct {
 
 func (dcpgh *DevClientPlatformsGithub) MergeWith(o DevClientPlatformsGithub) []error {
 	var warnings []error
-	if !utils.IsEmptyString(dcpgh.ClientID) && dcpgh.ClientID != o.ClientID {
+	if !str.IsEmpty(dcpgh.ClientID) && dcpgh.ClientID != o.ClientID {
 		warnings = append(warnings, errors.New("dev.client.platforms.github.clientID already set"))
 	}
-	if !utils.IsEmptyString(dcpgh.ClientSecret) && dcpgh.ClientSecret != o.ClientSecret {
+	if !str.IsEmpty(dcpgh.ClientSecret) && dcpgh.ClientSecret != o.ClientSecret {
 		warnings = append(warnings, errors.New("dev.client.platforms.github.clientSecret already set"))
 	}
-	if !utils.IsEmptyString(dcpgh.RedirectURI) && dcpgh.RedirectURI != o.RedirectURI {
+	if !str.IsEmpty(dcpgh.RedirectURI) && dcpgh.RedirectURI != o.RedirectURI {
 		warnings = append(warnings, errors.New("dev.client.platforms.github.redirectUri already set"))
 	}
 	if len(warnings) > 0 {

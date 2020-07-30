@@ -1,4 +1,4 @@
-package utils
+package filesystem
 
 import (
 	"io/ioutil"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/zephinzer/dev/pkg/utils/str"
 )
 
 type FindTests struct {
@@ -35,7 +36,7 @@ func (s *FindTests) TestFindParentContainingChildDirectory_inSameDirectory() {
 		}
 	}
 	s.Truef(len(theChosenOne) > 0, "no files could be found in the working directory %s", currentWorkingDirectory)
-	if IsEmptyString(theChosenOne) {
+	if str.IsEmpty(theChosenOne) {
 		return
 	}
 	chosenDirectory, err := FindParentContainingChildDirectory(theChosenOne, currentWorkingDirectory)

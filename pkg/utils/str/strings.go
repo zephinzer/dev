@@ -1,4 +1,4 @@
-package utils
+package str
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 
 type StringKeyGetter func(string) string
 
-func DedupeStrings(values []string, keyGetter ...StringKeyGetter) []string {
+func Dedupe(values []string, keyGetter ...StringKeyGetter) []string {
 	getKey := func(input string) string { return input }
 	if len(keyGetter) > 0 {
 		getKey = keyGetter[0]
@@ -52,7 +52,7 @@ func GetHttpLinkFromHttpCloneUrl(httpCloneUrl string) (string, error) {
 	return u2.String(), nil
 }
 
-func IsEmptyString(test string) bool {
+func IsEmpty(test string) bool {
 	return test == *new(string)
 }
 

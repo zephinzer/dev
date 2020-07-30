@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/filesystem"
 )
 
 // GetGitRepoRootFromWorkingDirectory returns the full path of the child directory
@@ -21,7 +21,7 @@ func GetGitRepoRootFromWorkingDirectory() string {
 			constants.ExitErrorSystem,
 		)
 	}
-	gitRepoRoot, findGitRepoRootError := utils.FindParentContainingChildDirectory(".git", cwd)
+	gitRepoRoot, findGitRepoRootError := filesystem.FindParentContainingChildDirectory(".git", cwd)
 	if findGitRepoRootError != nil {
 		ExitWithError(
 			fmt.Sprintf(
