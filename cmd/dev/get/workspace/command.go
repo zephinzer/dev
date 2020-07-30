@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/usvc/go-config"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	c "github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
@@ -102,12 +103,8 @@ func run(command *cobra.Command, args []string) {
 			log.Printf(vscodeWorkspaceData)
 		} else {
 			if outputDirectory[0] == '~' {
-				userHomeDir, getUserHomeDirError := os.UserHomeDir()
-				if getUserHomeDirError != nil {
-					log.Errorf("failed to convert ~ to the home directory: %s", getUserHomeDirError)
-					os.Exit(constants.ExitErrorSystem | constants.ExitErrorUser)
-				}
-				outputDirectory = strings.Replace(outputDirectory, "~", userHomeDir, 1)
+				homeDir := cmdutils.GetHomeDirectory()
+				outputDirectory = strings.Replace(outputDirectory, "~", homeDir, 1)
 			}
 			outputPath := path.Join(outputDirectory, strings.ToLower(targetWorkspace.Name)+iworkspace.VSCodeFileExtension)
 			if writeError := vscodeWorkspace.WriteTo(outputPath, conf.GetBool("overwrite")); writeError != nil {

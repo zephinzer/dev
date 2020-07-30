@@ -1,7 +1,6 @@
 package keys
 
 import (
-	"os"
 	"path"
 
 	"github.com/spf13/cobra"
@@ -27,11 +26,7 @@ func GetCommand() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	homeDir, getUserHomeDirError := os.UserHomeDir()
-	if getUserHomeDirError != nil {
-		log.Errorf("failed to retrieve home directory of current user with id '%v': %s", os.Getuid(), getUserHomeDirError)
-		os.Exit(1)
-	}
+	homeDir := cmdutils.GetHomeDirectory()
 	sshKeysDirectory := path.Join(homeDir, "/.ssh")
 
 	privateKeys, authorizedKeys, err := utils.GetLocalSSHKeys(sshKeysDirectory)

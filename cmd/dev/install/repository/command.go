@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/log"
@@ -33,11 +34,7 @@ func run(command *cobra.Command, args []string) {
 		return
 	}
 
-	homeDir, getHomeDirError := os.UserHomeDir()
-	if getHomeDirError != nil {
-		log.Errorf("unable to retrieve user's home directory: %s", getHomeDirError)
-		os.Exit(1)
-	}
+	homeDir := cmdutils.GetHomeDirectory()
 
 	errorCount := 0
 	successCount := 0

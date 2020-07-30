@@ -154,8 +154,8 @@ func run(command *cobra.Command, args []string) {
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorSystem)
 		}
 
-		// clone it!
-		repoPath, getPathError := repo.GetPath()
+		homeDir := cmdutils.GetHomeDirectory()
+		repoPath, getPathError := repo.GetPath(homeDir)
 		if getPathError != nil {
 			log.Errorf("failed to get path of repository: %s", getPathError)
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)

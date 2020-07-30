@@ -35,11 +35,7 @@ func run(command *cobra.Command, args []string) {
 		return
 	}
 
-	homeDir, getHomeDirError := os.UserHomeDir()
-	if getHomeDirError != nil {
-		log.Errorf("unable to retrieve user's home directory: %s", getHomeDirError)
-		os.Exit(1)
-	}
+	homeDir := cmdutils.GetHomeDirectory()
 
 	errorCount := 0
 	workspaceIndex := map[string]bool{}
