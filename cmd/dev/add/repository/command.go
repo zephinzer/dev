@@ -10,9 +10,9 @@ import (
 	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/git"
 	"github.com/zephinzer/dev/internal/log"
 	. "github.com/zephinzer/dev/internal/repository"
-	"github.com/zephinzer/dev/pkg/utils"
 	"github.com/zephinzer/dev/pkg/utils/str"
 	"github.com/zephinzer/dev/pkg/validator"
 	"gopkg.in/yaml.v2"
@@ -160,7 +160,7 @@ func run(command *cobra.Command, args []string) {
 			log.Errorf("failed to get path of repository: %s", getPathError)
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)
 		}
-		if gitCloneError := utils.GitClone(parsedURL.GetSSHString(), repoPath); gitCloneError != nil {
+		if gitCloneError := git.Clone(parsedURL.GetSSHString(), repoPath); gitCloneError != nil {
 			log.Errorf("failed to clone new repository: %s", gitCloneError)
 			os.Exit(constants.ExitErrorApplication | constants.ExitErrorInput)
 		}

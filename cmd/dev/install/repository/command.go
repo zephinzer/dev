@@ -9,8 +9,8 @@ import (
 	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/git"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/utils"
 )
 
 func GetCommand() *cobra.Command {
@@ -73,7 +73,7 @@ func run(command *cobra.Command, args []string) {
 			log.Debugf("repository '%s' already exists, skipping...", repositoryName)
 		} else {
 			log.Debugf("repository '%s' does not exist, attempting to clone to '%s'", repositoryName, localPath)
-			cloneError := utils.GitClone(repository.URL, localPath)
+			cloneError := git.Clone(repository.URL, localPath)
 			newCount++
 			if cloneError != nil {
 				log.Warnf("failed to clone repository from url '%s': %s", repository.URL, cloneError)

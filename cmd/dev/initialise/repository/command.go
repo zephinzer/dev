@@ -9,6 +9,7 @@ import (
 	"github.com/usvc/go-config"
 	c "github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
+	"github.com/zephinzer/dev/internal/git"
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/internal/prompt"
 	"github.com/zephinzer/dev/pkg/utils"
@@ -84,7 +85,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	log.Debugf("cloning template from %s...\n", selectedURL.GetHTTPSString())
-	gitCloneError := utils.GitClone(selectedURL.GetHTTPSString(), pathToInitialiseAt)
+	gitCloneError := git.Clone(selectedURL.GetHTTPSString(), pathToInitialiseAt)
 	if gitCloneError != nil {
 		log.Errorf("failed to clone template locally: %s", gitCloneError)
 		os.Exit(constants.ExitErrorInput | constants.ExitErrorSystem)

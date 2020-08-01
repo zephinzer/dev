@@ -31,9 +31,15 @@ type Repository struct {
 // the returned path will be derived from the hostname and path of
 // the `.URL`
 func (r Repository) GetPath(rootPath ...string) (string, error) {
+	// if :rootPath is defined, use that as the root instead of the current directory
 	storagePath := "."
 	if len(rootPath) > 0 {
 		storagePath = rootPath[0]
+	}
+
+	// if .Path is already defined, juse use that
+	if len(r.Path) > 0 {
+		return path.Join(storagePath, r.Path), nil
 	}
 
 	if validator.IsGitHTTPUrl(r.URL) || validator.IsGitSSHUrl(r.URL) {
