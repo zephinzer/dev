@@ -4,23 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 func GetBoards(accessKey, accessToken string) (*APIv1BoardsResponse, error) {
-	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me/boards")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("key", accessKey)
-	query.Add("token", accessToken)
-	query.Add("lists", "open")
-	query.Add("fields", "id,name,lists,shortLink,url,desc,dateLastActivity,dateLastView")
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://api.trello.com/1/members/me/boards",
+		Queries: map[string]string{
+			"key":    accessKey,
+			"token":  accessToken,
+			"lists":  "open",
+			"fields": "id,name,lists,shortLink,url,desc,dateLastActivity,dateLastView",
+		},
+	})
 	if requestError != nil {
 		return nil, requestError
 	}
@@ -38,17 +35,15 @@ func GetBoards(accessKey, accessToken string) (*APIv1BoardsResponse, error) {
 }
 
 func GetListCards(accessKey, accessToken, listID string) (*APIv1ListCardsResponse, error) {
-	targetURL, urlParseError := url.Parse(fmt.Sprintf("https://api.trello.com/1/lists/%s", listID))
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("key", accessKey)
-	query.Add("token", accessToken)
-	query.Add("lists", "open")
-	query.Add("fields", "id,name,lists,shortLink,url,desc,dateLastActivity,dateLastView")
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: fmt.Sprintf("https://api.trello.com/1/lists/%s", listID),
+		Queries: map[string]string{
+			"key":    accessKey,
+			"token":  accessToken,
+			"lists":  "open",
+			"fields": "id,name,lists,shortLink,url,desc,dateLastActivity,dateLastView",
+		},
+	})
 	if requestError != nil {
 		return nil, requestError
 	}

@@ -4,26 +4,23 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 func GetNotifications(accessKey, accessToken string) (*APIv1MemberNotificationResponse, error) {
-	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me/notifications")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("key", accessKey)
-	query.Add("token", accessToken)
-	query.Add("read_filter", "unread")
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://api.trello.com/1/members/me/notifications",
+		Queries: map[string]string{
+			"key":         accessKey,
+			"token":       accessToken,
+			"read_filter": "unread",
+		},
+	})
 	if requestError != nil {
 		return nil, requestError
 	}

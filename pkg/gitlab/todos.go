@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"time"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 // APIv4TodoResponse defines the response structure for a call to the Gitlab
@@ -28,13 +27,12 @@ type APIv4Todo struct {
 }
 
 func GetTodos(hostname, accessToken string, since ...time.Time) (*APIv4TodoResponse, error) {
-	targetURL, urlParseError := url.Parse(fmt.Sprintf("https://%s/api/v4/todos", hostname))
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":  "application/json",
-		"PRIVATE-TOKEN": accessToken,
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: fmt.Sprintf("https://%s/api/v4/todos", hostname),
+		Headers: map[string]string{
+			"Content-Type":  "application/json",
+			"PRIVATE-TOKEN": accessToken,
+		},
 	})
 	if requestError != nil {
 		return nil, requestError

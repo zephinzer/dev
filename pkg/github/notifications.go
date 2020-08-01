@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"time"
 
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 // GetNotifications retrieves notifications from the Github API using the
@@ -18,19 +17,20 @@ import (
 // To run this as a cURL:
 // `curl -H "Authorization: token XXX" https://api.github.com/notifications`
 func GetNotifications(accessToken string, since ...time.Time) (*APIv3Notifications, error) {
-	targetURL, urlParseError := url.Parse("https://api.github.com/notifications")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("participating", "true")
+	dateSinceFilter := time.Now().Add(-time.Hour * 24 * 365)
 	if len(since) > 0 {
-		query.Add("since", since[0].Format(constants.GithubAPITimeFormat))
+		dateSinceFilter = since[0]
 	}
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Accept":        "application/vnd.github.v3+json", // as requested at https://developer.github.com/v3/#current-version
-		"Authorization": fmt.Sprintf("token %s", accessToken),
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://api.github.com/notifications",
+		Headers: map[string]string{
+			"Accept":        "application/vnd.github.v3+json", // as requested at https://developer.github.com/v3/#current-version
+			"Authorization": fmt.Sprintf("token %s", accessToken),
+		},
+		Queries: map[string]string{
+			"participating": "true",
+			"since":         dateSinceFilter.Format(constants.GithubAPITimeFormat),
+		},
 	})
 	if requestError != nil {
 		return nil, requestError
@@ -40,6 +40,7 @@ func GetNotifications(accessToken string, since ...time.Time) (*APIv3Notificatio
 	if bodyReadError != nil {
 		return nil, bodyReadError
 	}
+	fmt.Println(string(responseBody))
 	var response APIv3Notifications
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {

@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 // GetStories returns a user's stories
@@ -19,27 +18,26 @@ func GetStories(accessToken string, inProjectID string, since ...time.Time) (*AP
 	if accountInfoError != nil {
 		return nil, accountInfoError
 	}
-	targetURL, urlParseError := url.Parse(fmt.Sprintf(
-		"https://www.pivotaltracker.com/services/v5/projects/%s/stories",
-		inProjectID,
-	))
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	sinceThisTime := time.Now().Add(time.Duration(-1 * 31 * 24 * time.Hour))
+	dateSinceFilter := time.Now().Add(-time.Hour * 24 * 365)
 	if len(since) > 0 {
-		sinceThisTime = since[0]
+		dateSinceFilter = since[0]
 	}
-	query := targetURL.Query()
-	query.Add("filter", fmt.Sprintf(
-		"(mywork:%s OR is:following) AND -state:accepted AND -state:planned AND updated_after:\"%s\"",
-		accountInfo.Username,
-		sinceThisTime.Format(constants.PivotalTrackerAPITimeFormat),
-	))
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":   "application/json",
-		"X-TrackerToken": accessToken,
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: fmt.Sprintf(
+			"https://www.pivotaltracker.com/services/v5/projects/%s/stories",
+			inProjectID,
+		),
+		Headers: map[string]string{
+			"Content-Type":   "application/json",
+			"X-TrackerToken": accessToken,
+		},
+		Queries: map[string]string{
+			"filter": fmt.Sprintf(
+				"(mywork:%s OR is:following) AND -state:accepted AND -state:planned AND updated_after:\"%s\"",
+				accountInfo.Username,
+				dateSinceFilter.Format(constants.PivotalTrackerAPITimeFormat),
+			),
+		},
 	})
 	if requestError != nil {
 		return nil, requestError

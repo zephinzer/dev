@@ -4,28 +4,28 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"time"
 
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 // GetNotifs returns a user's current notifications
 func GetNotifs(accessToken string, since ...time.Time) (*APIv5NotificationsResponse, error) {
-	targetURL, urlParseError := url.Parse("https://www.pivotaltracker.com/services/v5/my/notifications")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("notification_types", ":all")
+	dateSinceFilter := time.Now().Add(-time.Hour * 24 * 365)
 	if len(since) > 0 {
-		query.Add("updated_after", since[0].Format(constants.PivotalTrackerAPITimeFormat))
+		dateSinceFilter = since[0]
 	}
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":   "application/json",
-		"X-TrackerToken": accessToken,
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://www.pivotaltracker.com/services/v5/my/notifications",
+		Headers: map[string]string{
+			"Content-Type":   "application/json",
+			"X-TrackerToken": accessToken,
+		},
+		Queries: map[string]string{
+			"notification_types": ":all",
+			"updated_after":      dateSinceFilter.Format(constants.PivotalTrackerAPITimeFormat),
+		},
 	})
 	if requestError != nil {
 		return nil, requestError

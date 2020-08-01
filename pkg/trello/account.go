@@ -3,21 +3,18 @@ package trello
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net/url"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 func GetAccount(accessKey, accessToken string) (*APIv1MemberResponse, error) {
-	targetURL, urlParseError := url.Parse("https://api.trello.com/1/members/me")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("key", accessKey)
-	query.Add("token", accessToken)
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{})
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://api.trello.com/1/members/me",
+		Queries: map[string]string{
+			"key":   accessKey,
+			"token": accessToken,
+		},
+	})
 	if requestError != nil {
 		return nil, requestError
 	}

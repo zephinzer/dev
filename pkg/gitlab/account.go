@@ -4,27 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 func GetAccount(hostname, accessToken string) (*APIv4UserResponse, error) {
-	gitlabHostname := hostname
-	if len(hostname) == 0 {
-		gitlabHostname = constants.DefaultGitlabHostname
-	}
-	targetURL, urlParseError := url.Parse(fmt.Sprintf("https://%s/api/v4/user", gitlabHostname))
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":  "application/json",
-		"PRIVATE-TOKEN": accessToken,
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: fmt.Sprintf("https://%s/api/v4/user", hostname),
+		Headers: map[string]string{
+			"Content-Type":  "application/json",
+			"PRIVATE-TOKEN": accessToken,
+		},
 	})
 	if requestError != nil {
 		return nil, requestError

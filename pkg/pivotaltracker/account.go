@@ -4,23 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"strings"
 
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
 func GetAccount(accessToken string) (*APIv5AccountResponse, error) {
-	targetURL, urlParseError := url.Parse("https://www.pivotaltracker.com/services/v5/me")
-	if urlParseError != nil {
-		return nil, urlParseError
-	}
-	query := targetURL.Query()
-	query.Add("fields", ":default")
-	targetURL.RawQuery = query.Encode()
-	responseObject, requestError := utils.HTTPGet(*targetURL, map[string]string{
-		"Content-Type":   "application/json",
-		"X-TrackerToken": accessToken,
+	responseObject, requestError := request.Get(request.GetOptions{
+		URL: "https://www.pivotaltracker.com/services/v5/me",
+		Headers: map[string]string{
+			"Content-Type":   "application/json",
+			"X-TrackerToken": accessToken,
+		},
+		Queries: map[string]string{
+			"fields": ":default",
+		},
 	})
 	if requestError != nil {
 		return nil, requestError
