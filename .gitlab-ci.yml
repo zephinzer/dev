@@ -44,7 +44,7 @@ unit test:
 
 .build:
   stage: test & build
-  image: usvc/ci:go-build-production
+  image: usvc/ci:go-build-production-62b46892
   extends: [.default_script]
   dependencies: ["init"]
   artifacts:
