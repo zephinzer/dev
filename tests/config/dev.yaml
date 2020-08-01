@@ -2,6 +2,11 @@ dev:
   client:
     database:
       path: __expected_database_path
+    platforms:
+      github:
+        clientId: __expected_platform_github_client_id
+        clientSecret: __expected_platform_github_client_secret
+        redirectUri: __expected_platform_github_redirect_uri
     notifications:
       telegram:
         token: __expected_telegram_token
