@@ -9,7 +9,7 @@ import (
 	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/git"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/system"
 	"github.com/zephinzer/dev/pkg/validator"
 )
 
@@ -31,7 +31,7 @@ func GetCommand() *cobra.Command {
 			}
 
 			log.Infof("opening url '%s' in the default browser application...", url.String())
-			utils.OpenURIWithDefaultApplication(url.String())
+			system.OpenURIWithDefaultApplication(url.String())
 			os.Exit(constants.ExitOK)
 		},
 	}

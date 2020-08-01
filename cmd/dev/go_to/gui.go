@@ -10,6 +10,7 @@ import (
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/log"
 	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/system"
 )
 
 const (
@@ -122,7 +123,7 @@ func handleResultsDone(g *gocui.Gui, v *gocui.View) error {
 func handleResultsFound(g *gocui.Gui, v *gocui.View) error {
 	targetString := strings.Split(searchResults[selectionIndex].Str, " ")
 	targetURI := targetString[len(targetString)-1]
-	utils.OpenURIWithDefaultApplication(targetURI)
+	system.OpenURIWithDefaultApplication(targetURI)
 	return gocui.ErrQuit
 }
 
