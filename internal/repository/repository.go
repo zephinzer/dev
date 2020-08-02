@@ -3,6 +3,7 @@ package repository
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -15,53 +16,55 @@ type Repository struct {
 	pkgrepository.Repository
 }
 
-func (r *Repository) PromptForDescription() error {
-	fmt.Printf("\033[1menter a description for '%s': \033[0m", r.URL)
+func (r *Repository) getInput(using ...io.Reader) (string, error) {
 	var answer string
-	scanner := bufio.NewScanner(os.Stdin)
+	var fromReader io.Reader = os.Stdin
+	if len(using) > 0 {
+		fromReader = using[0]
+	}
+	scanner := bufio.NewScanner(fromReader)
 	if scanner.Scan() {
 		answer = scanner.Text()
 	}
 	if scanError := scanner.Err(); scanError != nil {
-		return fmt.Errorf("an unexpected error occurred: %s", scanError)
+		return "", fmt.Errorf("failed to get input from tty: %s", scanError)
 	}
-	r.Description = answer
-	return nil
+	return answer, nil
 }
 
-func (r *Repository) PromptForName() error {
+func (r *Repository) PromptForDescription(reader ...io.Reader) error {
+	fmt.Printf("\033[1menter a description for '%s': \033[0m", r.URL)
+	var err error
+	r.Description, err = r.getInput(reader...)
+	return err
+}
+
+func (r *Repository) PromptForName(reader ...io.Reader) error {
 	repoPath, getPathError := r.GetPath()
 	if getPathError != nil {
 		return fmt.Errorf("failed to get repository path: %s", getPathError)
 	}
 	defaultName := path.Base(repoPath)
 	fmt.Printf("\033[1menter a name for '%s' (default: '%s'): \033[0m", r.URL, defaultName)
-	var answer string
-	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan() {
-		answer = scanner.Text()
+	var err error
+	r.Name, err = r.getInput(reader...)
+	if err != nil {
+		return err
 	}
-	if scanError := scanner.Err(); scanError != nil {
-		return fmt.Errorf("an unexpected error occurred: %s", scanError)
-	}
-	r.Name = answer
 	if str.IsEmpty(r.Name) {
 		r.Name = defaultName
 	}
 	return nil
 }
 
-func (r *Repository) PromptForWorkspaces() error {
+func (r *Repository) PromptForWorkspaces(reader ...io.Reader) error {
 	fmt.Printf("\033[1menter workspaces for '%s' (separate using commas): \033[0m", r.URL)
 	var answer string
-	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan() {
-		answer = scanner.Text()
-	}
-	if scanError := scanner.Err(); scanError != nil {
-		return fmt.Errorf("an unexpected error occurred: %s", scanError)
-	}
-	if len(answer) == 0 {
+	var err error
+	answer, err = r.getInput(reader...)
+	if err != nil {
+		return err
+	} else if len(answer) == 0 {
 		return nil
 	}
 	workspaces := strings.Split(answer, ",")

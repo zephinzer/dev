@@ -37,7 +37,7 @@ func (r Repository) GetPath(rootPath ...string) (string, error) {
 		storagePath = rootPath[0]
 	}
 
-	// if .Path is already defined, juse use that
+	// if .Path is already defined, just use that
 	if len(r.Path) > 0 {
 		return path.Join(storagePath, r.Path), nil
 	}
@@ -50,17 +50,16 @@ func (r Repository) GetPath(rootPath ...string) (string, error) {
 		return path.Join(storagePath, parsedURL.Hostname, parsedURL.User, parsedURL.Path), nil
 	} else if _, parseError := validator.ParseURL(r.URL); parseError != nil {
 		return "", fmt.Errorf("failed to parse url '%s': %s", r.URL, parseError)
-	} else {
-		URL, getURLError := str.GetSshCloneUrlFromHttpLinkUrl(r.URL)
-		if getURLError != nil {
-			return "", fmt.Errorf("failed to convert '%s' to a git SSH clone URL", r.URL)
-		}
-		parsedURL, parseError := validator.ParseURL(URL)
-		if parseError != nil {
-			return "", fmt.Errorf("failed to parse clone url '%s'", URL)
-		}
-		return path.Join(storagePath, parsedURL.Hostname, parsedURL.User, parsedURL.Path), nil
 	}
+	URL, getURLError := str.GetSshCloneUrlFromHttpLinkUrl(r.URL)
+	if getURLError != nil {
+		return "", fmt.Errorf("failed to convert '%s' to a git SSH clone URL", r.URL)
+	}
+	parsedURL, parseError := validator.ParseURL(URL)
+	if parseError != nil {
+		return "", fmt.Errorf("failed to parse clone url '%s'", URL)
+	}
+	return path.Join(storagePath, parsedURL.Hostname, parsedURL.User, parsedURL.Path), nil
 }
 
 func (r Repository) GetWebsiteURL() (string, error) {

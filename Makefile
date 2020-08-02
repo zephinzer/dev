@@ -3,6 +3,7 @@ DOCKER_IMAGE_NAMESPACE=zephinzer
 DOCKER_IMAGE_NAME=dev
 PROJECT_NAME=dev
 GO_PACKAGE=$(shell cat go.mod | head -n 1 | cut -f 2 -d ' ')
+GO_TEST_COVERAGE_FILE=./c.out
 GIT_COMMIT=$$(git rev-parse --verify HEAD)
 GIT_TAG=$$(git describe --tag $$(git rev-list --tags --max-count=1))
 TIMESTAMP=$(shell date +'%Y%m%d%H%M%S')
@@ -22,7 +23,8 @@ setup_build:
 run:
 	go run -v -mod=vendor ./cmd/$(CMD_NAME) ${args}
 test:
-	go test -v -mod=vendor ./... -cover -coverprofile c.out
+	go test -v -mod=vendor ./... -cover -coverprofile $(GO_TEST_COVERAGE_FILE)
+	go tool cover -func $(GO_TEST_COVERAGE_FILE)
 install:
 	go install -v -mod=vendor ./cmd/$(CMD_NAME)
 build:
