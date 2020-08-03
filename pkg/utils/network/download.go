@@ -33,22 +33,6 @@ func (de DownloadEvent) String() string {
 	return fmt.Sprintf("[%s] downloading from '%s' into '%s' via '%s' [%v%% done]", de.State, de.URL, de.FilePath, de.TempFilePath, de.Status.GetPercentage())
 }
 
-type DownloadStatus struct {
-	TotalBytes     uint64 `json:"total_bytes"`
-	ProcessedBytes uint64 `json:"processed_bytes"`
-}
-
-func (ds DownloadStatus) GetPercentage() float64 {
-	return float64(ds.ProcessedBytes) / float64(ds.TotalBytes) * 100
-}
-
-// Write implements io.Writer
-func (ds *DownloadStatus) Write(content []byte) (int, error) {
-	contentLength := len(content)
-	ds.ProcessedBytes += uint64(contentLength)
-	return contentLength, nil
-}
-
 type DownloadOptions struct {
 	Events               chan DownloadEvent
 	EventsUpdateInterval time.Duration

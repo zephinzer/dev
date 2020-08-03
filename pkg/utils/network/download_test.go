@@ -21,7 +21,7 @@ func (s *DownloadTests) SetupTest() {
 	s.FilePath = "./tests/downloads/" + time.Now().Format("download_test_20060102150405")
 }
 
-func (s *DownloadTests) TestDownload() {
+func (s *DownloadTests) Test_Download() {
 	var receivedEventTypes []DownloadState
 	var receivedStatuses []DownloadStatus
 	var waiter sync.WaitGroup
