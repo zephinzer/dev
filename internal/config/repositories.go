@@ -2,6 +2,7 @@ package config
 
 import (
 	"sort"
+	"strings"
 
 	"github.com/zephinzer/dev/pkg/repository"
 )
@@ -52,7 +53,7 @@ func (r Repositories) Len() int {
 // Less implements `sort.Interface`
 func (r Repositories) Less(i, j int) bool {
 	if len(r[i].Name) > 0 && len(r[j].Name) > 0 {
-		return r[i].Name < r[j].Name
+		return strings.Compare(r[i].Name, r[j].Name) <= 0
 	}
 	if len(r[i].URL) > 0 && len(r[j].URL) > 0 {
 		iPath, getPathError := r[i].GetPath()
@@ -63,7 +64,7 @@ func (r Repositories) Less(i, j int) bool {
 		if getPathError != nil {
 			return false
 		}
-		return iPath < jPath
+		return strings.Compare(iPath, jPath) <= 0
 	}
 	return false
 }

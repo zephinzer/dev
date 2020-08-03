@@ -2,6 +2,7 @@ package config
 
 import (
 	"io/ioutil"
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -16,7 +17,7 @@ func TestRepositories(t *testing.T) {
 	suite.Run(t, &RepositoriesTests{})
 }
 
-func (s RepositoriesTests) TestGetWorkspaces() {
+func (s RepositoriesTests) Test_GetWorkspaces() {
 	repos := Repositories{
 		{
 			URL:        "git@github.com:zephinzer/dev.git",
@@ -40,7 +41,7 @@ func (s RepositoriesTests) TestGetWorkspaces() {
 	s.Contains(repos.GetWorkspaces(), "def")
 }
 
-func (s RepositoriesTests) TestMergeWith() {
+func (s RepositoriesTests) Test_MergeWith() {
 	reposA := Repositories{
 		{
 			Name: "repo1",
@@ -79,4 +80,34 @@ func (s RepositoriesTests) TestYAMLUnmarshal() {
 		return
 	}
 	s.Len(c.Repositories, 4)
+}
+
+func (s RepositoriesTests) Test_Repositories_verifySortInterface() {
+	repos := Repositories{
+		{
+			Name: "__name_2",
+			Path: "/path/2",
+		},
+		{
+			Name: "__name_1",
+			Path: "/path/2",
+		},
+		{
+			Name: "__name_1",
+			Path: "/path/1",
+		},
+		{
+			Name: "__name_0",
+			Path: "/path/0",
+		},
+	}
+	sort.Sort(repos)
+	s.Equal("__name_0", repos[0].Name)
+	s.Equal("/path/0", repos[0].Path)
+	s.Equal("__name_1", repos[1].Name)
+	s.Equal("/path/1", repos[1].Path)
+	s.Equal("__name_1", repos[2].Name)
+	s.Equal("/path/2", repos[2].Path)
+	s.Equal("__name_2", repos[3].Name)
+	s.Equal("/path/2", repos[3].Path)
 }
