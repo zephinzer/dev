@@ -86,19 +86,23 @@ func (s RepositoriesTests) Test_Repositories_verifySortInterface() {
 	repos := Repositories{
 		{
 			Name: "__name_2",
+			URL:  "__url",
 			Path: "/path/2",
 		},
 		{
 			Name: "__name_1",
+			URL:  "__url",
 			Path: "/path/2",
-		},
-		{
-			Name: "__name_1",
-			Path: "/path/1",
 		},
 		{
 			Name: "__name_0",
+			URL:  "__url",
 			Path: "/path/0",
+		},
+		{
+			Name: "__name_1",
+			URL:  "__url",
+			Path: "/path/1",
 		},
 	}
 	sort.Sort(repos)

@@ -53,7 +53,10 @@ func (r Repositories) Len() int {
 // Less implements `sort.Interface`
 func (r Repositories) Less(i, j int) bool {
 	if len(r[i].Name) > 0 && len(r[j].Name) > 0 {
-		return strings.Compare(r[i].Name, r[j].Name) <= 0
+		comparison := strings.Compare(r[i].Name, r[j].Name)
+		if comparison != 0 {
+			return comparison <= 0
+		}
 	}
 	if len(r[i].URL) > 0 && len(r[j].URL) > 0 {
 		iPath, getPathError := r[i].GetPath()
