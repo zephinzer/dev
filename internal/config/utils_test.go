@@ -16,7 +16,7 @@ func TestUtils(t *testing.T) {
 	suite.Run(t, &UtilsTests{})
 }
 
-func (s *UtilsTests) TestFilterConfigurations_rejectedFileNames() {
+func (s *UtilsTests) Test_FilterConfigurations_rejectedFileNames() {
 	input := []os.FileInfo{
 		(&mockos.FileInfo{}).Returns(mockos.ReturnValue{"Name", "dev.yml"}),
 		(&mockos.FileInfo{}).Returns(mockos.ReturnValue{"Name", "dev.yaml"}),
@@ -32,7 +32,7 @@ func (s *UtilsTests) TestFilterConfigurations_rejectedFileNames() {
 	s.Len(output, 0)
 }
 
-func (s *UtilsTests) TestFilterConfigurations_acceptedFileNames() {
+func (s *UtilsTests) Test_FilterConfigurations_acceptedFileNames() {
 	input := []os.FileInfo{
 		(&mockos.FileInfo{}).Returns(mockos.ReturnValue{"Name", ".dev.yml"}),
 		(&mockos.FileInfo{}).Returns(mockos.ReturnValue{"Name", ".dev.yaml"}),
@@ -47,4 +47,18 @@ func (s *UtilsTests) TestFilterConfigurations_acceptedFileNames() {
 	}
 	output := FilterConfigurations(input)
 	s.Len(output, len(input))
+}
+
+func (s *UtilsTests) Test_NewFromFile() {
+	c, newFromFileError := NewFromFile("../../tests/config/dev.yaml")
+	s.Nil(newFromFileError)
+	if newFromFileError != nil {
+		return
+	}
+	s.Equal("__expected_database_path", c.Dev.Client.Database.Path)
+	s.Equal("__expected_telegram_token", c.Dev.Client.Notifications.Telegram.Token)
+	s.Equal("__expected_telegram_chat_id", c.Dev.Client.Notifications.Telegram.ID)
+	s.Equal("__expected_platform_github_client_id", c.Dev.Client.Platforms.Github.ClientID)
+	s.Equal("__expected_platform_github_client_secret", c.Dev.Client.Platforms.Github.ClientSecret)
+	s.Equal("__expected_platform_github_redirect_uri", c.Dev.Client.Platforms.Github.RedirectURI)
 }

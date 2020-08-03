@@ -68,7 +68,7 @@ type DevClientNotificationsTelegram struct {
 }
 
 func (dcntg *DevClientNotificationsTelegram) MergeWith(o DevClientNotificationsTelegram) []error {
-	if len(dcntg.Token) > 0 {
+	if len(dcntg.Token) > 0 || len(dcntg.ID) > 0 {
 		return []error{errors.New("dev.client.notifications.telegram.token already set")}
 	}
 	dcntg.Token = o.Token

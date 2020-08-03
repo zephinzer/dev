@@ -16,6 +16,36 @@ func TestPaths(t *testing.T) {
 	suite.Run(t, &PathsTests{})
 }
 
+func (s *PathsTests) Test_IsPathType() {
+	cwd, err := os.Getwd()
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	fileInfo, err := os.Lstat(cwd)
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	s.True(IsPathType(fileInfo, PathType("d")))
+	s.False(IsPathType(fileInfo, PathType("f")))
+	s.True(IsPathType(fileInfo, PathType("a")))
+}
+
+func (s *PathsTests) Test_PathExists() {
+	cwd, err := os.Getwd()
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	s.True(PathExists(PathType("d"), cwd))
+	s.True(PathExists(PathType("dir"), cwd))
+	s.True(PathExists(PathType("directory"), cwd))
+	s.True(PathExists(PathType("folder"), cwd))
+	s.False(PathExists(PathType("f"), cwd))
+	s.False(PathExists(PathType("file"), cwd))
+}
+
 func (s *PathsTests) Test_ResolvePath() {
 	userHomeDir, getUserHomeDirError := os.UserHomeDir()
 	s.Nilf(getUserHomeDirError, "failed to get home directory: %s", getUserHomeDirError)
