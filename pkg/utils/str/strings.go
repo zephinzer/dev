@@ -61,10 +61,6 @@ func GetHttpLinkFromHttpCloneUrl(httpCloneUrl string) (string, error) {
 	return u2.String(), nil
 }
 
-func IsEmpty(test string) bool {
-	return test == *new(string)
-}
-
 func GetHttpLinkFromSshCloneUrl(sshCloneUrl string) (string, error) {
 	re := regexp.MustCompile(`(?P<scheme>ssh://)?(?P<username>[a-zA-Z_\.]*@){0,1}(?P<hostname>[a-zA-Z\-\.]*\:){0,1}(?P<path>[a-zA-Z0-9\.\-/]*).git`)
 	var matches map[string]string
@@ -96,4 +92,8 @@ func GetHttpLinkFromSshCloneUrl(sshCloneUrl string) (string, error) {
 		Scheme: "https",
 	}
 	return u.String(), nil
+}
+
+func IsEmpty(test string) bool {
+	return test == *new(string)
 }
