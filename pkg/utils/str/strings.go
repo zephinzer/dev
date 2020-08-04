@@ -7,8 +7,11 @@ import (
 	"strings"
 )
 
+// StringKeyGetter is the signature for a function used in .Dedupe
 type StringKeyGetter func(string) string
 
+// Dedupe de-duplicates the provided :values slice and returns the de-duplicated
+// slice
 func Dedupe(values []string, keyGetter ...StringKeyGetter) []string {
 	getKey := func(input string) string { return input }
 	if len(keyGetter) > 0 {
@@ -27,6 +30,9 @@ func Dedupe(values []string, keyGetter ...StringKeyGetter) []string {
 	return output
 }
 
+// GetSshCloneUrlFromHttpLinkUrl returns the Git SSH clone URL given a HTTP link URL,
+// for example if the repository link is https://github.com/zephinzer/dev, the returned
+// clone URL will be git@github.com:zephinzer/dev.git
 func GetSshCloneUrlFromHttpLinkUrl(httpLinkUrl string) (string, error) {
 	u, err := url.Parse(httpLinkUrl)
 	if err != nil {
@@ -35,6 +41,9 @@ func GetSshCloneUrlFromHttpLinkUrl(httpLinkUrl string) (string, error) {
 	return fmt.Sprintf("git@%s:%s.git", u.Hostname(), strings.TrimLeft(u.Path, "/")), nil
 }
 
+// GetHttpCloneUrlFromHttpLink returns the Git HTTP clone URL given a HTTP link URL,
+// for example if the repository link is https://github.com/zephinzer/dev, the returned
+// clone URL will be https://github.com/zephinzer/dev.git
 func GetHttpCloneUrlFromHttpLink(httpLinkUrl string) (string, error) {
 	return fmt.Sprintf("%s.git", httpLinkUrl), nil
 }

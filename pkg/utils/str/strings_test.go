@@ -14,6 +14,12 @@ func TestStrings(t *testing.T) {
 	suite.Run(t, &StringsTests{})
 }
 
+func (s *StringsTests) Test_Dedupe() {
+	input := []string{"a", "b", "a", "ab", "ba", "ab"}
+	expected := []string{"a", "b", "ab", "ba"}
+	s.EqualValues(expected, Dedupe(input))
+}
+
 func (s *StringsTests) Test_GetSshCloneUrlFromHttpLinkUrl() {
 	observed, err := GetSshCloneUrlFromHttpLinkUrl("https://github.com/usvc/go-db")
 	s.Nil(err)
@@ -36,4 +42,9 @@ func (s *StringsTests) Test_GetHttpLinkFromSshCloneUrl() {
 	observed, err := GetHttpLinkFromSshCloneUrl("git@github.com:usvc/go-db.git")
 	s.Nil(err)
 	s.Equal("https://github.com/usvc/go-db", observed)
+}
+
+func (s *StringsTests) Test_IsEmpty() {
+	s.True(IsEmpty(""))
+	s.False(IsEmpty(" "))
 }
