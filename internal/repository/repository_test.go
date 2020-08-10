@@ -49,6 +49,14 @@ func (s *RepositoryTests) Test_PromptForName() {
 
 	s.Contains(outputString, fmt.Sprintf("enter a name for '%s' (default: '%s')", expectedURL, expectedBasePath))
 	s.Equal("__name", repo.Name)
+
+	input = bytes.NewBuffer([]byte(""))
+	err = repo.PromptForName(input)
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	s.Equalf("somewhere", repo.Name, "should default to the immediate directory's name from path %s: %s", expectedPath, expectedBasePath)
 }
 
 func (s *RepositoryTests) Test_PromptForWorkspace() {
@@ -87,4 +95,20 @@ func (s *RepositoryTests) Test_SetURL() {
 	s.Len(repo.URL, 0)
 	repo.SetURL(expectedText)
 	s.Len(repo.URL, len(expectedText))
+}
+
+func (s *RepositoryTests) Test_ToRepository() {
+	expectedRepo := pkgrepository.Repository{
+		Name:        "__name",
+		Description: "__description",
+		URL:         "__url",
+		Workspaces:  []string{"w", "s"},
+	}
+	repo := Repository{expectedRepo}
+	observedRepo := repo.ToRepository()
+	s.Equal(expectedRepo.Name, observedRepo.Name)
+	s.Equal(expectedRepo.Description, observedRepo.Description)
+	s.Equal(expectedRepo.URL, observedRepo.URL)
+	s.Equal(expectedRepo.Workspaces, observedRepo.Workspaces)
+
 }
