@@ -2,37 +2,14 @@ package config
 
 import (
 	"bytes"
-	"io"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/zephinzer/dev/tests"
 )
 
 type PromptsTests struct {
 	suite.Suite
-}
-
-func (s PromptsTests) captureStdout(fromThis func() error) (string, error) {
-	originalStdout := os.Stdout
-	reader, writer, _ := os.Pipe()
-	os.Stdout = writer
-	defer func() {
-		os.Stdout = originalStdout
-	}()
-	err := fromThis()
-	if err != nil {
-		return "", err
-	}
-	output := make(chan string)
-	defer close(output)
-	go func() {
-		var b bytes.Buffer
-		io.Copy(&b, reader)
-		output <- b.String()
-	}()
-	writer.Close()
-	return <-output, nil
 }
 
 func TestPrompts(t *testing.T) {
@@ -43,7 +20,7 @@ func (s *PromptsTests) Test_PromptSelectLoadedConfiguration_onlyOneConfiguration
 	var output string
 	var err error
 	input := bytes.NewBuffer([]byte("0"))
-	s.captureStdout(func() error {
+	tests.CaptureStdout(func() error {
 		Loaded = map[string]Config{
 			"__config_0": Config{},
 		}
@@ -67,14 +44,14 @@ func (s *PromptsTests) Test_PromptSelectLoadedConfiguration_moreThanOneConfigura
 
 	// testing for selection of skipping
 	input = bytes.NewBuffer([]byte("0"))
-	s.captureStdout(func() error {
+	tests.CaptureStdout(func() error {
 		output, err = PromptSelectLoadedConfiguration("__test_prompt_message", input)
 		s.Nil(err)
 		return nil
 	})
 	s.Equal("", output, "on input of 0, this should be skipped")
 	input = bytes.NewBuffer([]byte(""))
-	s.captureStdout(func() error {
+	tests.CaptureStdout(func() error {
 		output, err = PromptSelectLoadedConfiguration("__test_prompt_message", input)
 		s.Nil(err)
 		return nil
@@ -83,7 +60,7 @@ func (s *PromptsTests) Test_PromptSelectLoadedConfiguration_moreThanOneConfigura
 
 	// testing for selection of number 1
 	input = bytes.NewBuffer([]byte("1"))
-	s.captureStdout(func() error {
+	tests.CaptureStdout(func() error {
 		output, err = PromptSelectLoadedConfiguration("__test_prompt_message", input)
 		s.Nil(err)
 		return nil
@@ -92,7 +69,7 @@ func (s *PromptsTests) Test_PromptSelectLoadedConfiguration_moreThanOneConfigura
 
 	// testing for selection of number 2
 	input = bytes.NewBuffer([]byte("2"))
-	s.captureStdout(func() error {
+	tests.CaptureStdout(func() error {
 		output, err = PromptSelectLoadedConfiguration("__test_prompt_message", input)
 		s.Nil(err)
 		return nil

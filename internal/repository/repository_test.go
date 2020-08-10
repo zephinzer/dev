@@ -3,39 +3,16 @@ package repository
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"os"
 	"path"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 	pkgrepository "github.com/zephinzer/dev/pkg/repository"
+	"github.com/zephinzer/dev/tests"
 )
 
 type RepositoryTests struct {
 	suite.Suite
-}
-
-func captureStdout(fromThis func() error) (string, error) {
-	originalStdout := os.Stdout
-	reader, writer, _ := os.Pipe()
-	os.Stdout = writer
-	defer func() {
-		os.Stdout = originalStdout
-	}()
-	err := fromThis()
-	if err != nil {
-		return "", err
-	}
-	output := make(chan string)
-	defer close(output)
-	go func() {
-		var b bytes.Buffer
-		io.Copy(&b, reader)
-		output <- b.String()
-	}()
-	writer.Close()
-	return <-output, nil
 }
 
 func TestRepository(t *testing.T) {
@@ -45,7 +22,7 @@ func TestRepository(t *testing.T) {
 func (s *RepositoryTests) Test_PromptForDescription() {
 	repo := Repository{pkgrepository.Repository{URL: "__url"}}
 	input := bytes.NewBuffer([]byte("__description"))
-	outputString, err := captureStdout(func() error {
+	outputString, err := tests.CaptureStdout(func() error {
 		return repo.PromptForDescription(input)
 	})
 	s.Nil(err)
@@ -62,7 +39,7 @@ func (s *RepositoryTests) Test_PromptForName() {
 	expectedBasePath := path.Base(expectedPath)
 	repo := Repository{pkgrepository.Repository{Path: expectedPath, URL: expectedURL}}
 	input := bytes.NewBuffer([]byte("__name"))
-	outputString, err := captureStdout(func() error {
+	outputString, err := tests.CaptureStdout(func() error {
 		return repo.PromptForName(input)
 	})
 	s.Nil(err)
@@ -77,7 +54,7 @@ func (s *RepositoryTests) Test_PromptForName() {
 func (s *RepositoryTests) Test_PromptForWorkspace() {
 	repo := Repository{pkgrepository.Repository{URL: "__url"}}
 	input := bytes.NewBuffer([]byte("__workspace1 , __workspace2, __workspace3"))
-	outputString, err := captureStdout(func() error {
+	outputString, err := tests.CaptureStdout(func() error {
 		return repo.PromptForWorkspaces(input)
 	})
 	s.Nil(err)
