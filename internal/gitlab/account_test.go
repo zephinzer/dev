@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/zephinzer/dev/internal/types"
 )
 
 type AccountTests struct {
@@ -33,4 +34,12 @@ func (s *AccountTests) Test_Getters() {
 	s.True(*account.GetIsAdmin())
 	s.Nil(account.GetFollowerCount())
 	s.Nil(account.GetProjectCount())
+}
+
+func (s *AccountTests) Test_Account_fitsInterface() {
+	var acc types.Account
+	s.NotPanics(func() {
+		acc = Account{}
+	})
+	s.NotNil(acc)
 }
