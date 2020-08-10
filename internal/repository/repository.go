@@ -1,73 +1,89 @@
 package repository
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
 	"path"
 	"strings"
 
+	"github.com/zephinzer/dev/internal/prompt"
 	pkgrepository "github.com/zephinzer/dev/pkg/repository"
+	"github.com/zephinzer/dev/pkg/utils/defaults"
 	"github.com/zephinzer/dev/pkg/utils/str"
 )
 
+// Repository wraps the canonical Repository class (in pkg/repository) and provides
+// interface specific getters/setters for CLI usage
 type Repository struct {
 	pkgrepository.Repository
 }
 
-func (r *Repository) getInput(using ...io.Reader) (string, error) {
-	var answer string
-	var fromReader io.Reader = os.Stdin
-	if len(using) > 0 {
-		fromReader = using[0]
-	}
-	scanner := bufio.NewScanner(fromReader)
-	if scanner.Scan() {
-		answer = scanner.Text()
-	}
-	if scanError := scanner.Err(); scanError != nil {
-		return "", fmt.Errorf("failed to get input from tty: %s", scanError)
-	}
-	return answer, nil
+// PromptForDescription makes a request to the user to enter in a description for this
+// Repository instance
+func (r *Repository) PromptForDescription(useOtherReader ...io.Reader) error {
+	// decide on defaults
+	var reader io.Reader = defaults.GetIoReader(os.Stdin, useOtherReader...)
+
+	// go for it
+	var promptForStringErr error
+	r.Description, promptForStringErr = prompt.ForString(prompt.InputOptions{
+		BeforeMessage: fmt.Sprintf("enter a description for '%s': ", r.URL),
+		Reader:        reader,
+	})
+	return promptForStringErr
 }
 
-func (r *Repository) PromptForDescription(reader ...io.Reader) error {
-	fmt.Printf("\033[1menter a description for '%s': \033[0m", r.URL)
-	var err error
-	r.Description, err = r.getInput(reader...)
-	return err
-}
-
-func (r *Repository) PromptForName(reader ...io.Reader) error {
+// PromptForName makes a request to the user to enter in a name for this Repository
+// instance. Defaults to the name of the directory if no name is entered
+func (r *Repository) PromptForName(useOtherReader ...io.Reader) error {
+	// init
 	repoPath, getPathError := r.GetPath()
 	if getPathError != nil {
 		return fmt.Errorf("failed to get repository path: %s", getPathError)
 	}
+
+	// decide on defaults
 	defaultName := path.Base(repoPath)
-	fmt.Printf("\033[1menter a name for '%s' (default: '%s'): \033[0m", r.URL, defaultName)
-	var err error
-	r.Name, err = r.getInput(reader...)
-	if err != nil {
-		return err
+	var reader io.Reader = defaults.GetIoReader(os.Stdin, useOtherReader...)
+
+	// go for it
+	var promptForStringErr error
+	if r.Name, promptForStringErr = prompt.ForString(prompt.InputOptions{
+		BeforeMessage: fmt.Sprintf("enter a name for '%s' (default: '%s'): ", r.URL, defaultName),
+		Reader:        reader,
+	}); promptForStringErr != nil {
+		return fmt.Errorf("failed to receive input for repository name: %s", promptForStringErr)
 	}
+
+	// assign defaults if not present
 	if str.IsEmpty(r.Name) {
 		r.Name = defaultName
 	}
 	return nil
 }
 
-func (r *Repository) PromptForWorkspaces(reader ...io.Reader) error {
-	fmt.Printf("\033[1menter workspaces for '%s' (separate using commas): \033[0m", r.URL)
-	var answer string
-	var err error
-	answer, err = r.getInput(reader...)
-	if err != nil {
-		return err
-	} else if len(answer) == 0 {
+// PromptForWorkspaces makes a request to the user to enter in a comma-separated string that
+// indicates which workspaces they would like to add the repository to. Defaults to not having
+// a list of workspaces.
+func (r *Repository) PromptForWorkspaces(useOtherReader ...io.Reader) error {
+	//init
+	var reader io.Reader = defaults.GetIoReader(os.Stdin, useOtherReader...)
+
+	// go for it
+	var response string
+	var promptForStringErr error
+	if response, promptForStringErr = prompt.ForString(prompt.InputOptions{
+		BeforeMessage: fmt.Sprintf("enter workspaces for '%s' (separate using commas): ", r.URL),
+		Reader:        reader,
+	}); promptForStringErr != nil {
+		return fmt.Errorf("failed to receive input for workspaces: %s", promptForStringErr)
+	} else if str.IsEmpty(response) {
 		return nil
 	}
-	workspaces := strings.Split(answer, ",")
+
+	// post-processing into a slice
+	workspaces := strings.Split(response, ",")
 	for i := 0; i < len(workspaces); i++ {
 		workspaces[i] = strings.TrimSpace(workspaces[i])
 	}
@@ -75,18 +91,22 @@ func (r *Repository) PromptForWorkspaces(reader ...io.Reader) error {
 	return nil
 }
 
+// SetDescription is a setter method for the .Description property
 func (r *Repository) SetDescription(repoDescription string) {
 	r.Description = repoDescription
 }
 
+// SetName is a setter method for the .Name property
 func (r *Repository) SetName(repoName string) {
 	r.Name = repoName
 }
 
+// SetURL is a setter method for the .URL property
 func (r *Repository) SetURL(repoURL string) {
 	r.URL = repoURL
 }
 
+// ToRepository returns this Repository isntance as a canonical Repository
 func (r *Repository) ToRepository() pkgrepository.Repository {
 	return pkgrepository.Repository{
 		Name:        r.Name,

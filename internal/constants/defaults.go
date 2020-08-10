@@ -9,4 +9,7 @@ const (
 
 	// DefaultPathToSQLite3DB is the default location of the database
 	DefaultPathToSQLite3DB = "~/dev.db"
+
+	// DefaultRedactedString is the default string used to replace access tokens/secrets
+	DefaultRedactedString = "[REDACTED]"
 )

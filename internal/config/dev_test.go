@@ -4,6 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/zephinzer/dev/internal/config/dev"
+	"github.com/zephinzer/dev/internal/config/dev/client"
+	"github.com/zephinzer/dev/internal/config/dev/repository"
 )
 
 type DevConfigTests struct {
@@ -17,26 +20,26 @@ func TestDevConfig(t *testing.T) {
 func (s *DevConfigTests) TestDev() {
 	dev := []Dev{
 		{ // golden config
-			Client: DevClient{
-				Database: DevClientDatabase{
+			Client: dev.Client{
+				Database: client.Database{
 					Path: "__database_path",
 				},
-				Notifications: DevClientNotifications{
-					Telegram: DevClientNotificationsTelegram{
+				Notifications: client.Notifications{
+					Telegram: client.NotificationsTelegram{
 						Token: "__telegram_token",
 						ID:    "__telegram_id",
 					},
 				},
-				Platforms: DevClientPlatforms{
-					Github: DevClientPlatformsGithub{
+				Platforms: client.Platforms{
+					Github: client.PlatformsGithub{
 						ClientID:     "__github_client_id",
 						ClientSecret: "__github_client_secret",
 						RedirectURI:  "__github_redirect_uri",
 					},
 				},
 			},
-			Repository: DevRepository{
-				Templates: []DevRepositoryTemplate{
+			Repository: dev.Repository{
+				Templates: []repository.Template{
 					{
 						Name: "__name_1",
 						URL:  "__url_1",
@@ -56,26 +59,26 @@ func (s *DevConfigTests) TestDev() {
 			},
 		},
 		{ // empty string set
-			Client: DevClient{
-				Database: DevClientDatabase{
+			Client: dev.Client{
+				Database: client.Database{
 					Path: "",
 				},
-				Notifications: DevClientNotifications{
-					Telegram: DevClientNotificationsTelegram{
+				Notifications: client.Notifications{
+					Telegram: client.NotificationsTelegram{
 						Token: "",
 						ID:    "",
 					},
 				},
-				Platforms: DevClientPlatforms{
-					Github: DevClientPlatformsGithub{
+				Platforms: client.Platforms{
+					Github: client.PlatformsGithub{
 						ClientID:     "",
 						ClientSecret: "",
 						RedirectURI:  "",
 					},
 				},
 			},
-			Repository: DevRepository{
-				Templates: []DevRepositoryTemplate{
+			Repository: dev.Repository{
+				Templates: []repository.Template{
 					{
 						Name: "__name_0",
 						URL:  "__url_0",
@@ -84,22 +87,22 @@ func (s *DevConfigTests) TestDev() {
 			},
 		},
 		{ // zero-value set
-			Client:     DevClient{},
-			Repository: DevRepository{},
+			Client:     dev.Client{},
+			Repository: dev.Repository{},
 		},
 		{}, // no fucks given
 		{ // half a fuck provided
-			Client: DevClient{
-				Database: DevClientDatabase{
+			Client: dev.Client{
+				Database: client.Database{
 					Path: "/",
 				},
-				Notifications: DevClientNotifications{
-					Telegram: DevClientNotificationsTelegram{
+				Notifications: client.Notifications{
+					Telegram: client.NotificationsTelegram{
 						ID: "__not_empty",
 					},
 				},
-				Platforms: DevClientPlatforms{
-					Github: DevClientPlatformsGithub{
+				Platforms: client.Platforms{
+					Github: client.PlatformsGithub{
 						ClientID: "__not_empty",
 					},
 				},

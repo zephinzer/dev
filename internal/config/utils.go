@@ -36,33 +36,52 @@ func FilterConfigurations(fileInfos []os.FileInfo) []os.FileInfo {
 	return configurations
 }
 
+// GetFilesOptions enables parameterisation of the GetFiles function by differentiating
+// between the contextual configuration and the global configuration
+type GetFilesOptions struct {
+	// ContextualWorkspacePath defines where to draw context specific configuration from
+	ContextualWorkspacePath string
+	// GlobalWorkspacePath defines where to draw globval configuration from
+	GlobalWorkspacePath string
+}
+
 // GetFiles returns a list of absolute file paths corresponding to configuration files
 // found in 1. the current user's home directory and 2. the current working directory
-func GetFiles() ([]string, error) {
+func GetFiles(opt ...GetFilesOptions) ([]string, error) {
 	configurationFiles := []string{}
-	workingDirectory, getWdError := os.Getwd()
+
+	// local configurations
+	contextualConfigPath, getWdError := os.Getwd()
 	if getWdError != nil {
 		return nil, fmt.Errorf("failed to get the working directory: %s", getWdError)
 	}
-	workingDirectoryListing, readDirError := ioutil.ReadDir(workingDirectory)
+	if len(opt) > 0 && len(opt[0].ContextualWorkspacePath) > 0 {
+		contextualConfigPath = opt[0].ContextualWorkspacePath
+	}
+	contextualConfigs, readDirError := ioutil.ReadDir(contextualConfigPath)
 	if readDirError != nil {
-		return nil, fmt.Errorf("failed to get the listing of directory '%s': %s", workingDirectory, readDirError)
+		return nil, fmt.Errorf("failed to get the listing of directory '%s': %s", contextualConfigPath, readDirError)
 	}
-	workingDirectoryListing = FilterConfigurations(workingDirectoryListing)
-	for _, workingDirectoryFile := range workingDirectoryListing {
-		configurationFiles = append(configurationFiles, path.Join(workingDirectory, workingDirectoryFile.Name()))
+	contextualConfigs = FilterConfigurations(contextualConfigs)
+	for _, contextualConfig := range contextualConfigs {
+		configurationFiles = append(configurationFiles, path.Join(contextualConfigPath, contextualConfig.Name()))
 	}
-	userHomeDirectory, getUserHomeDirError := os.UserHomeDir()
-	if getUserHomeDirError != nil {
-		return nil, fmt.Errorf("failed to get the user's home directory: %s", getUserHomeDirError)
+
+	// global configurations
+	globalConfigPath, userHomeDirError := os.UserHomeDir()
+	if userHomeDirError != nil {
+		return nil, fmt.Errorf("failed to get the user's home directory: %s", userHomeDirError)
 	}
-	userHomeDirectoryListing, readDirError := ioutil.ReadDir(userHomeDirectory)
+	if len(opt) > 0 && len(opt[0].GlobalWorkspacePath) > 0 {
+		globalConfigPath = opt[0].GlobalWorkspacePath
+	}
+	globalConfigs, readDirError := ioutil.ReadDir(globalConfigPath)
 	if readDirError != nil {
-		return nil, fmt.Errorf("failed to get the listing of directory '%s': %s", workingDirectory, readDirError)
+		return nil, fmt.Errorf("failed to get the listing of directory '%s': %s", contextualConfigPath, readDirError)
 	}
-	userHomeDirectoryListing = FilterConfigurations(userHomeDirectoryListing)
-	for _, userHomeDirectoryFile := range userHomeDirectoryListing {
-		configurationFiles = append(configurationFiles, path.Join(userHomeDirectory, userHomeDirectoryFile.Name()))
+	globalConfigs = FilterConfigurations(globalConfigs)
+	for _, globalConfig := range globalConfigs {
+		configurationFiles = append(configurationFiles, path.Join(globalConfigPath, globalConfig.Name()))
 	}
 	return configurationFiles, nil
 }

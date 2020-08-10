@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -47,6 +48,24 @@ func (s *UtilsTests) Test_FilterConfigurations_acceptedFileNames() {
 	}
 	output := FilterConfigurations(input)
 	s.Len(output, len(input))
+}
+
+func (s *UtilsTests) Test_GetFiles() {
+	cwd, err := os.Getwd()
+	s.Nil(err)
+	if err != nil {
+		return
+	}
+	opts := GetFilesOptions{
+		ContextualWorkspacePath: path.Join(cwd, "tests/contextual_config"),
+		GlobalWorkspacePath:     path.Join(cwd, "tests/global_config"),
+	}
+	files, getFilesErr := GetFiles(opts)
+	s.Nil(getFilesErr)
+	if getFilesErr != nil {
+		return
+	}
+	s.Len(files, 4)
 }
 
 func (s *UtilsTests) Test_NewFromFile() {

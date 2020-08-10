@@ -96,9 +96,13 @@ func run(command *cobra.Command, args []string) {
 		}
 
 		// set configuration file
-		configurationPath := config.PromptSelectLoadedConfiguration(
+		configurationPath, err := config.PromptSelectLoadedConfiguration(
 			fmt.Sprintf("which configuration file should we add '%s' to?", repoURL),
 		)
+		if err != nil {
+			log.Errorf("failed to get a valid configuration file: %s", err)
+			continue
+		}
 		if str.IsEmpty(configurationPath) {
 			log.Infof("skipping adding of repo '%s'", repoURL)
 			continue
@@ -110,7 +114,6 @@ func run(command *cobra.Command, args []string) {
 		targetRepository.SetURL(parsedURL.GetSSHString())
 
 		// set name
-		fmt.Println("")
 		namePromptError := targetRepository.PromptForName()
 		if namePromptError != nil {
 			log.Warnf("failed to set a name for repo '%s': %s", repoURL, namePromptError)
@@ -119,7 +122,6 @@ func run(command *cobra.Command, args []string) {
 		log.Infof("using '%s' as the repository name", targetRepository.Name)
 
 		// set description
-		fmt.Println("")
 		descriptionPromptError := targetRepository.PromptForDescription()
 		if descriptionPromptError != nil {
 			log.Warnf("failed to set a description for repo '%s': %s", repoURL, descriptionPromptError)
@@ -129,7 +131,6 @@ func run(command *cobra.Command, args []string) {
 
 		// set workspaces
 		availableWorkspaces := targetConfiguration.Repositories.GetWorkspaces()
-		fmt.Println("")
 		log.Infof("existing workspaces: %s", strings.Join(availableWorkspaces, ", "))
 		workspacePromptError := targetRepository.PromptForWorkspaces()
 		if workspacePromptError != nil {

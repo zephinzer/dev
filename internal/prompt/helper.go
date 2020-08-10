@@ -14,7 +14,7 @@ type InputHelper InputOptions
 // the possible options are printed
 func (ih InputHelper) PrintBeforeMessage() {
 	if len(ih.BeforeMessage) > 0 {
-		fmt.Printf("\n\033[1m%s\033[0m\n", ih.BeforeMessage)
+		fmt.Printf("\n\033[1m%s\033[0m", ih.BeforeMessage)
 	}
 }
 
@@ -25,7 +25,10 @@ func (ih InputHelper) PrintOptions() {
 		fmt.Print("\n")
 	}
 	for index, option := range ih.SerializedOptions {
-		fmt.Printf("%v. %s\n", index+1, option)
+		fmt.Printf("%v. %s", index+1, option)
+		if index != len(ih.SerializedOptions)-1 {
+			fmt.Printf("\n")
+		}
 	}
 }
 
@@ -35,7 +38,7 @@ func (ih InputHelper) PrintAfterMessage() {
 	if len(ih.AfterMessage) == 0 {
 		ih.AfterMessage = "your selection (enter 0 to skip)"
 	}
-	fmt.Printf("\n\033[1m%s\033[0m: ", ih.AfterMessage)
+	fmt.Printf("\033[1m%s\033[0m: ", ih.AfterMessage)
 }
 
 // ReadInput reads in a user's input
@@ -48,7 +51,7 @@ func (ih *InputHelper) ReadInput() error {
 		ih.data = scanner.Text()
 	}
 	if scanError := scanner.Err(); scanError != nil {
-		return fmt.Errorf("an unexpected error occurred: %s", scanError)
+		return fmt.Errorf("failed to get input from tty: %s", scanError)
 	}
 	return nil
 }

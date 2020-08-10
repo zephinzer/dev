@@ -1,53 +1,39 @@
 package config
 
 import (
-	"fmt"
+	"io"
 	"os"
 	"sort"
-	"strconv"
-	"strings"
 
-	"github.com/zephinzer/dev/internal/constants"
-	"github.com/zephinzer/dev/internal/log"
+	"github.com/zephinzer/dev/internal/prompt"
+	"github.com/zephinzer/dev/pkg/utils/defaults"
 )
 
 // PromptSelectLoadedConfiguration does a cli prompt to ask the user
 // to select a loaded configuration for changes to be made
-func PromptSelectLoadedConfiguration(promptMessage string) string {
+func PromptSelectLoadedConfiguration(promptMessage string, useOtherReader ...io.Reader) (string, error) {
 	loadedIndex := 0
 	loadedConfigs := []string{}
 	for configPath := range Loaded {
 		loadedConfigs = append(loadedConfigs, configPath)
 		loadedIndex++
 	}
+	// TODO: add case where there are no loaded configs
 	if len(loadedConfigs) == 1 {
-		return loadedConfigs[0]
+		return loadedConfigs[0], nil
 	}
 	sort.Strings(loadedConfigs)
-	log.Printf("\n\033[1m%s\033[0m\n", promptMessage)
-	for index, configPath := range loadedConfigs {
-		log.Printf("%v. %s\n", index+1, configPath)
+	reader := defaults.GetIoReader(os.Stdin, useOtherReader...)
+	indexToUse, promptToSelectErr := prompt.ToSelect(prompt.InputOptions{
+		BeforeMessage:     promptMessage,
+		SerializedOptions: loadedConfigs,
+		Reader:            reader,
+	})
+	if promptToSelectErr != nil {
+		return "", promptToSelectErr
 	}
-	log.Print("\033[1myour response (use 0 to skip):\033[0m ")
-	answer := "0"
-	_, scanlnError := fmt.Scanln(&answer)
-	if scanlnError != nil && !strings.Contains(scanlnError.Error(), "unexpected newline") {
-		log.Errorf("an unexpected error occurred: %s", scanlnError)
-		os.Exit(constants.ExitErrorSystem)
+	if indexToUse == int(prompt.ErrorSkipped) {
+		return "", nil
 	}
-	indexToUse, atoiError := strconv.Atoi(answer)
-	if atoiError != nil {
-		log.Warnf("that wasn't a valid option: %s", atoiError)
-		PromptSelectLoadedConfiguration(promptMessage)
-	} else if indexToUse > loadedIndex {
-		log.Warnf("that wasn't a valid option: %v is an unknown configuration", indexToUse)
-		PromptSelectLoadedConfiguration(promptMessage)
-	} else if indexToUse < 0 {
-		log.Warn("that wasn't a valid option: use 0 to skip adding this repository")
-		PromptSelectLoadedConfiguration(promptMessage)
-	}
-	if indexToUse == 0 {
-		return ""
-	}
-	return loadedConfigs[indexToUse-1]
+	return loadedConfigs[indexToUse], nil
 }

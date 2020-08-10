@@ -105,13 +105,25 @@ func (s RepositoriesTests) Test_Repositories_verifySortInterface() {
 			Path: "/path/1",
 		},
 	}
-	sort.Sort(repos)
-	s.Equal("__name_0", repos[0].Name)
-	s.Equal("/path/0", repos[0].Path)
-	s.Equal("__name_1", repos[1].Name)
-	s.Equal("/path/1", repos[1].Path)
-	s.Equal("__name_1", repos[2].Name)
-	s.Equal("/path/2", repos[2].Path)
-	s.Equal("__name_2", repos[3].Name)
-	s.Equal("/path/2", repos[3].Path)
+	sortUsingSort := repos
+	sort.Sort(sortUsingSort)
+	s.Equal("__name_0", sortUsingSort[0].Name)
+	s.Equal("/path/0", sortUsingSort[0].Path)
+	s.Equal("__name_1", sortUsingSort[1].Name)
+	s.Equal("/path/1", sortUsingSort[1].Path)
+	s.Equal("__name_1", sortUsingSort[2].Name)
+	s.Equal("/path/2", sortUsingSort[2].Path)
+	s.Equal("__name_2", sortUsingSort[3].Name)
+	s.Equal("/path/2", sortUsingSort[3].Path)
+
+	sortUsingDotSort := repos
+	sortUsingDotSort.Sort()
+	s.Equal("__name_0", sortUsingDotSort[0].Name)
+	s.Equal("/path/0", sortUsingDotSort[0].Path)
+	s.Equal("__name_1", sortUsingDotSort[1].Name)
+	s.Equal("/path/1", sortUsingDotSort[1].Path)
+	s.Equal("__name_1", sortUsingDotSort[2].Name)
+	s.Equal("/path/2", sortUsingDotSort[2].Path)
+	s.Equal("__name_2", sortUsingDotSort[3].Name)
+	s.Equal("/path/2", sortUsingDotSort[3].Path)
 }
