@@ -14,6 +14,7 @@ import (
 // system errors
 func ToSelect(options InputOptions) (int, error) {
 	helper := InputHelper(options)
+	fmt.Printf("\n")
 	helper.PrintBeforeMessage()
 	fmt.Printf("\n")
 	helper.PrintOptions()

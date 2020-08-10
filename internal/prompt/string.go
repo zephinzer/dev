@@ -1,10 +1,15 @@
 package prompt
 
-import "github.com/zephinzer/dev/pkg/utils/str"
+import (
+	"fmt"
+
+	"github.com/zephinzer/dev/pkg/utils/str"
+)
 
 // ForString represents a standardised way of requesting for a string input
 func ForString(options InputOptions, defaultTo ...string) (string, error) {
 	helper := InputHelper(options)
+	fmt.Printf("\n")
 	helper.PrintBeforeMessage()
 	if readInputErr := helper.ReadInput(); readInputErr != nil {
 		return "", readInputErr

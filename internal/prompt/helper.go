@@ -14,16 +14,13 @@ type InputHelper InputOptions
 // the possible options are printed
 func (ih InputHelper) PrintBeforeMessage() {
 	if len(ih.BeforeMessage) > 0 {
-		fmt.Printf("\n\033[1m%s\033[0m", ih.BeforeMessage)
+		fmt.Printf("\033[1m%s\033[0m", ih.BeforeMessage)
 	}
 }
 
 // PrintOptions prints the possible options for the user to
 // select
 func (ih InputHelper) PrintOptions() {
-	if len(ih.BeforeMessage) == 0 {
-		fmt.Print("\n")
-	}
 	for index, option := range ih.SerializedOptions {
 		fmt.Printf("%v. %s", index+1, option)
 		if index != len(ih.SerializedOptions)-1 {
