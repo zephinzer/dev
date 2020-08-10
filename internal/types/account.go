@@ -43,5 +43,8 @@ func PrintAccount(account Account) string {
 	if account.GetFollowerCount() != nil {
 		output.WriteString(fmt.Sprintf("follower count: %v\n", *account.GetFollowerCount()))
 	}
+	if account.GetIsAdmin() != nil {
+		output.WriteString(fmt.Sprintf("is admin      : %v\n", *account.GetIsAdmin()))
+	}
 	return output.String()
 }
