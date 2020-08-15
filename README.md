@@ -412,7 +412,7 @@ The Github integration is not refined for use yet, try it at your own risk!
 
 #### Setting up Github integration
 
-Retrieve your `accessToken` by generating a new personal access token from [https://github.com/settings/tokens](https://github.com/settings/tokens). You'll need the following scopes:
+Retrieve your `accessToken` by generating a new personal access token from [https://github.com/settings/tokens/new](https://github.com/settings/tokens/new). You'll need the following scopes:
 
 - repo:status
 - repo_deployment
@@ -427,6 +427,23 @@ Retrieve your `accessToken` by generating a new personal access token from [http
 - read:discussion
 - read:enterprise
 - read:gpg_key
+
+An example follows of a configuration:
+
+```yaml
+# ...
+platforms:
+  # ...
+  github:
+    accounts:
+    # ...
+    - name: personal github
+      description: my own stuff
+      accessToken: ...
+      public: false
+    # ...
+# ...
+```
 
 #### Using the Github integration
 
@@ -650,7 +667,7 @@ Two global flags are made available to improve debuggability by increasing the a
 
 | Version | Breaking | Description                                                                                                                                                                                                                      |
 | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| v0.1.24 | NO | Added error handling for triggering of `dev add -` commands without an existing configuration file |
+| v0.1.24 | NO       | Added error handling for triggering of `dev add -` commands without an existing configuration file                                                                                                                               |
 | v0.1.18 | NO       | Added command to initialising a repository using a template (`dev init repo <path>`)                                                                                                                                             |
 | v0.1.7  | NO       | Added descriptions for `dev check software`                                                                                                                                                                                      |
 | v0.1.6  | NO       | Made repository selection deterministic when using `dev add repo`                                                                                                                                                                |
