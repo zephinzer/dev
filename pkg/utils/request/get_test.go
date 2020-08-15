@@ -1,7 +1,6 @@
 package request
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -39,8 +38,6 @@ func (s *GetTests) Test_Get() {
 		w.Write([]byte("ok"))
 	}))
 	address := server.URL
-	fmt.Println("the address is here")
-	fmt.Println(address)
 	_, err := Get(GetOptions{
 		URL:     address,
 		Headers: map[string]string{"hello": "world"},
