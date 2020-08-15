@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
+	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/types"
 	pkg "github.com/zephinzer/dev/pkg/github"
 )
 
 // GetNotifications returns the serialized version of the Github notifications
 func GetNotifications(accessToken string, since ...time.Time) (types.Notifications, error) {
-	client := &http.Client{Timeout: time.Second * 10}
+	client := &http.Client{Timeout: constants.DefaultAPICallTimeout}
 	githubNotifications, getNotificationsError := pkg.GetNotifications(client, accessToken, since...)
 	if getNotificationsError != nil {
 		return nil, fmt.Errorf("failed to retrieve notifications: %s", getNotificationsError)
