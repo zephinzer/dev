@@ -1,12 +1,16 @@
 package gitlab
 
 import (
+	"net/http"
+
+	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/types"
 	pkg "github.com/zephinzer/dev/pkg/gitlab"
 )
 
 func GetAccount(hostname, accessToken string) (types.Account, error) {
-	account, getAccountError := pkg.GetAccount(hostname, accessToken)
+	client := &http.Client{Timeout: constants.DefaultAPICallTimeout}
+	account, getAccountError := pkg.GetAccount(client, hostname, accessToken)
 	if getAccountError != nil {
 		return nil, getAccountError
 	}
