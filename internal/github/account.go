@@ -1,12 +1,16 @@
 package github
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/zephinzer/dev/internal/types"
 	pkg "github.com/zephinzer/dev/pkg/github"
 )
 
 func GetAccount(accessToken string) (types.Account, error) {
-	account, getAccountError := pkg.GetAccount(accessToken)
+	client := &http.Client{Timeout: time.Second * 10}
+	account, getAccountError := pkg.GetAccount(client, accessToken)
 	if getAccountError != nil {
 		return nil, getAccountError
 	}

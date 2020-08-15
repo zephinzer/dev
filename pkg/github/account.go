@@ -8,16 +8,20 @@ import (
 	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
-func GetAccount(accessToken string) (*APIv3UserResponse, error) {
-	responseObject, requestError := request.Get(request.GetOptions{
+func GetAccount(client request.Doer, accessToken string) (*APIv3UserResponse, error) {
+	requestObject, requestError := request.Create(request.CreateOptions{
 		URL: "https://api.github.com/user",
-		Headers: map[string]string{
-			"Accept":        "application/vnd.github.v3+json", // as requested at https://developer.github.com/v3/#current-version
-			"Authorization": fmt.Sprintf("token %s", accessToken),
+		Headers: map[string][]string{
+			"Accept":        {"application/vnd.github.v3+json"}, // as requested at https://developer.github.com/v3/#current-version
+			"Authorization": {fmt.Sprintf("token %s", accessToken)},
 		},
 	})
 	if requestError != nil {
-		return nil, requestError
+		return nil, fmt.Errorf("failed to create request: %s", requestError)
+	}
+	responseObject, doError := client.Do(requestObject)
+	if doError != nil {
+		return nil, fmt.Errorf("failed to execute request: %s", doError)
 	}
 	defer responseObject.Body.Close()
 	responseBody, bodyReadError := ioutil.ReadAll(responseObject.Body)
