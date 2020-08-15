@@ -2,6 +2,7 @@ package gitlab
 
 import (
 	"database/sql"
+	"net/http"
 	"sync"
 	"time"
 
@@ -48,7 +49,8 @@ func WatchNotifications(
 						}
 
 						log.Tracef("[%s] checking for todos from gitlab at %s...", name, hostname)
-						todos, getTodosError := pkggitlab.GetTodos(hostname, accessToken, since)
+						client := &http.Client{Timeout: constants.DefaultAPICallTimeout}
+						todos, getTodosError := pkggitlab.GetTodos(client, hostname, accessToken, since)
 						if getTodosError != nil {
 							log.Warnf("[%s] failed to retrieve gitlab todos from %s: %s", name, hostname, getTodosError)
 							return
