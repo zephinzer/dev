@@ -2,6 +2,7 @@ package github
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -12,7 +13,8 @@ import (
 
 // GetNotifications returns the serialized version of the Github notifications
 func GetNotifications(accessToken string, since ...time.Time) (types.Notifications, error) {
-	githubNotifications, getNotificationsError := pkg.GetNotifications(accessToken, since...)
+	client := &http.Client{Timeout: time.Second * 10}
+	githubNotifications, getNotificationsError := pkg.GetNotifications(client, accessToken, since...)
 	if getNotificationsError != nil {
 		return nil, fmt.Errorf("failed to retrieve notifications: %s", getNotificationsError)
 	}

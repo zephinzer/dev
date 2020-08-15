@@ -26,12 +26,12 @@ func GetAccount(client request.Doer, accessToken string) (*APIv3UserResponse, er
 	defer responseObject.Body.Close()
 	responseBody, bodyReadError := ioutil.ReadAll(responseObject.Body)
 	if bodyReadError != nil {
-		return nil, bodyReadError
+		return nil, fmt.Errorf("failed to process response body: %s", bodyReadError)
 	}
 	var response APIv3UserResponse
 	unmarshalError := json.Unmarshal(responseBody, &response)
 	if unmarshalError != nil {
-		return nil, unmarshalError
+		return nil, fmt.Errorf("failed to unmarshal response: %s (raw object: '%s')", unmarshalError, string(responseBody))
 	}
 	return &response, nil
 }
