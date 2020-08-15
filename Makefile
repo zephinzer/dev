@@ -20,6 +20,7 @@ setup_build:
 	go get github.com/akavel/rsrc
 	# these are required to compile dev without cgo
 	go install github.com/mattn/go-sqlite3
+	$(MAKE) deps
 run:
 	go run -v -mod=vendor ./cmd/$(CMD_NAME) ${args}
 test:

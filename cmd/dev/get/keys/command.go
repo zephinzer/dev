@@ -7,7 +7,7 @@ import (
 	"github.com/usvc/go-config"
 	"github.com/zephinzer/dev/cmd/dev/_/cmdutils"
 	"github.com/zephinzer/dev/internal/log"
-	"github.com/zephinzer/dev/pkg/utils"
+	"github.com/zephinzer/dev/pkg/utils/keys"
 )
 
 var conf = config.Map{
@@ -30,19 +30,12 @@ func run(cmd *cobra.Command, args []string) {
 	homeDir := cmdutils.GetHomeDirectory()
 	sshKeysDirectory := path.Join(homeDir, "/.ssh")
 
-	privateKeys, authorizedKeys, err := utils.GetLocalSSHKeys(sshKeysDirectory)
+	keys, err := keys.GetSSH(sshKeysDirectory)
 	if err != nil {
 		cmd.Help()
 	}
-	log.Info("private keys follow")
-	for _, keyPath := range privateKeys {
-		log.Infof("- %s", keyPath)
-	}
-	log.Info("authorized keys follow")
-	for keyPath, keyComment := range authorizedKeys {
-		if len(keyComment) == 0 {
-			keyComment = "no label found"
-		}
-		log.Infof("- %s (%s)", keyPath, keyComment)
+
+	for _, key := range keys {
+		log.Infof(key.String())
 	}
 }

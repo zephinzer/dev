@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/gen2brain/beeep v0.0.0-20200420150314-13046a26d502
 	github.com/ghodss/yaml v1.0.0
