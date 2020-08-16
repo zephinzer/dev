@@ -1,6 +1,8 @@
 package notifications
 
 import (
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
@@ -21,7 +23,10 @@ func GetCommand() *cobra.Command {
 					log.Warnf("no access token found for %s\n", account.Name)
 					break
 				}
-				notifs, getNotificationsError := github.GetNotifications(account.AccessToken)
+				notifs, getNotificationsError := github.GetNotifications(
+					&http.Client{Timeout: constants.DefaultAPICallTimeout},
+					account.AccessToken,
+				)
 				if getNotificationsError != nil {
 					log.Warnf("an error occurred while retrieving notifications from '%s': %s\n", account.Name, getNotificationsError)
 					continue
