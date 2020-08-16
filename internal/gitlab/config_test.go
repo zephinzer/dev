@@ -14,7 +14,7 @@ func TestConfig(t *testing.T) {
 	suite.Run(t, &ConfigTests{})
 }
 
-func (s ConfigTests) Test_GetSanitized() {
+func (s ConfigTests) Test_Config_GetSanitized() {
 	baseConfig := Config{
 		Accounts: AccountConfigs{
 			{
@@ -31,7 +31,7 @@ func (s ConfigTests) Test_GetSanitized() {
 	}
 }
 
-func (s ConfigTests) Test_MergeWith() {
+func (s ConfigTests) Test_Config_MergeWith() {
 	baseConfig := Config{
 		Accounts: AccountConfigs{
 			{

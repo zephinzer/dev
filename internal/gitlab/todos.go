@@ -2,17 +2,15 @@ package gitlab
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/zephinzer/dev/internal/constants"
 	"github.com/zephinzer/dev/internal/types"
 	gl "github.com/zephinzer/dev/pkg/gitlab"
+	"github.com/zephinzer/dev/pkg/utils/request"
 )
 
-func GetTodos(hostname, accessToken string, since ...time.Time) (types.Notifications, error) {
-	client := &http.Client{Timeout: constants.DefaultAPICallTimeout}
+func GetTodos(client request.Doer, hostname, accessToken string, since ...time.Time) (types.Notifications, error) {
 	todos, getTodosError := gl.GetTodos(client, hostname, accessToken, since...)
 	if getTodosError != nil {
 		return nil, getTodosError

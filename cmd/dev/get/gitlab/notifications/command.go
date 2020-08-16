@@ -1,6 +1,8 @@
 package notifications
 
 import (
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
@@ -24,9 +26,13 @@ func GetCommand() *cobra.Command {
 					log.Warnf("no access token found for %s\n", account.Name)
 					break
 				}
-				todos, err := gitlab.GetTodos(hostname, account.AccessToken)
+				todos, err := gitlab.GetTodos(
+					&http.Client{Timeout: constants.DefaultAPICallTimeout},
+					hostname,
+					account.AccessToken,
+				)
 				if err != nil {
-					log.Warnf("an error occurred while retrieving notifications from %s\n", hostname)
+					log.Warnf("failed to retrieve notifications from %s\n", hostname)
 					continue
 				}
 				log.Infof("Notifications from gitlab '%s'@'%s' (total: %v)\n\n", account.Name, account.Hostname, len(todos))
