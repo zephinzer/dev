@@ -17,7 +17,7 @@ func TestNetwork(t *testing.T) {
 	suite.Run(t, &NetworkTests{})
 }
 
-func (s *NetworkTests) TestCheck_GetObserved() {
+func (s *NetworkTests) Test_Check_GetObserved() {
 	expectedStatus := "777 test"
 	expectedStatusCode := 777
 	check := Check{
@@ -32,7 +32,7 @@ func (s *NetworkTests) TestCheck_GetObserved() {
 	s.Equal(expectedStatusCode, observed.StatusCode)
 }
 
-func (s *NetworkTests) TestCheck_GetObserved_checkNotRunYet() {
+func (s *NetworkTests) Test_Check_GetObserved_checkNotRunYet() {
 	check := Check{}
 	observed, getObservedError := check.GetObserved()
 	s.Zero(observed)
@@ -40,7 +40,7 @@ func (s *NetworkTests) TestCheck_GetObserved_checkNotRunYet() {
 	s.Contains(getObservedError.Error(), "not been run yet")
 }
 
-func (s *NetworkTests) TestCheck_Run() {
+func (s *NetworkTests) Test_Check_Run() {
 	expectedBody := "hello"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(expectedBody))
@@ -62,13 +62,13 @@ func (s *NetworkTests) TestCheck_Run() {
 	s.Equal(expectedBody, string(body))
 }
 
-func (s *NetworkTests) TestCheck_Verify_notRunYet() {
+func (s *NetworkTests) Test_Check_Verify_notRunYet() {
 	check := Check{}
 	verifyError := check.Verify()
 	s.NotNil(verifyError)
 }
 
-func (s *NetworkTests) TestCheck_Verify_deferDoesNotPanic() {
+func (s *NetworkTests) Test_Check_Verify_deferDoesNotPanic() {
 	defer func() {
 		s.Nil(recover())
 	}()
@@ -80,7 +80,7 @@ func (s *NetworkTests) TestCheck_Verify_deferDoesNotPanic() {
 	check.Verify()
 }
 
-func (s *NetworkTests) TestCheck_Verify_statusCodeNotSet() {
+func (s *NetworkTests) Test_Check_Verify_statusCodeNotSet() {
 	check := Check{
 		observed: &http.Response{
 			StatusCode: 400,
@@ -94,7 +94,7 @@ func (s *NetworkTests) TestCheck_Verify_statusCodeNotSet() {
 	s.Nil(verify)
 }
 
-func (s *NetworkTests) TestCheck_Verify_statusCodeSet() {
+func (s *NetworkTests) Test_Check_Verify_statusCodeSet() {
 	check := Check{
 		StatusCode: 400,
 		observed: &http.Response{
@@ -108,7 +108,7 @@ func (s *NetworkTests) TestCheck_Verify_statusCodeSet() {
 	s.NotNil(verify)
 }
 
-func (s *NetworkTests) TestCheck_Verify_body() {
+func (s *NetworkTests) Test_Check_Verify_body() {
 	expectedBody := "hello"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(expectedBody))
@@ -127,7 +127,7 @@ func (s *NetworkTests) TestCheck_Verify_body() {
 	s.Nil(verify)
 }
 
-func (s *NetworkTests) TestCheck_Verify_bodyWrong() {
+func (s *NetworkTests) Test_Check_Verify_bodyWrong() {
 	expectedBody := "hello"
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(expectedBody))
@@ -147,7 +147,7 @@ func (s *NetworkTests) TestCheck_Verify_bodyWrong() {
 	s.Contains(verify.Error(), "expected body")
 }
 
-func (s *NetworkTests) TestCheck_Verify_headers() {
+func (s *NetworkTests) Test_Check_Verify_headers() {
 	check := Check{
 		Headers: map[string]string{
 			"hello": "world",
@@ -162,7 +162,7 @@ func (s *NetworkTests) TestCheck_Verify_headers() {
 	s.Nil(verify)
 }
 
-func (s *NetworkTests) TestCheck_Verify_headersAreWrong() {
+func (s *NetworkTests) Test_Check_Verify_headersAreWrong() {
 	check := Check{
 		Headers: map[string]string{
 			"hello": "planet",
