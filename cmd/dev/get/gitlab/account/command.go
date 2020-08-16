@@ -1,6 +1,8 @@
 package account
 
 import (
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/zephinzer/dev/internal/config"
 	"github.com/zephinzer/dev/internal/constants"
@@ -36,7 +38,11 @@ func GetCommand() *cobra.Command {
 				if accountsEncountered[accessToken] == nil {
 					accountsEncountered[accessToken] = true
 					log.Infof("account information for '%s'@'%s' gitlab account", name, hostname)
-					accountInfo, err := gitlab.GetAccount(hostname, accessToken)
+					accountInfo, err := gitlab.GetAccount(
+						&http.Client{Timeout: constants.DefaultAPICallTimeout},
+						hostname,
+						accessToken,
+					)
 					if err != nil {
 						log.Warnf("failed to retrieve account information for '%s'@'%s'", name, hostname)
 						continue

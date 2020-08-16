@@ -1,10 +1,13 @@
 package gitlab
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 	"github.com/zephinzer/dev/internal/types"
+	"github.com/zephinzer/dev/pkg/utils/request"
+	"github.com/zephinzer/dev/tests"
 )
 
 type AccountTests struct {
@@ -42,4 +45,19 @@ func (s *AccountTests) Test_Account_fitsInterface() {
 		acc = Account{}
 	})
 	s.NotNil(acc)
+}
+
+func (s AccountTests) Test_Account_GetAccount() {
+	s.Nil(tests.CaptureRequestWithTLS(
+		func(client request.Doer) error {
+			_, err := GetAccount(client, "__hostname", "__access_token")
+			return err
+		},
+		func(req *http.Request) error {
+			s.Equal("__hostname", req.Host)
+			s.Equal([]string{"__access_token"}, req.Header["Private-Token"])
+			return nil
+		},
+		[]byte("{}"),
+	))
 }

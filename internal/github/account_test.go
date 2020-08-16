@@ -27,7 +27,7 @@ func (s *AccountTests) Test_Account_fitsInterface() {
 }
 
 func (s AccountTests) Test_Account_GetAccount() {
-	systemError := tests.CaptureRequestWithTLS(
+	s.Nil(tests.CaptureRequestWithTLS(
 		func(client request.Doer) error {
 			_, err := GetAccount(client, "__access_token")
 			return err
@@ -39,8 +39,7 @@ func (s AccountTests) Test_Account_GetAccount() {
 			return nil
 		},
 		[]byte("{}"),
-	)
-	s.Nil(systemError)
+	))
 }
 
 func (s AccountTests) Test_Account_Getters() {
