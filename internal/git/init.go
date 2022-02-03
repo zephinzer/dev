@@ -7,10 +7,6 @@ import (
 	extgitconfig "github.com/go-git/go-git/v5/config"
 )
 
-const (
-	DefaultInitRemote = "origin"
-)
-
 // Init does a `git init` on the provided :localPath using the clone URL :cloneURL
 // as the initial remote. If :defaultRemoteName is specified, the first string in the expansion
 // will be used as the remote name; if unspecified, 'origin' is used
@@ -19,7 +15,7 @@ func Init(cloneURL, localPath string, defaultRemoteName ...string) error {
 	if initError != nil {
 		return fmt.Errorf("failed to initialise repository at '%s': %s", localPath, initError)
 	}
-	remoteOfInterest := DefaultInitRemote
+	remoteOfInterest := DefaultRemote
 	if len(defaultRemoteName) > 0 {
 		remoteOfInterest = defaultRemoteName[0]
 	}

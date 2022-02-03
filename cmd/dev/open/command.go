@@ -2,6 +2,7 @@ package open
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/zephinzer/dev/cmd/dev/open/merge_request"
 	"github.com/zephinzer/dev/cmd/dev/open/repo"
 	"github.com/zephinzer/dev/internal/constants"
 )
@@ -16,5 +17,6 @@ func GetCommand() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(repo.GetCommand())
+	cmd.AddCommand(merge_request.GetCommand())
 	return &cmd
 }

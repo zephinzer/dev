@@ -9,10 +9,6 @@ import (
 	extgit "github.com/go-git/go-git/v5"
 )
 
-const (
-	DefaultRemoteOfInterest = "origin"
-)
-
 type Remote struct {
 	Name string
 	URL  string
@@ -33,7 +29,7 @@ func GetRemote(fromGitRepositoryAt string, remoteNameMatcher ...string) (*Remote
 		return nil, fmt.Errorf("path at '%s' is not a valid git directory", gitPath)
 	}
 
-	remoteNameOfInterest := DefaultRemoteOfInterest
+	remoteNameOfInterest := DefaultRemote
 	if len(remoteNameMatcher) > 0 {
 		remoteNameOfInterest = remoteNameMatcher[0]
 	}

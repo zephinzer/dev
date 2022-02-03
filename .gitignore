@@ -1,4 +1,5 @@
 .ssh
+.vscode
 bin
 coverage
 c.out
